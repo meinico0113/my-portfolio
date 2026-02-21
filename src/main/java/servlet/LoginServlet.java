@@ -26,7 +26,14 @@ public class LoginServlet extends HttpServlet {
         String user = request.getParameter("username");
         String pass = request.getParameter("password");
 
-        // 2. 判定（今はテスト用に admin / 0000 で固定）
+        // 文字数チェック
+        if (user != null && user.length() >= 255) {
+            // 255文字以上なら、エラー番号「2」を付けて戻す
+            response.sendRedirect("index.jsp?error=2");
+            return; // ここで処理を終了させる（大事！）
+        }
+
+        // 判定（今はテスト用に admin / 0000 で固定）
         if ("admin".equals(user) && "0000".equals(pass)) {
             // 合格：成功画面（success.jsp）へ送る
             response.sendRedirect("success.jsp");
