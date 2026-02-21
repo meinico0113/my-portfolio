@@ -14,10 +14,19 @@
 <body>
     <h2>ログイン画面</h2>
 
-    <%-- パスワードが間違っていた時にエラーメッセージを出す --%>
-    <% if(request.getParameter("error") != null) { %>
-        <p class="error">ユーザー名かパスワードが違います！</p>
-    <% } %>
+    <%-- エラーメッセージの表示 --%>
+    <% 
+        String error = request.getParameter("error");
+        if("1".equals(error)) { 
+    %>
+        <p style="color: red;">ユーザー名かパスワードが違います！</p>
+    <% 
+        } else if("2".equals(error)) { 
+    %>
+        <p style="color: red;">ユーザー名が長すぎます（254文字以内で入力してください）</p>
+    <% 
+        } 
+    %>
 
     <form action="LoginServlet" method="post">
         ユーザー名：<br>
