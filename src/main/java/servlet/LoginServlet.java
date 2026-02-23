@@ -30,15 +30,20 @@ public class LoginServlet extends HttpServlet {
         if (user != null && user.length() >= 255) {
             // 255文字以上なら、エラー番号「2」を付けて戻す
             response.sendRedirect("index.jsp?error=2");
-            return; // ここで処理を終了させる（大事！）
+            return; // ここで処理を終了させる
         }
 
-        // 判定（今はテスト用に admin / 0000 で固定）
+        // ログイン判定と振り分け
         if ("admin".equals(user) && "0000".equals(pass)) {
-            // 合格：成功画面（success.jsp）へ送る
+            // 管理者なら success.jsp へ
             response.sendRedirect("success.jsp");
+
+        } else if ("guest".equals(user) && "1111".equals(pass)) {
+            // 一般ユーザーなら user.jsp へ
+            response.sendRedirect("user.jsp");
+
         } else {
-            // 不合格：エラーの印（error=1）を付けてログイン画面に戻す
+            // どちらでもなければエラー
             response.sendRedirect("index.jsp?error=1");
         }
     }
