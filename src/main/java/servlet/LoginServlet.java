@@ -36,7 +36,7 @@ public class LoginServlet extends HttpServlet {
         // ログイン判定と振り分け
         if ("admin".equals(user) && "0000".equals(pass)) {
             // 管理者なら success.jsp へ
-            response.sendRedirect("success.jsp");
+            response.sendRedirect("AdminServlet");
 
         } else if ("guest".equals(user) && "1111".equals(pass)) {
             // 一般ユーザーなら user.jsp へ

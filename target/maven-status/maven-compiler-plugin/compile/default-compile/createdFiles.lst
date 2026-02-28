@@ -1,3 +1,5 @@
 servlet/SettingsServlet.class
-servlet/LoginServlet.class
+servlet/AdminServlet.class
 util/DBConnection.class
+servlet/DBManager.class
+servlet/LoginServlet.class
