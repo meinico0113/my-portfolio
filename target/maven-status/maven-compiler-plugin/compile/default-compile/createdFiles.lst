@@ -1,5 +1,8 @@
-servlet/SettingsServlet.class
+model/Contact.class
 servlet/AdminServlet.class
+servlet/AdminContactListServlet.class
+servlet/SettingsServlet.class
 util/DBConnection.class
 servlet/DBManager.class
 servlet/LoginServlet.class
+dao/ContactDAO.class
