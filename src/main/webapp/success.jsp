@@ -28,6 +28,9 @@ if (rankingList != null) {
     }
 }
 %>
+
+<p><a href="contact.jsp">問い合わせページへ</a></p>
+
     <a href="index.jsp">ログアウト（戻る）</a>
 </body>
 </html>
