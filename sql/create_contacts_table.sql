@@ -1,0 +1,7 @@
+CREATE TABLE contacts (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category VARCHAR(50) NOT NULL,
+    content TEXT NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT '未対応',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
