@@ -29,7 +29,9 @@ if (rankingList != null) {
 }
 %>
 
-<p><a href="contact.jsp">問い合わせページへ</a></p>
+<p><a href="${pageContext.request.contextPath}/admin/contactList">
+    問い合わせ一覧
+</a></p>
 
     <a href="index.jsp">ログアウト（戻る）</a>
 </body>
