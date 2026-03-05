@@ -40,4 +40,34 @@ public class ContactDAO {
 
         return contactList;
     }
+
+        public Contact findById(int id) throws Exception {
+
+        Contact contact = null;
+
+        Connection conn = DBManager.getConnection();
+
+        String sql = "SELECT * FROM contacts WHERE id = ?";
+
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, id);
+
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            contact = new Contact();
+
+            contact.setId(rs.getInt("id"));
+            contact.setCategory(rs.getString("category"));
+            contact.setContent(rs.getString("content"));
+            contact.setStatus(rs.getString("status"));
+            contact.setCreatedAt(rs.getTimestamp("created_at"));
+        }
+
+        rs.close();
+        ps.close();
+        conn.close();
+
+        return contact;
+    }
 }

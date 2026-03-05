@@ -32,7 +32,7 @@
     </td>
     <td><%= contact.getStatus() %></td>
     <td>
-        <a href="AdminContactDetailServlet?id=<%= contact.getId() %>">
+        <a href="<%= request.getContextPath() %>/admin/contactDetail?id=<%= contact.getId() %>">
             詳細
         </a>
     </td>
