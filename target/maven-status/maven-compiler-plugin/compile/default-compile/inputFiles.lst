@@ -3,6 +3,7 @@
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AdminContactDetailServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AdminContactListServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AdminServlet.java
+/Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AdminUpdateStatusServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/DBManager.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/LoginServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/SettingsServlet.java

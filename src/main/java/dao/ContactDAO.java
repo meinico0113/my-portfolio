@@ -70,4 +70,21 @@ public class ContactDAO {
 
         return contact;
     }
+
+    public void updateStatus(int id, String status) throws Exception {
+
+    Connection conn = DBManager.getConnection();
+
+    String sql = "UPDATE contacts SET status = ? WHERE id = ?";
+
+    PreparedStatement ps = conn.prepareStatement(sql);
+
+    ps.setString(1, status);
+    ps.setInt(2, id);
+
+    ps.executeUpdate();
+
+    ps.close();
+    conn.close();
+}
 }

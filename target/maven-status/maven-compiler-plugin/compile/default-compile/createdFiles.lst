@@ -4,6 +4,7 @@ servlet/AdminContactListServlet.class
 servlet/SettingsServlet.class
 util/DBConnection.class
 servlet/DBManager.class
+servlet/AdminUpdateStatusServlet.class
 servlet/AdminContactDetailServlet.class
 servlet/LoginServlet.class
 dao/ContactDAO.class
