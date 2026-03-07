@@ -10,6 +10,12 @@
 
 <h2>お問い合わせ一覧</h2>
 
+<p>
+<a href="<%= request.getContextPath() %>/admin/categoryList">
+カテゴリー一覧
+</a>
+</p>
+
 <table border="1">
 <tr>
     <th>カテゴリー</th>

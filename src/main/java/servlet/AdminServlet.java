@@ -11,6 +11,9 @@ import javax.servlet.*;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
+import dao.CategoryDAO;
+import model.Category;
+
 @WebServlet("/AdminServlet")
 public class AdminServlet extends HttpServlet {
 
@@ -42,6 +45,18 @@ public class AdminServlet extends HttpServlet {
         }
 
         request.setAttribute("rankingList", rankingList);
+
+        // カテゴリ一覧取得
+        try {
+
+            CategoryDAO categoryDAO = new CategoryDAO();
+            List<Category> categoryList = categoryDAO.findAll();
+
+            request.setAttribute("categoryList", categoryList);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         request.getRequestDispatcher("success.jsp")
                .forward(request, response);

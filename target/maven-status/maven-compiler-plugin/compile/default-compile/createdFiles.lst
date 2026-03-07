@@ -2,6 +2,7 @@ servlet/CategoryUpdateServlet.class
 servlet/AdminContactListServlet.class
 servlet/CategoryCreateServlet.class
 util/DBConnection.class
+servlet/CategoryListServlet.class
 servlet/DBManager.class
 servlet/AdminUpdateStatusServlet.class
 servlet/AdminContactDetailServlet.class

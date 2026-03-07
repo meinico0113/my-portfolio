@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 
 <%@ page import="java.util.List" %>
+<%@ page import="model.Category" %>
 
 <!DOCTYPE html>
 <html>
@@ -30,7 +31,7 @@ if (rankingList != null) {
 %>
 
 <p>
-<a href="/myloginapp/admin/contactList">
+<a href="<%= request.getContextPath() %>/admin/contactList">
     問い合わせ一覧
 </a>
 </p>
