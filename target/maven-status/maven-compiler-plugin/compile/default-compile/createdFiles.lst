@@ -2,6 +2,7 @@ model/Contact.class
 servlet/AdminServlet.class
 servlet/AdminContactListServlet.class
 model/Category.class
+dao/CategoryDAO.class
 servlet/SettingsServlet.class
 util/DBConnection.class
 servlet/DBManager.class
