@@ -1,3 +1,4 @@
+servlet/CategoryUpdateServlet.class
 servlet/AdminContactListServlet.class
 servlet/CategoryCreateServlet.class
 util/DBConnection.class
