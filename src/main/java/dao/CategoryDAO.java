@@ -35,6 +35,32 @@ public class CategoryDAO {
         return list;
     }
 
+     public Category findById(int id) throws Exception {
+
+        Category category = null;
+
+        Connection conn = DBManager.getConnection();
+
+        String sql = "SELECT * FROM categories WHERE id = ?";
+
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setInt(1, id);
+
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            category = new Category();
+            category.setId(rs.getInt("id"));
+            category.setName(rs.getString("name"));
+        }
+
+        rs.close();
+        ps.close();
+        conn.close();
+
+        return category;
+    }
+
     public void insert(String name) throws Exception {
 
         Connection conn = DBManager.getConnection();

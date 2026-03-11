@@ -1,3 +1,18 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="model.Category" %>
+
+<%
+Category category = (Category) request.getAttribute("category");
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>カテゴリ編集</title>
+</head>
+<body>
+
 <h2>カテゴリ編集</h2>
 
 <form action="<%= request.getContextPath() %>/admin/categoryUpdate" method="post">

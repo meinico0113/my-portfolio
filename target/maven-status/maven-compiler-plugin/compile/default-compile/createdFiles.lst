@@ -1,6 +1,8 @@
+servlet/CategoryDeleteServlet.class
 servlet/CategoryUpdateServlet.class
 servlet/AdminContactListServlet.class
 servlet/CategoryCreateServlet.class
+servlet/CategoryEditServlet.class
 util/DBConnection.class
 servlet/CategoryListServlet.class
 servlet/DBManager.class

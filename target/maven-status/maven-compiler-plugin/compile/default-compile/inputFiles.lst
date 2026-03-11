@@ -7,6 +7,8 @@
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AdminServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AdminUpdateStatusServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/CategoryCreateServlet.java
+/Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/CategoryDeleteServlet.java
+/Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/CategoryEditServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/CategoryListServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/CategoryNewServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/CategoryUpdateServlet.java

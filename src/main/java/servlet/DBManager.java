@@ -7,7 +7,7 @@ public class DBManager {
 
     public static Connection getConnection() throws Exception {
 
-        String url = "jdbc:mysql://localhost:3306/myloginapp_db?useSSL=false&serverTimezone=Asia/Tokyo";
+        String url = "jdbc:mysql://localhost:3306/myloginapp_db?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Tokyo";
         String user = "root";
         String password = "koyu0104";
 
