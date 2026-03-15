@@ -16,4 +16,5 @@ model/Category.class
 dao/CategoryDAO.class
 servlet/SettingsServlet.class
 servlet/CategoryNewServlet.class
+dao/AccountDAO.class
 dao/ContactDAO.class
