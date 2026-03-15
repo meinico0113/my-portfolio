@@ -3,6 +3,7 @@ servlet/CategoryUpdateServlet.class
 servlet/AdminContactListServlet.class
 servlet/CategoryCreateServlet.class
 servlet/CategoryEditServlet.class
+servlet/AccountListServlet.class
 util/DBConnection.class
 servlet/CategoryListServlet.class
 servlet/DBManager.class
