@@ -37,4 +37,22 @@ public class AccountDAO {
 
         return list;
     }
+
+    public void insert(String name,String email,String password) throws Exception{
+
+    Connection conn = DBManager.getConnection();
+
+    String sql = "INSERT INTO accounts(name,email,password,status) VALUES(?,?,?,1)";
+
+    PreparedStatement ps = conn.prepareStatement(sql);
+
+    ps.setString(1,name);
+    ps.setString(2,email);
+    ps.setString(3,password);
+
+    ps.executeUpdate();
+
+    ps.close();
+    conn.close();
+}
 }
