@@ -4,6 +4,10 @@
 
 <h2>アカウント一覧</h2>
 
+<a href="<%= request.getContextPath() %>/admin/accountNew">
+アカウント追加
+</a>
+
 <table border="1">
 
 <tr>

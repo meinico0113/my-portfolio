@@ -18,4 +18,5 @@ dao/CategoryDAO.class
 servlet/SettingsServlet.class
 servlet/CategoryNewServlet.class
 dao/AccountDAO.class
+servlet/AccountNewServlet.class
 dao/ContactDAO.class
