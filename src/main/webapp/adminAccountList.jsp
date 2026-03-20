@@ -43,7 +43,11 @@ for(Account account : list){
 <% } %>
 </td>
 
-<td>編集</td>
+<td>
+<a href="<%= request.getContextPath() %>/admin/accountEdit?id=<%= account.getId() %>">
+編集
+</a>
+</td>
 <td>削除</td>
 <td>切替</td>
 
