@@ -125,4 +125,25 @@ public void update(int id, String name, String email) throws Exception {
     ps.close();
     conn.close();
 }
+
+/* 指定したIDの管理者アカウントをデータベースから削除する */
+public void delete(int id) throws Exception {
+
+    Connection conn = DBManager.getConnection();
+
+    // 削除用のSQL文：WHERE句で特定のIDを指定するのが鉄則
+    String sql = "DELETE FROM accounts WHERE id=?";
+
+    // SQLを実行する準備（SQLインジェクション対策としてPreparedStatementを使用）
+    PreparedStatement ps = conn.prepareStatement(sql);
+    // SQL文の「?」の部分に、引数で受け取った削除したいIDをセット
+    ps.setInt(1, id);
+
+    // データベースの更新（削除）を実行
+    // 戻り値として「何件削除されたか」が返ってくるが、ここでは実行のみ
+    ps.executeUpdate();
+
+    ps.close();
+    conn.close();
+}
 }
