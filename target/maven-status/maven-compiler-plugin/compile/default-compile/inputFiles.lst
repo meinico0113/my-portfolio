@@ -8,6 +8,7 @@
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AccountEditServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AccountListServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AccountNewServlet.java
+/Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AccountUpdateServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AdminContactDetailServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AdminContactListServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AdminServlet.java
