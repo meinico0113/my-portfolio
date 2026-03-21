@@ -15,6 +15,7 @@ servlet/LoginServlet.class
 model/Contact.class
 servlet/AdminServlet.class
 model/Category.class
+servlet/AccountEditServlet.class
 dao/CategoryDAO.class
 servlet/SettingsServlet.class
 servlet/CategoryNewServlet.class

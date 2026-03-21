@@ -1,3 +1,6 @@
+/* Javaプロジェクトの設定（pom.xml等）が変更された際、
+    自動ではなく「対話形式（確認ダイアログ）」でビルド設定を更新するようにする設定
+    interactive = 勝手に更新せず聞いてねという意味*/
 {
     "java.configuration.updateBuildConfiguration": "interactive"
 }
