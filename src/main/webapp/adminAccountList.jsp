@@ -48,7 +48,11 @@ for(Account account : list){
 編集
 </a>
 </td>
-<td>削除</td>
+<td>
+<a href="<%= request.getContextPath() %>/admin/accountDelete?id=<%= account.getId() %>">
+削除
+</a>
+</td>
 <td>切替</td>
 
 </tr>
