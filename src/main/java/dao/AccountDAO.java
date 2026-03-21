@@ -53,7 +53,6 @@ public class AccountDAO {
     /*新しい管理者を登録する（初期ステータスは 1:有効）*/
     public void insert(String name,String email,String password) throws Exception{
 
-    // データベースに接続
     Connection conn = DBManager.getConnection();
 
     // 実行するSQL文。?（プレースホルダ）を使って安全に値を流し込む準備
@@ -102,5 +101,28 @@ public Account findById(int id) {
     }
 
     return account;
+}
+
+/* 指定したIDの管理者の「名前」と「メールアドレス」を更新する */
+public void update(int id, String name, String email) throws Exception {
+
+    Connection conn = DBManager.getConnection();
+
+    // SQL文の準備：SETで更新する項目を指定し、WHEREで「誰のデータか」を指定する
+    // ? (プレースホルダ) を使うことで安全に値を埋め込める
+    String sql = "UPDATE accounts SET name=?, email=? WHERE id=?";
+
+    // SQLを実行するための準備（PreparedStatement）を作成
+    PreparedStatement ps = conn.prepareStatement(sql);
+
+    // SQL文の各「?」に実際の値をセットする（左から順番に1, 2, 3...）
+    ps.setString(1, name);      // 1番目の?：name
+    ps.setString(2, email);     // 2番目の?：email
+    ps.setInt(3, id);           // 3番目の?：id (WHERE句で使用)
+
+    ps.executeUpdate();
+
+    ps.close();
+    conn.close();
 }
 }
