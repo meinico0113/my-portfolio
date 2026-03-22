@@ -146,4 +146,21 @@ public void delete(int id) throws Exception {
     ps.close();
     conn.close();
 }
+
+public void updateStatus(int id, int status) throws Exception {
+
+    Connection conn = DBManager.getConnection();
+
+    String sql = "UPDATE accounts SET status=? WHERE id=?";
+
+    PreparedStatement ps = conn.prepareStatement(sql);
+
+    ps.setInt(1, status);
+    ps.setInt(2, id);
+
+    ps.executeUpdate();
+
+    ps.close();
+    conn.close();
+}
 }
