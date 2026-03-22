@@ -53,7 +53,11 @@ for(Account account : list){
 削除
 </a>
 </td>
-<td>切替</td>
+<td>
+<a href="<%= request.getContextPath() %>/admin/accountStatusToggle?id=<%= account.getId() %>">
+切替
+</a>
+</td>
 
 </tr>
 
