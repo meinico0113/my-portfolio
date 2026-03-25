@@ -163,4 +163,37 @@ public void updateStatus(int id, int status) throws Exception {
     ps.close();
     conn.close();
 }
+
+/* 指定したページ分の管理者アカウントだけ切り取って取得する */
+public List<Account> findByPage(int offset, int limit) throws Exception {
+
+    List<Account> list = new ArrayList<>();
+
+    Connection conn = DBManager.getConnection();
+
+    String sql = "SELECT * FROM accounts LIMIT ? OFFSET ?";
+    PreparedStatement ps = conn.prepareStatement(sql);
+
+    ps.setInt(1, limit);   // 5件
+    ps.setInt(2, offset);  // 何件スキップ
+
+    ResultSet rs = ps.executeQuery();
+
+    while(rs.next()){
+        Account account = new Account();
+
+        account.setId(rs.getInt("id"));
+        account.setName(rs.getString("name"));
+        account.setEmail(rs.getString("email"));
+        account.setStatus(rs.getInt("status"));
+
+        list.add(account);
+    }
+
+    rs.close();
+    ps.close();
+    conn.close();
+
+    return list;
+}
 }
