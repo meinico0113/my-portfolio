@@ -17,19 +17,40 @@ public class AccountListServlet extends HttpServlet {
                          HttpServletResponse response)
             throws ServletException, IOException {
 
-        try{
+try{
 
-            AccountDAO dao = new AccountDAO();
+    int page = 1;
+    int limit = 5;
 
-            List<Account> list = dao.findAll();
+    // URLパラメータ取得
+    String pageParam = request.getParameter("page");
+    if(pageParam != null){
+        page = Integer.parseInt(pageParam);
+    }
 
-            request.setAttribute("accountList", list);
+    int offset = (page - 1) * limit;
 
-            request.getRequestDispatcher("/adminAccountList.jsp")
-                   .forward(request, response);
+    AccountDAO dao = new AccountDAO();
 
-        }catch(Exception e){
-            e.printStackTrace();
-        }
+    // ① 5件だけ取得
+    List<Account> list = dao.findByPage(offset, limit);
+
+    // ② 総件数
+    int total = dao.countAll();
+
+    // ③ 総ページ数
+    int totalPages = (int)Math.ceil((double)total / limit);
+
+    // JSPに渡す
+    request.setAttribute("accountList", list);
+    request.setAttribute("currentPage", page);
+    request.setAttribute("totalPages", totalPages);
+
+    request.getRequestDispatcher("/admin/adminAccountList.jsp")
+           .forward(request, response);
+
+}catch(Exception e){
+    e.printStackTrace();
+}
     }
 }
