@@ -196,4 +196,26 @@ public List<Account> findByPage(int offset, int limit) throws Exception {
 
     return list;
 }
+
+public int countAll() throws Exception {
+
+    int count = 0;
+
+    Connection conn = DBManager.getConnection();
+
+    String sql = "SELECT COUNT(*) FROM accounts";
+    PreparedStatement ps = conn.prepareStatement(sql);
+
+    ResultSet rs = ps.executeQuery();
+
+    if(rs.next()){
+        count = rs.getInt(1);
+    }
+
+    rs.close();
+    ps.close();
+    conn.close();
+
+    return count;
+}
 }
