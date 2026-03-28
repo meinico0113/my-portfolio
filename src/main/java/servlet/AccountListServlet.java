@@ -46,7 +46,7 @@ try{
     request.setAttribute("currentPage", page);
     request.setAttribute("totalPages", totalPages);
 
-    request.getRequestDispatcher("/admin/adminAccountList.jsp")
+    request.getRequestDispatcher("/adminAccountList.jsp")
            .forward(request, response);
 
 }catch(Exception e){

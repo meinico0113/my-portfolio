@@ -64,3 +64,24 @@ for(Account account : list){
 <% } %>
 
 </table>
+
+<%
+int currentPage = (int)request.getAttribute("currentPage");
+int totalPages = (int)request.getAttribute("totalPages");
+%>
+
+<div style="margin-top:20px;">
+
+<% for(int i = 1; i <= totalPages; i++){ %>
+
+    <% if(i == currentPage){ %>
+        <strong><%= i %></strong>
+    <% }else{ %>
+        <a href="<%= request.getContextPath() %>/admin/accountList?page=<%= i %>">
+            <%= i %>
+        </a>
+    <% } %>
+
+<% } %>
+
+</div>
