@@ -1,7 +1,9 @@
 package dao;
 
+import java.nio.file.Paths;
 import java.sql.*;
 import java.util.*;
+import javax.servlet.http.Part;
 
 import model.Account;
 import servlet.DBManager;
@@ -217,5 +219,70 @@ public int countAll() throws Exception {
     conn.close();
 
     return count;
+}
+
+public void insertAdmin(String name, String email, int status) throws Exception {
+
+    Connection conn = DBManager.getConnection();
+
+    String sql = "INSERT INTO accounts(name, email, status, role) VALUES (?, ?, ?, 'admin')";
+
+    PreparedStatement ps = conn.prepareStatement(sql);
+
+    ps.setString(1, name);
+    ps.setString(2, email);
+    ps.setInt(3, status);
+
+    ps.executeUpdate();
+
+    ps.close();
+    conn.close();
+}
+
+public void insertUser(String name, String email, int status,
+                       String kana, String gender, int age,
+                       String profile, Part image) throws Exception {
+
+    Connection conn = DBManager.getConnection();
+
+    // ① accounts登録
+    String sql1 = "INSERT INTO accounts(name, email, status, role) VALUES (?, ?, ?, 'user')";
+    PreparedStatement ps1 = conn.prepareStatement(sql1, Statement.RETURN_GENERATED_KEYS);
+
+    ps1.setString(1, name);
+    ps1.setString(2, email);
+    ps1.setInt(3, status);
+
+    ps1.executeUpdate();
+
+    // ② account_id取得
+    ResultSet rs = ps1.getGeneratedKeys();
+    int accountId = 0;
+    if(rs.next()){
+        accountId = rs.getInt(1);
+    }
+
+    // ③ 画像保存（簡易）
+    String fileName = Paths.get(image.getSubmittedFileName()).getFileName().toString();
+    String uploadPath = "C:/upload/" + fileName; // ← 仮
+
+    image.write(uploadPath);
+
+    // ④ usersテーブル登録
+    String sql2 = "INSERT INTO users(account_id, kana, gender, age, profile, image_path) VALUES (?, ?, ?, ?, ?, ?)";
+    PreparedStatement ps2 = conn.prepareStatement(sql2);
+
+    ps2.setInt(1, accountId);
+    ps2.setString(2, kana);
+    ps2.setString(3, gender);
+    ps2.setInt(4, age);
+    ps2.setString(5, profile);
+    ps2.setString(6, uploadPath);
+
+    ps2.executeUpdate();
+
+    ps1.close();
+    ps2.close();
+    conn.close();
 }
 }

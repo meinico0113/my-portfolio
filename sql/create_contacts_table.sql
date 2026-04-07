@@ -10,25 +10,25 @@ USE myloginapp_db;
 -- アプリにログインする一般ユーザーのプロフィールを管理
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,         -- ユーザーID（自動採番）
-    username VARCHAR(255) UNIQUE NOT NULL,    -- ログインID（重複不可）
-    password VARCHAR(255) NOT NULL,           -- パスワード
-    email VARCHAR(255),                       -- メールアドレス
+    account_id INT,                           -- アカウントID
     nickname VARCHAR(255),                    -- 表示名
     furigana VARCHAR(255),                    -- ふりがな
     gender VARCHAR(10),                       -- 性別
     age INT,                                  -- 年齢
     introduction TEXT,                        -- 自己紹介文
     profile_image VARCHAR(255)                -- 画像ファイル名
+    ALTER TABLE users ADD account_id INT;     -- ログインアカウント情報とプロフィール情報を結合するための外部キー用
 );
 
 -- 2. accountsテーブル（管理者・スタッフ情報）
 -- 管理者画面にログインするためのアカウント
 CREATE TABLE accounts (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100),                        -- 管理者名
-    email VARCHAR(255),                       -- ログイン用メール
-    password VARCHAR(255),                    -- パスワード
-    status INT                                -- 状態（例: 1=有効, 0=無効）
+    name VARCHAR(100),                          -- 管理者名
+    email VARCHAR(255),                         -- ログイン用メール
+    password VARCHAR(255),                      -- パスワード
+    status INT                                  -- 状態（例: 1=有効, 0=無効）
+    ALTER TABLE accounts ADD role VARCHAR(10);  -- 管理者、一般スタッフなどの区分け用
 );
 
 -- 3. categoriesテーブル（投稿などのカテゴリ分け）
@@ -58,8 +58,3 @@ CREATE TABLE contacts (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- 受信日時
 );
 
--- ==========================================
--- テスト用初期データ（任意で実行）
--- ==========================================
--- INSERT INTO users (username, password, email, nickname) VALUES ('blan', 'blan0407', 'blan@example.com', 'ブラン');
--- INSERT INTO accounts (name, email, password, status) VALUES ('Admin', 'admin@example.com', 'admin123', 1);
