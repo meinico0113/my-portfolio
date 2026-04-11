@@ -23,6 +23,8 @@ public class AccountCreateServlet extends HttpServlet {
         String role = request.getParameter("role");
         String name = request.getParameter("name");
         String email = request.getParameter("email");
+        String kana = request.getParameter("kana");
+        String ageStr = request.getParameter("age");
         int status = Integer.parseInt(request.getParameter("status"));
 
         // 名前のバリデーション
@@ -62,7 +64,6 @@ public class AccountCreateServlet extends HttpServlet {
 
         }else{
             // 一般ユーザー
-            String kana = request.getParameter("kana");
 
             // ふりがなのバリデーション
             if (kana == null || kana.length() == 0 || kana.length() > 255 || !kana.matches("^[ぁ-んー]+$")) {
@@ -89,14 +90,29 @@ public class AccountCreateServlet extends HttpServlet {
 
             request.setAttribute("name", name);
             request.setAttribute("email", email);
-            request.setAttribute("kana", request.getParameter("kana"));
+            request.setAttribute("kana", kana);
 
             request.getRequestDispatcher("/WEB-INF/jsp/adminAccountNew.jsp")
                 .forward(request, response);
             return;
             }
 
-            int age = Integer.parseInt(request.getParameter("age"));
+            // 年齢のバリデーション
+            int age = 0; // 変数宣言していないためここで宣言
+            if (ageStr == null || !ageStr.matches("^[0-9]{1,3}$")) {
+
+            request.setAttribute("error", "年齢は3桁以内の数字で入力してください");
+
+            request.setAttribute("name", name);
+            request.setAttribute("email", email);
+            request.setAttribute("kana", kana);
+            request.setAttribute("age", ageStr);
+
+            request.getRequestDispatcher("/WEB-INF/jsp/adminAccountNew.jsp")
+                .forward(request, response);
+            return;
+            }
+
             String profile = request.getParameter("profile");
 
             Part image = request.getPart("image"); // 画像取得
