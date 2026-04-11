@@ -36,6 +36,19 @@ public class AccountCreateServlet extends HttpServlet {
         return;
     }
 
+        if (email == null || email.length() == 0 || email.length() > 255 ||
+        !email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
+
+        request.setAttribute("error", "正しいメールアドレスを255文字以内で入力してください");
+
+        request.setAttribute("name", name);
+        request.setAttribute("email", email);
+
+        request.getRequestDispatcher("/WEB-INF/jsp/adminAccountNew.jsp")
+           .forward(request, response);
+        return;
+    }
+
         AccountDAO dao = new AccountDAO();
 
         try{
