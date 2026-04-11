@@ -25,6 +25,7 @@ public class AccountCreateServlet extends HttpServlet {
         String email = request.getParameter("email");
         String kana = request.getParameter("kana");
         String ageStr = request.getParameter("age");
+        String profile = request.getParameter("profile");
         int status = Integer.parseInt(request.getParameter("status"));
 
         // 名前のバリデーション
@@ -113,7 +114,22 @@ public class AccountCreateServlet extends HttpServlet {
             return;
             }
 
-            String profile = request.getParameter("profile");
+            // 自己紹介のバリデーション
+            // null対策（未入力でもOKにする場合）
+            if (profile != null && profile.length() > 1500) {
+
+            request.setAttribute("error", "自己紹介は1500文字以内で入力してください");
+
+            request.setAttribute("name", name);
+            request.setAttribute("email", email);
+            request.setAttribute("kana", kana);
+            request.setAttribute("age", age);
+            request.setAttribute("profile", profile);
+
+            request.getRequestDispatcher("/WEB-INF/jsp/adminAccountNew.jsp")
+                .forward(request, response);
+            return;
+            }
 
             Part image = request.getPart("image"); // 画像取得
 
