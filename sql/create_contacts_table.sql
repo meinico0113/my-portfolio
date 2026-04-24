@@ -12,15 +12,15 @@ CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,         -- ユーザーID（自動採番）
     account_id INT,                           -- アカウントID
     nickname VARCHAR(255),                    -- 表示名
-    furigana VARCHAR(255),                    -- ふりがな
+    kana VARCHAR(255),                    -- ふりがな
     gender VARCHAR(10),                       -- 性別
     age INT,                                  -- 年齢
-    introduction TEXT,                        -- 自己紹介文
+    profile TEXT,                        -- 自己紹介文
     profile_image VARCHAR(255)                -- 画像ファイル名
     ALTER TABLE users ADD account_id INT;     -- ログインアカウント情報とプロフィール情報を結合するための外部キー用
 );
 
--- 2. accountsテーブル（管理者・スタッフ情報）
+-- 2. accountsテーブル（管理者・スタッフ情報）削除予定（usersテーブルがあるため）
 -- 管理者画面にログインするためのアカウント
 CREATE TABLE accounts (
     id INT AUTO_INCREMENT PRIMARY KEY,

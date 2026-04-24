@@ -7,6 +7,12 @@ public class Account {
     private String email;
     private String password;
     private int status;
+    private String role;
+    private String kana;
+    private String gender;
+    private int age;
+    private String profile;
+    private String imagePath;
 
     public int getId() {
         return id;
@@ -46,5 +52,53 @@ public class Account {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public String getRole() {
+    return role;
+    }
+
+    public void setRole(String role) {
+    this.role = role;
+    }
+
+    public String getKana() { 
+        return kana; 
+    }
+
+    public void setKana(String kana) { 
+        this.kana = kana; 
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getProfile() {
+        return profile;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
+
+    public String getImagePath() {
+        return imagePath;
+    }
+
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 }

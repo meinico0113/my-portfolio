@@ -13,9 +13,7 @@ import dao.AccountDAO;
 @MultipartConfig // 画像アップロード用
 public class AccountCreateServlet extends HttpServlet {
 
-    // protected~IOExceotionは決まってる形
-    protected void doPost(HttpServletRequest request,
-                          HttpServletResponse response)
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         request.setCharacterEncoding("UTF-8");
@@ -26,132 +24,76 @@ public class AccountCreateServlet extends HttpServlet {
         String kana = request.getParameter("kana");
         String ageStr = request.getParameter("age");
         String profile = request.getParameter("profile");
-        int status = Integer.parseInt(request.getParameter("status"));
+        String statusStr = request.getParameter("status"); // 数値変換前に文字列として取得
+        
+        // statusのnullチェックを追加
+        if (statusStr == null || !statusStr.matches("^[0-9]+$")) {
+            request.setAttribute("error", "ステータスを入力してください");
+            request.getRequestDispatcher("/adminAccountNew.jsp").forward(request, response);
+            return;
+        }
+        int status = Integer.parseInt(statusStr);
 
         // 名前のバリデーション
         if (name == null || name.length() == 0 || name.length() > 255) {
-        request.setAttribute("error", "名前は1〜255文字で入力してください");
-
-        // 入力値保持（これがないとまた最初からかよ！となる(^-^)）
-        request.setAttribute("name", name);
-        request.setAttribute("email", email);
-
-        request.getRequestDispatcher("/WEB-INF/jsp/adminAccountNew.jsp")
-               .forward(request, response);
-        return;
-    }
+            request.setAttribute("error", "名前は1〜255文字で入力してください");
+            request.setAttribute("name", name);
+            request.setAttribute("email", email);
+            request.getRequestDispatcher("/adminAccountNew.jsp").forward(request, response);
+            return;
+        }
 
         // メアドのバリデーション
-        // ^はここから始まり、$はここで終わりという意味
         if (email == null || email.length() == 0 || email.length() > 255 || !email.matches("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$")) {
-
-        request.setAttribute("error", "正しいメールアドレスを255文字以内で入力してください");
-
-        request.setAttribute("name", name);
-        request.setAttribute("email", email);
-
-        request.getRequestDispatcher("/WEB-INF/jsp/adminAccountNew.jsp")
-           .forward(request, response);
-        return;
-    }
+            request.setAttribute("error", "正しいメールアドレスを255文字以内で入力してください");
+            request.setAttribute("name", name);
+            request.setAttribute("email", email);
+            request.getRequestDispatcher("/adminAccountNew.jsp").forward(request, response);
+            return;
+        }
 
         AccountDAO dao = new AccountDAO();
 
-        // try-catchがないとDB接続に失敗した瞬間に強制終了してしまう
-        try{
+        try {
+            if ("admin".equals(role)) {
+                dao.insertAdmin(name, email, "1111", status);
+            } else {
+                // 一般ユーザーのバリデーション
+                if (kana == null || kana.length() == 0 || kana.length() > 255 || !kana.matches("^[ぁ-んー]+$")) {
+                    request.setAttribute("error", "ふりがなは255文字以内のひらがなで入力してください");
+                    request.getRequestDispatcher("/adminAccountNew.jsp").forward(request, response);
+                    return;
+                }
 
-            if("admin".equals(role)){
-            dao.insertAdmin(name,email,status); // 管理者
+                String gender = request.getParameter("gender");
+                if (gender == null || !(gender.equals("male") || gender.equals("female"))) {
+                    request.setAttribute("error", "性別の選択が不正です");
+                    request.getRequestDispatcher("/adminAccountNew.jsp").forward(request, response);
+                    return;
+                }
 
-        }else{
-            // 一般ユーザー
+                if (ageStr == null || !ageStr.matches("^[0-9]{1,3}$")) {
+                    request.setAttribute("error", "年齢は3桁以内の数字で入力してください");
+                    request.getRequestDispatcher("/jsp/adminAccountNew.jsp").forward(request, response);
+                    return;
+                }
 
-            // ふりがなのバリデーション
-            if (kana == null || kana.length() == 0 || kana.length() > 255 || !kana.matches("^[ぁ-んー]+$")) {
+                if (profile != null && profile.length() > 1500) {
+                    request.setAttribute("error", "自己紹介は1500文字以内で入力してください");
+                    request.getRequestDispatcher("/adminAccountNew.jsp").forward(request, response);
+                    return;
+                }
 
-            request.setAttribute("error", "ふりがなは255文字以内のひらがなで入力してください");
+                Part image = request.getPart("image");
+                if (image != null && image.getSize() > 2 * 1024 * 1024) {
+                    request.setAttribute("error", "画像は2MB以内にしてください");
+                    request.getRequestDispatcher("/adminAccountNew.jsp").forward(request, response);
+                    return;
+                }
 
-            request.setAttribute("name", name);
-            request.setAttribute("email", email);
-            request.setAttribute("kana", kana);
-
-            request.getRequestDispatcher("/WEB-INF/jsp/adminAccountNew.jsp")
-                .forward(request, response);
-            return;
-             }
-            
-            String gender = request.getParameter("gender");
-
-            // 性別のバリデーション
-            // 男性 or 女性のみの選択肢しかないため必要ないのでは？
-            // →HTMLのみだと簡単に書き換えられてしまう
-            if (gender == null || !(gender.equals("male") || gender.equals("female"))) {
-
-            request.setAttribute("error", "性別の選択が不正です");
-
-            request.setAttribute("name", name);
-            request.setAttribute("email", email);
-            request.setAttribute("kana", kana);
-
-            request.getRequestDispatcher("/WEB-INF/jsp/adminAccountNew.jsp")
-                .forward(request, response);
-            return;
+                dao.insertUser(name, email, "1111", status, name, kana, gender, Integer.parseInt(ageStr), profile, image);
             }
-
-            // 年齢のバリデーション
-            int age = 0; // 変数宣言していないためここで宣言
-            if (ageStr == null || !ageStr.matches("^[0-9]{1,3}$")) {
-
-            request.setAttribute("error", "年齢は3桁以内の数字で入力してください");
-
-            request.setAttribute("name", name);
-            request.setAttribute("email", email);
-            request.setAttribute("kana", kana);
-            request.setAttribute("age", ageStr);
-
-            request.getRequestDispatcher("/WEB-INF/jsp/adminAccountNew.jsp")
-                .forward(request, response);
-            return;
-            }
-
-            // 自己紹介のバリデーション
-            // null対策（未入力でもOKにする場合）
-            if (profile != null && profile.length() > 1500) {
-
-            request.setAttribute("error", "自己紹介は1500文字以内で入力してください");
-
-            request.setAttribute("name", name);
-            request.setAttribute("email", email);
-            request.setAttribute("kana", kana);
-            request.setAttribute("age", age);
-            request.setAttribute("profile", profile);
-
-            request.getRequestDispatcher("/WEB-INF/jsp/adminAccountNew.jsp")
-                .forward(request, response);
-            return;
-            }
-
-            Part image = request.getPart("image"); // 画像取得
-
-            // 画像のバリデーション
-            // 2MB = 2 * 1024 * 1024 = 2097152バイト
-            // 豆知識💡 1024B = 1KB  1024KB = 1MB なので上記の式になる
-            if (image != null && image.getSize() > 2 * 1024 * 1024) {
-
-            request.setAttribute("error", "画像は2MB以内にしてください");
-
-            request.setAttribute("name", name);
-            request.setAttribute("email", email);
-
-            request.getRequestDispatcher("/WEB-INF/jsp/adminAccountNew.jsp")
-                    .forward(request, response);
-            return;
-            }
-
-            dao.insertUser(name, email, status, kana, gender, age, profile, image);
-            }
-
-        } catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

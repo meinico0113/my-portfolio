@@ -10,15 +10,13 @@
     <title>ログイン成功</title>
 </head>
 <body>
-    <h1>ログイン成功！</h1>
-    <p>ようこそ、管理画面へ。</p>
-
+    <h1>ようこそ、管理画面へ。</h1>
+    
     <p>
         <a href="<%= request.getContextPath() %>/admin/accountList">
         アカウント管理
         </a>
     </p>
-
     <h2>いいねランキング</h2>
 
 <%

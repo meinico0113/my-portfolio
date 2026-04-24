@@ -36,7 +36,7 @@ for(Account account : list){
 <td><%= account.getEmail() %></td>
 
 <td>
-<% if(account.getStatus()==1){ %>
+<% if(account.getStatus()==0){ %>
 アクセス許可
 <% }else{ %>
 アクセス禁止

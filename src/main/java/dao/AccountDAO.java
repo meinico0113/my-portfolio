@@ -8,281 +8,243 @@ import javax.servlet.http.Part;
 import model.Account;
 import servlet.DBManager;
 
-/*🟡accountsテーブル（管理者アカウント）専用のデータ操作クラス🟡*/
+/**
+ * usersテーブル専用のデータ操作クラス（一本化対応版）
+ */
 public class AccountDAO {
 
-    /*すべての管理者アカウントを取得する*/
+    /**
+     * すべてのユーザーを取得する
+     */
     public List<Account> findAll() throws Exception {
-
-        // 結果を格納するための空のリストを用意
         List<Account> list = new ArrayList<>();
+        String sql = "SELECT * FROM users";
 
-        // DBManagerを使ってデータベースに接続
-        Connection conn = DBManager.getConnection();
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
-        // 実行するSQL文（全件取得）
-        String sql = "SELECT * FROM accounts";
-
-        // SQLを実行するための準備
-        PreparedStatement ps = conn.prepareStatement(sql);
-        // SQLを実行し、結果をResultSet（表形式のデータ）として受け取る
-        ResultSet rs = ps.executeQuery();
-
-        // 結果を一行ずつループ処理
-        while(rs.next()){
-
-            // 1件分のデータを保存するためのAccountオブジェクトを作成
-            Account account = new Account();
-
-            // データベースの各カラムの値を、Javaのオブジェクトにセット
-            account.setId(rs.getInt("id"));
-            account.setName(rs.getString("name"));
-            account.setEmail(rs.getString("email"));
-            account.setStatus(rs.getInt("status"));
-
-            // リストに追加
-            list.add(account);
+            while (rs.next()) {
+                list.add(mapToAccount(rs));
+            }
         }
-
-        // リソースを閉じる（接続を解除する）
-        rs.close();
-        ps.close();
-        conn.close();
-
         return list;
     }
 
-    /*新しい管理者を登録する（初期ステータスは 1:有効）*/
-    public void insert(String name,String email,String password) throws Exception{
+/* 新しい管理者を登録する */
+    public void insertAdmin(String name, String email, String password, int status) throws Exception {
+        // 引数に status を追加。ただしSQLには含めない（テーブルにカラムがないため）
+        String sql = "INSERT INTO users(name, email, password) VALUES (?, ?, ?)";
 
-    Connection conn = DBManager.getConnection();
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-    // 実行するSQL文。?（プレースホルダ）を使って安全に値を流し込む準備
-    String sql = "INSERT INTO accounts(name,email,password,status) VALUES(?,?,?,1)";
+            ps.setString(1, name);
+            ps.setString(2, email);
+            ps.setString(3, password);
+            ps.executeUpdate();
+        }
+    }
 
-    PreparedStatement ps = conn.prepareStatement(sql);
+    public void insertUser(String name, String email, String password, int status,
+                       String nickname, String kana, String gender,
+                       int age, String profile, Part image) throws Exception {
 
-    // SQL文の「?」の部分に、引数で受け取った値をセット
-    ps.setString(1,name);       // 1番目の「?」に名前をセット
-    ps.setString(2,email);      // 2番目の「?」にメールをセット
-    ps.setString(3,password);   // 3番目の「?」にパスワードをセット
+    // 1. SQLをテーブル定義に合わせる（nicknameがないなら削る）
+    String sql = "INSERT INTO users(name, password, email, kana, gender, age, profile, profile_image) "
+               + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
-    // データの更新（登録）を実行
-    ps.executeUpdate();
+    // 2. 画像処理（一旦書き出しをせず、ファイル名だけ保存するテスト）
+    String fileName = (image != null && image.getSize() > 0) 
+                      ? Paths.get(image.getSubmittedFileName()).getFileName().toString() 
+                      : "default.png";
 
-    // リソースを閉じる
-    ps.close();
-    conn.close();
+    try (Connection conn = DBManager.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+
+        ps.setString(1, name);
+        ps.setString(2, password);
+        ps.setString(3, email);
+        // ps.setString(4, nickname); // nicknameカラムがないならコメントアウト
+        ps.setString(4, kana);
+        ps.setString(5, gender);
+        ps.setInt(6, age);
+        ps.setString(7, profile);
+        ps.setString(8, fileName); 
+        
+        ps.executeUpdate(); // ここで実行！
+    } catch (SQLException e) {
+        e.printStackTrace(); // コンソールにエラーを出して原因を特定する
+        throw e; 
+    }
 }
-/*指定したIDの管理者を1件検索する*/
-public Account findById(int id) {
-    Account account = null;
 
-    // try-with-resources文：接続を自動で閉じてくれる便利な書き方
-    try (Connection conn = DBManager.getConnection()) {
+    /**
+     * 指定したIDのアカウントを1件検索する
+     */
+    public Account findById(int id) {
+        Account account = null;
+        String sql = "SELECT * FROM users WHERE id = ?";
 
-        // IDを条件にした検索SQL
-        String sql = "SELECT * FROM accounts WHERE id = ?";
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setInt(1, id);
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        ResultSet rs = ps.executeQuery();
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    account = mapToAccount(rs);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return account;
+    }
 
-        // データが見つかった場合のみオブジェクトを作成
-        if (rs.next()) {
-            account = new Account();
-            account.setId(rs.getInt("id"));
-            account.setName(rs.getString("name"));
-            account.setEmail(rs.getString("email"));
-            account.setStatus(rs.getInt("status"));
+    /**
+     * 指定したIDのアカウントを削除する
+     */
+    public void delete(int id) throws Exception {
+        String sql = "DELETE FROM users WHERE id = ?";
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        }
+    }
+
+   /* 管理者情報を更新する */
+    public void updateAdmin(int id, String name, String email, int status) throws Exception {
+        // SQLにはテーブルに存在するカラムだけを指定
+        String sql = "UPDATE users SET name=?, email=? WHERE id=?";
+
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, name);
+            ps.setString(2, email);
+            ps.setInt(3, id); // 3番目の ? は WHERE id
+            
+            ps.executeUpdate();
+        }
+    }
+
+    /**
+     * 一般ユーザー情報を更新する
+     */
+    public void updateUser(int id, String name, String email, int status, String kana, 
+                           String gender, int age, String profile, Part image) throws Exception {
+        
+        String fileName = null;
+        if (image != null && image.getSize() > 0) {
+            fileName = Paths.get(image.getSubmittedFileName()).getFileName().toString();
+            String uploadPath = "/tmp/" + fileName; 
+            image.write(uploadPath);
         }
 
-    } catch (Exception e) {
-        // エラーが発生した場合はコンソールに出力
-        e.printStackTrace();
+        String sql;
+        if (fileName != null) {
+            sql = "UPDATE users SET name=?, email=?, kana=?, gender=?, age=?, profile=?, profile_image=? WHERE id=?";
+        } else {
+            sql = "UPDATE users SET name=?, email=?, kana=?, gender=?, age=?, profile=? WHERE id=?";
+        }
+
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, name);
+            ps.setString(2, email);
+            ps.setString(3, kana);
+            ps.setString(4, gender);
+            ps.setInt(5, age);
+            ps.setString(6, profile);
+            
+            if (fileName != null) {
+                ps.setString(7, fileName);
+                ps.setInt(8, id);
+            } else {
+                ps.setInt(7, id);
+            }
+
+            ps.executeUpdate();
+        }
     }
 
-    return account;
-}
-
-/* 指定したIDの管理者の「名前」と「メールアドレス」を更新する */
-public void update(int id, String name, String email) throws Exception {
-
-    Connection conn = DBManager.getConnection();
-
-    // SQL文の準備：SETで更新する項目を指定し、WHEREで「誰のデータか」を指定する
-    // ? (プレースホルダ) を使うことで安全に値を埋め込める
-    String sql = "UPDATE accounts SET name=?, email=? WHERE id=?";
-
-    // SQLを実行するための準備（PreparedStatement）を作成
-    PreparedStatement ps = conn.prepareStatement(sql);
-
-    // SQL文の各「?」に実際の値をセットする（左から順番に1, 2, 3...）
-    ps.setString(1, name);      // 1番目の?：name
-    ps.setString(2, email);     // 2番目の?：email
-    ps.setInt(3, id);           // 3番目の?：id (WHERE句で使用)
-
-    ps.executeUpdate();
-
-    ps.close();
-    conn.close();
-}
-
-/* 指定したIDの管理者アカウントをデータベースから削除する */
-public void delete(int id) throws Exception {
-
-    Connection conn = DBManager.getConnection();
-
-    // 削除用のSQL文：WHERE句で特定のIDを指定するのが鉄則
-    String sql = "DELETE FROM accounts WHERE id=?";
-
-    // SQLを実行する準備（SQLインジェクション対策としてPreparedStatementを使用）
-    PreparedStatement ps = conn.prepareStatement(sql);
-    // SQL文の「?」の部分に、引数で受け取った削除したいIDをセット
-    ps.setInt(1, id);
-
-    // データベースの更新（削除）を実行
-    // 戻り値として「何件削除されたか」が返ってくるが、ここでは実行のみ
-    ps.executeUpdate();
-
-    ps.close();
-    conn.close();
-}
-
-public void updateStatus(int id, int status) throws Exception {
-
-    Connection conn = DBManager.getConnection();
-
-    String sql = "UPDATE accounts SET status=? WHERE id=?";
-
-    PreparedStatement ps = conn.prepareStatement(sql);
-
-    ps.setInt(1, status);
-    ps.setInt(2, id);
-
-    ps.executeUpdate();
-
-    ps.close();
-    conn.close();
-}
-
-/* 指定したページ分の管理者アカウントだけ切り取って取得する */
-public List<Account> findByPage(int offset, int limit) throws Exception {
-
-    List<Account> list = new ArrayList<>();
-
-    Connection conn = DBManager.getConnection();
-
-    String sql = "SELECT * FROM accounts LIMIT ? OFFSET ?";
-    PreparedStatement ps = conn.prepareStatement(sql);
-
-    ps.setInt(1, limit);   // 5件
-    ps.setInt(2, offset);  // 何件スキップ
-
-    ResultSet rs = ps.executeQuery();
-
-    while(rs.next()){
-        Account account = new Account();
-
-        account.setId(rs.getInt("id"));
-        account.setName(rs.getString("name"));
-        account.setEmail(rs.getString("email"));
-        account.setStatus(rs.getInt("status"));
-
-        list.add(account);
+    /* ResultSetからAccountオブジェクトへの変換（ここが真っ白の原因でした） */
+    private Account mapToAccount(ResultSet rs) throws SQLException {
+        Account a = new Account();
+        a.setId(rs.getInt("id"));
+        a.setName(rs.getString("name")); 
+        a.setEmail(rs.getString("email"));
+        
+        // DBにないstatusとroleは固定値をセット（JSPでのエラーを防ぐ）
+        a.setStatus(0); 
+        a.setRole("user"); 
+        
+        // カラム名をDBと完全一致させる
+        a.setKana(rs.getString("kana")); 
+        a.setGender(rs.getString("gender"));
+        a.setAge(rs.getInt("age"));
+        a.setProfile(rs.getString("profile")); 
+        a.setImagePath(rs.getString("profile_image")); 
+        return a;
     }
 
-    rs.close();
-    ps.close();
-    conn.close();
+    /**
+     * ページング用
+     */
+    public List<Account> findByPage(int offset, int limit) throws Exception {
+        List<Account> list = new ArrayList<>();
+        String sql = "SELECT * FROM users ORDER BY id LIMIT ? OFFSET ?";
 
-    return list;
-}
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-public int countAll() throws Exception {
+            ps.setInt(1, limit);
+            ps.setInt(2, offset);
 
-    int count = 0;
-
-    Connection conn = DBManager.getConnection();
-
-    String sql = "SELECT COUNT(*) FROM accounts";
-    PreparedStatement ps = conn.prepareStatement(sql);
-
-    ResultSet rs = ps.executeQuery();
-
-    if(rs.next()){
-        count = rs.getInt(1);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(mapToAccount(rs));
+                }
+            }
+        }
+        return list;
     }
 
-    rs.close();
-    ps.close();
-    conn.close();
+    /**
+     * 全件数を取得する
+     */
+    public int countAll() throws Exception {
+        int count = 0;
+        String sql = "SELECT COUNT(*) FROM users";
 
-    return count;
-}
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
-public void insertAdmin(String name, String email, int status) throws Exception {
-
-    Connection conn = DBManager.getConnection();
-
-    String sql = "INSERT INTO accounts(name, email, status, role) VALUES (?, ?, ?, 'admin')";
-
-    PreparedStatement ps = conn.prepareStatement(sql);
-
-    ps.setString(1, name);
-    ps.setString(2, email);
-    ps.setInt(3, status);
-
-    ps.executeUpdate();
-
-    ps.close();
-    conn.close();
-}
-
-public void insertUser(String name, String email, int status,
-                       String kana, String gender, int age,
-                       String profile, Part image) throws Exception {
-
-    Connection conn = DBManager.getConnection();
-
-    // ① accounts登録
-    String sql1 = "INSERT INTO accounts(name, email, status, role) VALUES (?, ?, ?, 'user')";
-    PreparedStatement ps1 = conn.prepareStatement(sql1, Statement.RETURN_GENERATED_KEYS);
-
-    ps1.setString(1, name);
-    ps1.setString(2, email);
-    ps1.setInt(3, status);
-
-    ps1.executeUpdate();
-
-    // ② account_id取得
-    ResultSet rs = ps1.getGeneratedKeys();
-    int accountId = 0;
-    if(rs.next()){
-        accountId = rs.getInt(1);
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        }
+        return count;
     }
 
-    // ③ 画像保存（簡易）
-    String fileName = Paths.get(image.getSubmittedFileName()).getFileName().toString();
-    String uploadPath = "C:/upload/" + fileName; // ← 仮
-
-    image.write(uploadPath);
-
-    // ④ usersテーブル登録
-    String sql2 = "INSERT INTO users(account_id, kana, gender, age, profile, image_path) VALUES (?, ?, ?, ?, ?, ?)";
-    PreparedStatement ps2 = conn.prepareStatement(sql2);
-
-    ps2.setInt(1, accountId);
-    ps2.setString(2, kana);
-    ps2.setString(3, gender);
-    ps2.setInt(4, age);
-    ps2.setString(5, profile);
-    ps2.setString(6, uploadPath);
-
-    ps2.executeUpdate();
-
-    ps1.close();
-    ps2.close();
-    conn.close();
-}
+    /**
+     * ステータスのみを更新する（中身は空ですが、Servletのエラーを消すために必要です）
+     */
+    public void updateStatus(int id, int status) throws Exception {
+        /* * 現在のusersテーブルにはstatusカラムがないため、実際の更新処理は行いません。
+         * もし将来DBにstatusカラムを追加したら、以下のコメントアウトを解除してください。
+         */
+        /*
+        String sql = "UPDATE users SET status = ? WHERE id = ?";
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, status);
+            ps.setInt(2, id);
+            ps.executeUpdate();
+        }
+        */
+    }
 }
