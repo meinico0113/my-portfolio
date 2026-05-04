@@ -65,6 +65,18 @@ public class AccountUpdateServlet extends HttpServlet {
                 }
             }
 
+            // 性別のバリデーション
+            if (errorMsg == null && !"admin".equals(role)) {
+                String gender = request.getParameter("gender");
+    
+                // 許可する値のリスト（JSPのvalue属性と一致させる）
+                if (gender != null && !gender.isEmpty()) {
+                    if (!"男性".equals(gender) && !"女性".equals(gender) && !"その他".equals(gender)) {
+                        errorMsg = "性別を正しく選択してください。";
+                    }
+                }
+            }
+
             // 画像のバリデーション
             if (errorMsg == null && !"admin".equals(role)) {
                 try {
