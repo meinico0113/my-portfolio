@@ -7,6 +7,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
 import dao.AccountDAO;
+import model.Account;
 
 @WebServlet("/admin/accountUpdate")
 @MultipartConfig
@@ -15,47 +16,65 @@ public class AccountUpdateServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-            request.setCharacterEncoding("UTF-8");
-            
+        request.setCharacterEncoding("UTF-8");
+        AccountDAO dao = new AccountDAO();
+
         try {
             // ① パラメータ取得
             int id = Integer.parseInt(request.getParameter("id"));
-String role = request.getParameter("role");
-String name = request.getParameter("name");
-String email = request.getParameter("email");
-int status = Integer.parseInt(request.getParameter("status"));
+            String role = request.getParameter("role");
+            String name = request.getParameter("name");
+            String email = request.getParameter("email");
+            int status = Integer.parseInt(request.getParameter("status"));
 
-AccountDAO dao = new AccountDAO();
+            // --- バリデーションチェック ---
+            String errorMsg = null;
+            if (name == null || name.trim().isEmpty()) {
+                errorMsg = "名前を入力してください。";
+            } else if (name.length() > 255) {
+                errorMsg = "名前は255文字以内で入力してください。";
+            }
 
-if ("admin".equals(role)) {
+            if (errorMsg != null) {
+                // エラーがある場合は編集画面のJSPへ戻す
+                Account account = dao.findById(id); // 最新の情報をDBから再取得
+                // もし「入力中の名前」を保持したい場合は、ここでaccountにセットし直す
+                // account.setName(name); 
 
-    // 管理者更新
-    dao.updateAdmin(id, name, email, status);
+                request.setAttribute("account", account);
+                request.setAttribute("error", errorMsg);
+                request.getRequestDispatcher("/adminAccountEdit.jsp").forward(request, response);
+                return; // 処理を終了
+            }
+            // ----------------------------
 
-} else {
+            if ("admin".equals(role)) {
+                // 管理者更新
+                dao.updateAdmin(id, name, email, status);
+            } else {
+                // 一般ユーザー
+                String kana = request.getParameter("kana");
+                String gender = request.getParameter("gender");
 
-    // 一般ユーザー
-    String kana = request.getParameter("kana");
-    String gender = request.getParameter("gender");
+                String ageStr = request.getParameter("age");
+                int age = 0;
+                if (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) {
+                    age = Integer.parseInt(ageStr);
+                }
 
-    String ageStr = request.getParameter("age");
-    int age = 0;
-    if (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) {
-        age = Integer.parseInt(ageStr);
-    }
+                String profile = request.getParameter("profile");
+                Part image = request.getPart("image");
 
-    String profile = request.getParameter("profile");
+                dao.updateUser(id, name, email, status, kana, gender, age, profile, image);
+            }
 
-    Part image = request.getPart("image"); // 画像
-
-    dao.updateUser(id, name, email, status, kana, gender, age, profile, image);
-}
-
-            // ③ 一覧へリダイレクト
+            // ③ 成功時は一覧へリダイレクト
             response.sendRedirect(request.getContextPath() + "/admin/accountList");
 
         } catch (Exception e) {
             e.printStackTrace();
+            // エラー時も一覧に戻すか、エラーページへ
+            response.sendRedirect(request.getContextPath() + "/admin/accountList");
         }
     }
 }

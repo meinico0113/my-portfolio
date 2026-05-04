@@ -21,21 +21,24 @@
     <input type="hidden" name="id" value="<%= account.getId() %>">
     <input type="hidden" name="role" value="<%= role %>">
 
-    名前：<input type="text" name="name" value="<%= account.getName() %>" required><br>
+    <% if ("admin".equals(role)) { %>
+        <%-- ★管理者の場合：名前・メール・ステータスのみ --%>
+    名前：<input type="text" name="name" value="<%= account.getName() %>" required maxlength="255"><br>
     メール：<input type="email" name="email" value="<%= account.getEmail() %>" required><br>
-    
     ステータス：
     <select name="status">
         <option value="1" <%= account.getStatus() == 1 ? "selected" : "" %>>アクセス許可</option>
         <option value="0" <%= account.getStatus() == 0 ? "selected" : "" %>>アクセス禁止</option>
     </select><br>
 
-    <%-- 一般ユーザーの場合のみ表示する項目 --%>
-    <% if ("user".equals(role)) { %>
-        <hr>
-        <%-- value属性に既存の値をセット --%>
+    <% } else { %>
+        <%-- ★一般ユーザーの場合：ふりがな〜画像変更のみ --%>
+        <%-- ※DAOのuserがname, email, statusを要求するため、hiddenで値を送る必要がある --%>
+        <input type="hidden" name="name" value="<%= account.getName() %>">
+        <input type="hidden" name="email" value="<%= account.getEmail() %>">
+        <input type="hidden" name="status" value="<%= account.getStatus() %>">
+
         ふりがな：<input type="text" name="kana" value="<%= kana %>"><br>
-        
         性別：
         <input type="radio" name="gender" value="男性" <%= "男性".equals(gender) ? "checked" : "" %>>男性
         <input type="radio" name="gender" value="女性" <%= "女性".equals(gender) ? "checked" : "" %>>女性
