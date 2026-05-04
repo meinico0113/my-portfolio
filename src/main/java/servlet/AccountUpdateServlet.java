@@ -77,6 +77,20 @@ public class AccountUpdateServlet extends HttpServlet {
                 }
             }
 
+            // 年齢のバリデーション
+            if (errorMsg == null && !"admin".equals(role)) {
+                String ageStr = request.getParameter("age");
+    
+                if (ageStr == null || ageStr.trim().isEmpty()) {
+                    errorMsg = "年齢を入力してください。";
+                } else {
+                    // 正規表現で「1〜3桁の数字」かチェック
+                    if (!ageStr.matches("^[0-9]{1,3}$")) {
+                        errorMsg = "年齢は3桁以内の数字で入力してください。";
+                    }
+                }
+            }
+
             // 画像のバリデーション
             if (errorMsg == null && !"admin".equals(role)) {
                 try {

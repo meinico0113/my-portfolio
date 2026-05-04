@@ -44,7 +44,7 @@
         <input type="radio" name="gender" value="女性" <%= "女性".equals(gender) ? "checked" : "" %>>女性
         <input type="radio" name="gender" value="その他" <%= "その他".equals(gender) ? "checked" : "" %>>その他<br>
 
-        年齢：<input type="number" name="age" min="0" max="150" value="<%= account.getAge() %>"><br>
+        年齢：<input type="number" name="age" min="0" max="150" value="<%= account.getAge() %>" oninput="if(value.length>3)value=value.slice(0,3)">
 
         自己紹介：<br>
         <%-- textareaはタグの間に値を挟む --%>
