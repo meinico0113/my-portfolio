@@ -27,12 +27,27 @@ public class AccountUpdateServlet extends HttpServlet {
             String email = request.getParameter("email");
             int status = Integer.parseInt(request.getParameter("status"));
 
-            // --- バリデーションチェック ---
+            // バリデーションチェック
             String errorMsg = null;
+
+            // 名前のバリデージョン
             if (name == null || name.trim().isEmpty()) {
                 errorMsg = "名前を入力してください。";
             } else if (name.length() > 255) {
                 errorMsg = "名前は255文字以内で入力してください。";
+            }
+
+            // メールのバリデーション
+            if(errorMsg == null){
+                String emailPattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
+
+                if (email == null || email.trim().isEmpty()) {
+                    errorMsg = "メールアドレスを入力してください。";
+                } else if (email.length() > 255) {
+                    errorMsg = "メールアドレスは255文字以内で入力してください。";
+                } else if (!email.matches(emailPattern)) {
+                     errorMsg = "正しいメールアドレスの形式で入力してください。";
+                }
             }
 
             if (errorMsg != null) {

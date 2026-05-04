@@ -24,7 +24,7 @@
     <% if ("admin".equals(role)) { %>
         <%-- ★管理者の場合：名前・メール・ステータスのみ --%>
     名前：<input type="text" name="name" value="<%= account.getName() %>" required maxlength="255"><br>
-    メール：<input type="email" name="email" value="<%= account.getEmail() %>" required><br>
+    メール：<input type="email" name="email" value="<%= account.getEmail() %>" required maxlength="255"><br>
     ステータス：
     <select name="status">
         <option value="1" <%= account.getStatus() == 1 ? "selected" : "" %>>アクセス許可</option>
