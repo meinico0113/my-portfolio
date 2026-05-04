@@ -91,6 +91,16 @@ public class AccountUpdateServlet extends HttpServlet {
                 }
             }
 
+            // 自己紹介のバリデーション
+            if (errorMsg == null && !"admin".equals(role)) {
+                String profile = request.getParameter("profile");
+    
+                // 未入力（null）の可能性を考慮し、存在する場合のみ長さをチェック
+                if (profile != null && profile.length() > 1500) {
+                    errorMsg = "自己紹介は1500文字以内で入力してください。";
+                }
+            }
+
             // 画像のバリデーション
             if (errorMsg == null && !"admin".equals(role)) {
                 try {

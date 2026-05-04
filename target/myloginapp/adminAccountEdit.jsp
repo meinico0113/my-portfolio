@@ -48,7 +48,7 @@
 
         自己紹介：<br>
         <%-- textareaはタグの間に値を挟む --%>
-        <textarea name="profile" rows="4" cols="40"><%= profile %></textarea><br>
+        <textarea name="profile" rows="4" cols="40" maxlength="1500"><%= profile %></textarea><br>
 
         <%-- 現在の画像がある場合に表示（任意） --%>
         <% if(account.getImagePath() != null) { %>
