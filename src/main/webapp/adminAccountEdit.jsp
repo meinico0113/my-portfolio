@@ -38,7 +38,7 @@
         <input type="hidden" name="email" value="<%= account.getEmail() %>">
         <input type="hidden" name="status" value="<%= account.getStatus() %>">
 
-        ふりがな：<input type="text" name="kana" value="<%= kana %>"><br>
+        ふりがな：<input type="text" name="kana" value="<%= kana %>" maxlength="255"><br>
         性別：
         <input type="radio" name="gender" value="男性" <%= "男性".equals(gender) ? "checked" : "" %>>男性
         <input type="radio" name="gender" value="女性" <%= "女性".equals(gender) ? "checked" : "" %>>女性

@@ -50,6 +50,21 @@ public class AccountUpdateServlet extends HttpServlet {
                 }
             }
 
+            // ふりがなのバリデーション
+            if (errorMsg == null && !"admin".equals(role)) {
+                String kana = request.getParameter("kana");
+                // ひらがな（\u3041-\u3096）と、長音（ー）のみを許可する正規表現
+                String kanaPattern = "^[\\u3041-\\u3096ー]*$";
+
+                if (kana != null && !kana.isEmpty()) { // 空文字は許容する場合
+                    if (kana.length() > 255) {
+                        errorMsg = "ふりがなは255文字以内で入力してください。";
+                    } else if (!kana.matches(kanaPattern)) {
+                        errorMsg = "ふりがなは「ひらがな」で入力してください。";
+                    }
+                }
+            }
+
             // 画像のバリデーション
             if (errorMsg == null && !"admin".equals(role)) {
                 try {
