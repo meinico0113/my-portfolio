@@ -50,6 +50,23 @@ public class AccountUpdateServlet extends HttpServlet {
                 }
             }
 
+            // 画像のバリデーション
+            if (errorMsg == null && !"admin".equals(role)) {
+                try {
+                    Part image = request.getPart("image");
+                    if (image != null && image.getSize() > 0) {
+                        // 2MB = 2 * 1024 * 1024 bytes
+                        long maxSize = 2 * 1024 * 1024; 
+                        if (image.getSize() > maxSize) {
+                            errorMsg = "プロフィール画像は2MB以内のファイルを選択してください。";
+                        }
+                    }
+                } catch (Exception e) {
+                    // getPart() でエラーが出た場合など
+                    errorMsg = "画像の読み込み中にエラーが発生しました。";
+                }
+            }
+
             if (errorMsg != null) {
                 // エラーがある場合は編集画面のJSPへ戻す
                 Account account = dao.findById(id); // 最新の情報をDBから再取得
