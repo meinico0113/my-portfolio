@@ -14,6 +14,9 @@ public class AdminUpdateStatusServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        // リクエストの文字コードをUTF-8に設定する
+        request.setCharacterEncoding("UTF-8");
+
         try {
 
             int id = Integer.parseInt(request.getParameter("id"));

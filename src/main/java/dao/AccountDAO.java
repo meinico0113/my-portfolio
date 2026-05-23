@@ -15,7 +15,7 @@ public class AccountDAO {
      */
     public List<Account> findAll() throws Exception {
         List<Account> list = new ArrayList<>();
-        String sql = "SELECT * FROM users ORDER BY id";
+        String sql = "SELECT * FROM users WHERE is_deleted = 0 ORDER BY id";
 
         try (Connection conn = DBManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -103,9 +103,9 @@ public class AccountDAO {
      * 指定したIDのアカウントを削除する
      */
     public void delete(int id) throws Exception {
-        String sql = "DELETE FROM users WHERE id = ?";
+        String sql = "UPDATE users SET is_deleted = 1 WHERE id = ?";
         try (Connection conn = DBManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+            PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         }
@@ -172,14 +172,14 @@ public class AccountDAO {
     /* ResultSetからAccountオブジェクトへの変換 */
     private Account mapToAccount(ResultSet rs) throws SQLException {
         Account a = new Account();
+
+        // DBから下記を取得
         a.setId(rs.getInt("id"));
         a.setName(rs.getString("name")); 
         a.setEmail(rs.getString("email"));
-        
-        // DBからroleとstatusを取得（もうエラーになりません）
         a.setRole(rs.getString("role")); 
         a.setStatus(rs.getInt("status")); 
-        
+        a.setLikes(rs.getInt("likes"));
         a.setKana(rs.getString("kana")); 
         a.setGender(rs.getString("gender"));
         a.setAge(rs.getInt("age"));
@@ -188,12 +188,10 @@ public class AccountDAO {
         return a;
     }
 
-    /**
-     * ページング用
-     */
+    /* ページング用 */
     public List<Account> findByPage(int offset, int limit) throws Exception {
         List<Account> list = new ArrayList<>();
-        String sql = "SELECT * FROM users ORDER BY id LIMIT ? OFFSET ?";
+        String sql = "SELECT * FROM users WHERE is_deleted = 0 ORDER BY id LIMIT ? OFFSET ?";
 
         try (Connection conn = DBManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -215,7 +213,7 @@ public class AccountDAO {
      */
     public int countAll() throws Exception {
         int count = 0;
-        String sql = "SELECT COUNT(*) FROM users";
+        String sql = "SELECT COUNT(*) FROM users WHERE is_deleted = 0";
 
         try (Connection conn = DBManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
@@ -240,4 +238,80 @@ public class AccountDAO {
             ps.executeUpdate();
         }
     }
+
+    /* 削除済みアカウント一覧を取得する（is_deleted = 1 のもの）*/
+    public List<Account> findDeleted() throws Exception {
+        List<Account> list = new ArrayList<>();
+        String sql = "SELECT * FROM users WHERE is_deleted = 1 ORDER BY id";
+
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                list.add(mapToAccount(rs));
+            }
+        }
+        return list;
+    }
+
+    /* 指定したIDのアカウントを復元する（is_deleted を 0 に戻す）*/
+    public void restore(int id) throws Exception {
+        String sql = "UPDATE users SET is_deleted = 0 WHERE id = ?";
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        }
+    }
+
+    /* 指定したIDのアカウントをデータベースから完全に削除する（物理削除）*/
+    public void hardDelete(int id) throws Exception {
+        String sql = "DELETE FROM users WHERE id = ?";
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        }
+    }
+
+    /* 一般ユーザー(role='user')を「いいね」が多い順に取得する */
+    public List<Account> findGeneralUsersOrderByLikes() throws Exception {
+        List<Account> list = new ArrayList<>();
+        // ORDER BY likes DESC で「いいね」が多い順に並べ替え
+        String sql = "SELECT * FROM users WHERE role = 'user' AND is_deleted = 0 ORDER BY likes DESC";
+
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                // 既存の mapToAccount メソッドを再利用
+                list.add(mapToAccount(rs));
+            }
+        }
+        return list;
+    }
+
+    /* 指定したIDの「いいね」数を+1する */
+    public void incrementLikes(int id) throws Exception {
+        String sql = "UPDATE users SET likes = likes + 1 WHERE id = ?";
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        }
+    }
+
+    public void insertContact(String category, String content) throws Exception {
+    // statusは画像に合わせて「未対応」をデフォルト値として挿入
+    String sql = "INSERT INTO contacts (category, content, status, created_at) VALUES (?, ?, '未対応', NOW())";
+
+    try (Connection conn = DBManager.getConnection();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, category);
+        ps.setString(2, content);
+        ps.executeUpdate();
+    }
+}
 }

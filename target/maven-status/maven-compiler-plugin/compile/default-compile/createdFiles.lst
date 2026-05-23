@@ -1,8 +1,11 @@
 servlet/CategoryDeleteServlet.class
+servlet/UserUpdateServlet.class
 servlet/AdminContactListServlet.class
 servlet/CategoryCreateServlet.class
 servlet/AccountStatusToggleServlet.class
+servlet/UserListServlet.class
 servlet/AccountDeleteServlet.class
+servlet/UserRankingServlet.class
 servlet/AccountCreateServlet.class
 servlet/CategoryListServlet.class
 servlet/DBManager.class
@@ -10,6 +13,7 @@ model/Account.class
 servlet/AdminUpdateStatusServlet.class
 servlet/AdminContactDetailServlet.class
 dao/CategoryDAO.class
+servlet/AccountDeletedListServlet.class
 servlet/SettingsServlet.class
 dao/AccountDAO.class
 servlet/AccountNewServlet.class
@@ -19,9 +23,14 @@ servlet/CategoryEditServlet.class
 servlet/AccountListServlet.class
 servlet/AccountUpdateServlet.class
 util/DBConnection.class
+servlet/AccountHardDeleteServlet.class
 servlet/LoginServlet.class
 model/Contact.class
 servlet/AdminServlet.class
+servlet/UserEditServlet.class
 model/Category.class
 servlet/AccountEditServlet.class
+servlet/UserDetailServlet.class
+servlet/AccountRestoreServlet.class
 servlet/CategoryNewServlet.class
+servlet/ContactServlet.class

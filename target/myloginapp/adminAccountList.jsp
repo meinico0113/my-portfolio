@@ -8,6 +8,11 @@
 アカウント追加
 </a>
 
+<br>
+<a href="<%= request.getContextPath() %>/admin/accountDeletedList" style="color: #666; font-size: 0.9em;">
+アカウント削除一覧
+</a>
+
 <table border="1">
 
 <tr>

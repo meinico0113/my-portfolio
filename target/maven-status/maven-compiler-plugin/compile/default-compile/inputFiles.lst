@@ -6,9 +6,12 @@
 /Users/misakikawara/Desktop/myloginapp/src/main/java/model/Contact.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AccountCreateServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AccountDeleteServlet.java
+/Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AccountDeletedListServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AccountEditServlet.java
+/Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AccountHardDeleteServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AccountListServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AccountNewServlet.java
+/Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AccountRestoreServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AccountStatusToggleServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AccountUpdateServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/AdminContactDetailServlet.java
@@ -21,7 +24,13 @@
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/CategoryListServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/CategoryNewServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/CategoryUpdateServlet.java
+/Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/ContactServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/DBManager.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/LoginServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/SettingsServlet.java
+/Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/UserDetailServlet.java
+/Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/UserEditServlet.java
+/Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/UserListServlet.java
+/Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/UserRankingServlet.java
+/Users/misakikawara/Desktop/myloginapp/src/main/java/servlet/UserUpdateServlet.java
 /Users/misakikawara/Desktop/myloginapp/src/main/java/util/DBConnection.java

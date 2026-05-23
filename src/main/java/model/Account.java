@@ -13,6 +13,7 @@ public class Account {
     private int age;
     private String profile;
     private String imagePath;
+    private int likes;
 
     public int getId() {
         return id;
@@ -101,4 +102,7 @@ public class Account {
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
+
+    public int getLikes() { return likes; }
+    public void setLikes(int likes) { this.likes = likes; }
 }

@@ -17,13 +17,12 @@
         アカウント管理
         </a>
     </p>
-    <h2>いいねランキング</h2>
+<h2>いいねランキング</h2>
 
 <%
-List<String> rankingList =
-    (List<String>) request.getAttribute("rankingList");
+List<String> rankingList = (List<String>) request.getAttribute("rankingList");
 
-if (rankingList != null) {
+if (rankingList != null && !rankingList.isEmpty()) {
     int rank = 1;
     for (String post : rankingList) {
 %>
@@ -31,6 +30,10 @@ if (rankingList != null) {
 <%
         rank++;
     }
+} else {
+%>
+    <p>現在ランキングデータはありません。</p>
+<%
 }
 %>
 
