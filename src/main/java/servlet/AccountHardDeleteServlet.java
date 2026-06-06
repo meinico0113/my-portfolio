@@ -16,7 +16,7 @@ public class AccountHardDeleteServlet extends HttpServlet {
             int id = Integer.parseInt(request.getParameter("id"));
 
             AccountDAO dao = new AccountDAO();
-            dao.hardDelete(id); // 物理削除を実行
+            dao.delete(id); // 論理削除を実行
 
             // 削除一覧ページへ戻る
             response.sendRedirect(request.getContextPath() + "/admin/accountDeletedList");

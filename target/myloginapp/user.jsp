@@ -15,7 +15,11 @@
     <h1>ようこそ、一般画面へ</h1>
 
     <hr>
-    <a class="menu-link" href="UserEditServlet">プロフィール変更</a><br>
+    <div class="like-info">
+    <span>あなたの現在の「いいね」数：</span>
+    <span class="likes-count">${account.likes}</span>
+    </div>
+    <a class="menu-link" href="UserEditServlet">プロフィール</a><br>
     <a href="${pageContext.request.contextPath}/settings.jsp">設定（メアド・パスワード変更）</a><br>
     <a href="index.jsp">ログアウト</a>
 </body>

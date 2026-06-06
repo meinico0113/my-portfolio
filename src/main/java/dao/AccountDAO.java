@@ -77,9 +77,7 @@ public class AccountDAO {
         }
     }
 
-    /**
-     * 指定したIDのアカウントを1件検索する
-     */
+    /* 指定したIDのアカウントを1件検索する */
     public Account findById(int id) {
         Account account = null;
         String sql = "SELECT * FROM users WHERE id = ?";
@@ -99,9 +97,7 @@ public class AccountDAO {
         return account;
     }
 
-    /**
-     * 指定したIDのアカウントを削除する
-     */
+    /* 指定したIDのアカウントを削除する */
     public void delete(int id) throws Exception {
         String sql = "UPDATE users SET is_deleted = 1 WHERE id = ?";
         try (Connection conn = DBManager.getConnection();
@@ -128,9 +124,7 @@ public class AccountDAO {
         }
     }
 
-    /**
-     * 一般ユーザー情報を更新する
-     */
+    /* 一般ユーザー情報を更新する */
     public void updateUser(int id, String name, String email, int status, String kana, 
                            String gender, int age, String profile, Part image) throws Exception {
         
@@ -176,6 +170,7 @@ public class AccountDAO {
         // DBから下記を取得
         a.setId(rs.getInt("id"));
         a.setName(rs.getString("name")); 
+        a.setNickname(rs.getString("nickname"));
         a.setEmail(rs.getString("email"));
         a.setRole(rs.getString("role")); 
         a.setStatus(rs.getInt("status")); 
@@ -208,9 +203,7 @@ public class AccountDAO {
         return list;
     }
 
-    /**
-     * 全件数を取得する
-     */
+    /* 全件数を取得する */
     public int countAll() throws Exception {
         int count = 0;
         String sql = "SELECT COUNT(*) FROM users WHERE is_deleted = 0";
@@ -226,9 +219,7 @@ public class AccountDAO {
         return count;
     }
 
-    /**
-     * ステータスのみを更新する
-     */
+    /* ステータスのみを更新する */
     public void updateStatus(int id, int status) throws Exception {
         String sql = "UPDATE users SET status = ? WHERE id = ?";
         try (Connection conn = DBManager.getConnection();
@@ -258,16 +249,6 @@ public class AccountDAO {
     /* 指定したIDのアカウントを復元する（is_deleted を 0 に戻す）*/
     public void restore(int id) throws Exception {
         String sql = "UPDATE users SET is_deleted = 0 WHERE id = ?";
-        try (Connection conn = DBManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ps.executeUpdate();
-        }
-    }
-
-    /* 指定したIDのアカウントをデータベースから完全に削除する（物理削除）*/
-    public void hardDelete(int id) throws Exception {
-        String sql = "DELETE FROM users WHERE id = ?";
         try (Connection conn = DBManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);

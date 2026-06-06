@@ -4,6 +4,7 @@ public class Account {
 
     private int id;
     private String name;
+    private String nickname;
     private String email;
     private String password;
     private int status;
@@ -29,6 +30,14 @@ public class Account {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     public String getEmail() {

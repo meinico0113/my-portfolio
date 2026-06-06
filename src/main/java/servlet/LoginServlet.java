@@ -47,24 +47,32 @@ public class LoginServlet extends HttpServlet {
             // 2. DB接続
             conn = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASS);
 
-            // 3. SQLの準備（nameとpasswordが一致するユーザーを検索）
-            // 画像のテーブル定義に合わせて「name」カラムを参照
-            String sql = "SELECT role FROM users WHERE name = ? AND password = ?";
+            // 3. SQLの準備（likesとnameも取得するように変更）
+            String sql = "SELECT * FROM users WHERE name = ? AND password = ? AND is_deleted = 0";
             PreparedStatement pstmt = conn.prepareStatement(sql);
             pstmt.setString(1, inputUser);
             pstmt.setString(2, inputPass);
-
 
             // 4. 実行
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                // ログイン成功：DBから取得した role を確認
+                // DBから必要な情報を取得
+                int id = rs.getInt("id");
                 String role = rs.getString("role");
+                int likes = rs.getInt("likes");
+                String name = rs.getString("name");
+
+                // Accountモデル（JavaBeans）に詰め込む
+                model.Account account = new model.Account();
+                account.setId(id);
+                account.setName(name);
+                account.setRole(role);
+                account.setLikes(likes);
                 
-                // セッションにユーザー情報を保存（必要に応じて）
+                // セッションに「account」という名前でオブジェクトごと保存
                 HttpSession session = request.getSession();
-                session.setAttribute("user", inputUser);
+                session.setAttribute("account", account);
 
                 if ("admin".equals(role)) {
                     response.sendRedirect("AdminServlet");

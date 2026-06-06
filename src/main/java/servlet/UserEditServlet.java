@@ -19,7 +19,7 @@ public class UserEditServlet extends HttpServlet {
         
         // 1. セッションからログイン中のユーザー情報を取得
         HttpSession session = request.getSession();
-        Account loginUser = (Account) session.getAttribute("loginUser"); // ログイン処理時にセットした名前
+        Account loginUser = (Account) session.getAttribute("account"); // ログイン処理時にセットした名前
         
         if (loginUser == null) {
             // 未ログインの場合はログイン画面へ戻す
@@ -32,9 +32,9 @@ public class UserEditServlet extends HttpServlet {
         Account userProfile = dao.findById(loginUser.getId());
 
         // 3. 取得したデータをリクエストスコープにセット
-        request.setAttribute("userProfile", userProfile);
+        request.setAttribute("user", userProfile);
 
         // 4. 編集画面へフォワード
-        request.getRequestDispatcher("profileEdit.jsp").forward(request, response);
+        request.getRequestDispatcher("userProfile.jsp").forward(request, response);
     }
 }
