@@ -17,7 +17,7 @@ public class LoginServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     // DB接続設定
-    private final String JDBC_URL ="jdbc:mysql://db:3306/myloginapp_db?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Tokyo&allowPublicKeyRetrieval=true";
+    private final String JDBC_URL ="jdbc:mysql://db:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Tokyo&allowPublicKeyRetrieval=true";
     private final String DB_USER = "root";
     private final String DB_PASS = "koyu0104";
 

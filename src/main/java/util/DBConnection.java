@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class DBConnection {
     // データベース
-    private static final String URL = "jdbc:mysql://db:3306/myloginapp_db?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Tokyo&allowPublicKeyRetrieval=true";
+    private static final String URL = "jdbc:mysql://db:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Tokyo&allowPublicKeyRetrieval=true";
     private static final String USER = "root";
     private static final String PASS = "koyu0104";
 

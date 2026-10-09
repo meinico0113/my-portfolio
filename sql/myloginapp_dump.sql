@@ -1,7 +1,7 @@
-USE myloginapp_db;
+USE test;
 -- MySQL dump 10.13  Distrib 8.0.34, for macos13 (arm64)
 --
--- Host: localhost    Database: myloginapp_db
+-- Host: localhost    Database: test
 -- ------------------------------------------------------
 -- Server version	8.0.44
 

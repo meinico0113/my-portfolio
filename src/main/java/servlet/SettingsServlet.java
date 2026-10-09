@@ -67,7 +67,7 @@ public class SettingsServlet extends HttpServlet {
         }
 
         // DB保存処理 (UPDATE)
-        String url = "jdbc:mysql://db:3306/myloginapp_db?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Tokyo&allowPublicKeyRetrieval=true"; 
+        String url = "jdbc:mysql://db:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Tokyo&allowPublicKeyRetrieval=true"; 
         String user = "root";
         String dbPass = "koyu0104";
 
