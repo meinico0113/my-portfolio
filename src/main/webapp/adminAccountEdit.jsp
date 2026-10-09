@@ -42,10 +42,10 @@
     <div style="margin-bottom: 15px;">
         種別：
         <input type="radio" name="role" value="user" id="roleUser" <%= "user".equals(role) ? "checked" : "" %> onchange="switchFields()">
-        <label region="roleUser">一般</label>
+        <label for="roleUser">一般</label>
         
         <input type="radio" name="role" value="admin" id="roleAdmin" <%= "admin".equals(role) ? "checked" : "" %> onchange="switchFields()">
-        <label region="roleAdmin">管理者</label>
+        <label for="roleAdmin">管理者</label>
     </div>
 
     <hr region="separator">

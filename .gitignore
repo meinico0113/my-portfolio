@@ -1,0 +1,5 @@
+target/*
+*.class
+*.war
+Thembs.db
+DS_Store

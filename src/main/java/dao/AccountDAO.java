@@ -100,8 +100,8 @@ public class AccountDAO {
 
    /* 管理者情報を更新する */
     public void updateAdmin(int id, String name, String email, int status) throws Exception {
-        // statusの更新もSQLに追加
-        String sql = "UPDATE users SET name=?, email=?, status=? WHERE id=?";
+        // status・roleの更新もSQLに追加
+        String sql = "UPDATE users SET name=?, email=?, status=?, role='admin' WHERE id=?";
 
         try (Connection conn = DBManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -125,11 +125,11 @@ public class AccountDAO {
         }
 
         String sql;
-        // statusの更新を両方のパターンに追加
+        // status・roleの更新を両方のパターンに追加
         if (fileName != null) {
-            sql = "UPDATE users SET name=?, email=?, status=?, kana=?, gender=?, age=?, profile=?, profile_image=? WHERE id=?";
+            sql = "UPDATE users SET name=?, email=?, status=?, role='user', kana=?, gender=?, age=?, profile=?, profile_image=? WHERE id=?";
         } else {
-            sql = "UPDATE users SET name=?, email=?, status=?, kana=?, gender=?, age=?, profile=? WHERE id=?";
+            sql = "UPDATE users SET name=?, email=?, status=?, role='user', kana=?, gender=?, age=?, profile=? WHERE id=?";
         }
 
         try (Connection conn = DBManager.getConnection();

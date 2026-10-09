@@ -23,7 +23,7 @@ public class AccountCreateServlet extends HttpServlet {
             String role = request.getParameter("role");
             String name = request.getParameter("name");
             String email = request.getParameter("email");
-            String password = "12345678";
+            String password = request.getParameter("password");
             String statusStr = request.getParameter("status");
 
             // エラーメッセージを最初はnullで用意

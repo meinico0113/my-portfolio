@@ -37,6 +37,10 @@ toggleForm =フォームを切り替える（管理者・一般で切り替わ�
 <input type="text" name="email" value="${account.email}">
 <br><br>
 
+パスワード
+<input type="password" name="password" value="${account.password}">
+<br><br>
+
 ステータス
 <select name="status">
     <option value="0" ${account.status == '0' ? 'selected' : ''}>アクセス許可</option>
