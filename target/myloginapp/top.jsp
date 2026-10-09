@@ -8,13 +8,19 @@
 <title>公開画面</title>
 <style>
     /* ユーザー1人分の情報の枠線 */
-    .user-card { border: 1px solid #ddd; margin: 10px; padding: 10px; border-radius: 8px; width: 300px; }
+    .user-card {
+        border: 1px solid #ddd;
+        margin: 10px; /* boxの外側の余白 */
+        padding: 10px; /* boxの内側の余白 */
+        border-radius: 8px; /* boxの丸み */
+        width: 300px;
+    }
     
     /* ボタンの共通スタイル */
     .btn { 
         display: inline-block;
         padding: 5px 10px; 
-        cursor: pointer; 
+        cursor: pointer; /* ボタンに合わせた際、カーソルが指のマークに変わる */
         border-radius: 4px; 
         border: none;
         text-decoration: none; /* リンクの下線を消す */
@@ -23,10 +29,10 @@
         color: white;
     }
     
-    /* いいねボタン（赤）*/
+    /* いいねボタン */
     .like-btn { background-color: #ff4d4d; }
     
-    /* 詳細ボタン（グレー）*/
+    /* 詳細ボタン */
     .detail-btn { background-color: #888888; }
 
     /* 横並びに配置 */
