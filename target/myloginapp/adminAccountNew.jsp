@@ -34,7 +34,7 @@ toggleForm =フォームを切り替える（管理者・一般で切り替わ�
 <br><br>
 
 パスワード
-<input type="password" name="password"> //valueにセットするのはセキュリティ上ダメ
+<input type="password" name="password">
 <br><br>
 
 メールアドレス
