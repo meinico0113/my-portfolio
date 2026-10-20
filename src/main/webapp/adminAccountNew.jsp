@@ -33,6 +33,10 @@ toggleForm =フォームを切り替える（管理者・一般で切り替わ�
 <input type="text" name="name" value="${account.name}">
 <br><br>
 
+パスワード
+<input type="password" name="password"> //valueにセットするのはセキュリティ上ダメ
+<br><br>
+
 メールアドレス
 <input type="text" name="email" value="${account.email}">
 <br><br>

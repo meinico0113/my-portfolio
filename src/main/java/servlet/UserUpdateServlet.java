@@ -68,6 +68,7 @@ public class UserUpdateServlet extends HttpServlet {
                 name,
                 loginUser.getEmail(),
                 loginUser.getStatus(),
+                loginUser.getRole(),
                 kana,
                 gender,
                 age,

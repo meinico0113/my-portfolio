@@ -55,7 +55,6 @@ public class AccountDAO {
         pstmt.setString(2, email);
         pstmt.setString(3, password);
         pstmt.setInt(4, status);
-        // 5番目以降はプレースホルダーの順番がズレるため番号を調整
         pstmt.setString(5, kana);
         pstmt.setString(6, gender);
         pstmt.setInt(7, age);
@@ -99,9 +98,9 @@ public class AccountDAO {
     }
 
    /* 管理者情報を更新する */
-    public void updateAdmin(int id, String name, String email, int status) throws Exception {
-        // statusの更新もSQLに追加
-        String sql = "UPDATE users SET name=?, email=?, status=? WHERE id=?";
+    public void updateAdmin(int id, String name, String email, int status, String role) throws Exception {
+
+        String sql = "UPDATE users SET name=?, email=?, status=?, role=? WHERE id=?";
 
         try (Connection conn = DBManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -109,14 +108,15 @@ public class AccountDAO {
             ps.setString(1, name);
             ps.setString(2, email);
             ps.setInt(3, status);
-            ps.setInt(4, id);
+            ps.setString(4, role);
+            ps.setInt(5, id);
             
             ps.executeUpdate();
         }
     }
 
     /* 一般ユーザー情報を更新する */
-    public void updateUser(int id, String name, String email, int status, String kana, 
+    public void updateUser(int id, String name, String email, int status, String role, String kana, 
                            String gender, int age, String profile, Part image) throws Exception {
         
         String fileName = null;
@@ -127,9 +127,9 @@ public class AccountDAO {
         String sql;
         // statusの更新を両方のパターンに追加
         if (fileName != null) {
-            sql = "UPDATE users SET name=?, email=?, status=?, kana=?, gender=?, age=?, profile=?, profile_image=? WHERE id=?";
+            sql = "UPDATE users SET name=?, email=?, status=?, role=?, kana=?, gender=?, age=?, profile=?, profile_image=? WHERE id=?";
         } else {
-            sql = "UPDATE users SET name=?, email=?, status=?, kana=?, gender=?, age=?, profile=? WHERE id=?";
+            sql = "UPDATE users SET name=?, email=?, status=?, role=?, kana=?, gender=?, age=?, profile=? WHERE id=?";
         }
 
         try (Connection conn = DBManager.getConnection();
@@ -138,16 +138,17 @@ public class AccountDAO {
             ps.setString(1, name);
             ps.setString(2, email);
             ps.setInt(3, status);
-            ps.setString(4, kana);
-            ps.setString(5, gender);
-            ps.setInt(6, age);
-            ps.setString(7, profile);
+            ps.setString(4, role);
+            ps.setString(5, kana);
+            ps.setString(6, gender);
+            ps.setInt(7, age);
+            ps.setString(8, profile);
             
             if (fileName != null) {
-                ps.setString(8, fileName);
-                ps.setInt(9, id);
+                ps.setString(9, fileName);
+                ps.setInt(10, id);
             } else {
-                ps.setInt(8, id);
+                ps.setInt(9, id);
             }
 
             ps.executeUpdate();

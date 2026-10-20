@@ -154,7 +154,7 @@ public class AccountUpdateServlet extends HttpServlet {
 
             // バリデーション全通過：DB更新処理
             if ("admin".equals(role)) {
-                dao.updateAdmin(id, name, email, status);
+                dao.updateAdmin(id, name, email, status, role);
             } else {
                 int age = (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) ? Integer.parseInt(ageStr) : 0;
 Part image = request.getPart("image");
@@ -170,7 +170,7 @@ if (image != null && image.getSize() > 0) {
     image.write(uploadPath + java.io.File.separator + fileName);
 }
 
-dao.updateUser(id, name, email, status, kana, gender, age, profile, image);
+dao.updateUser(id, name, email, status, role, kana, gender, age, profile, image);
             }
 
             // 成功時は一覧へリダイレクト
