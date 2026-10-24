@@ -49,7 +49,7 @@ public class ContactServlet extends HttpServlet {
         String content = request.getParameter("content");
 
         try {
-            // DBに保存（ステータスは未対応で保存）
+            // DBに保存
             AccountDAO dao = new AccountDAO();
             dao.insertContact(category, content);
 
@@ -68,6 +68,7 @@ public class ContactServlet extends HttpServlet {
         // 送信先・送信元の設定
         final String toEmail = "k.kawara@oplan.co.jp";
         final String fromEmail = "k.kawara@oplan.co.jp"; 
+        // 本番のアプリ開発では環境変数（.envファイル等）や設定ファイルから読み込ませるのが○
         final String password = "Koyu0104";
 
         // SMTPサーバーの設定 (Outlook / Microsoft 365用)

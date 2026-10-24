@@ -6,10 +6,6 @@
 <head>
 <meta charset="UTF-8">
 <title>一般ユーザー画面</title>
-<style>
-    .user-card { border: 1px solid #ddd; margin: 10px; padding: 10px; border-radius: 8px; width: 300px; }
-    .like-btn { background-color: #ff4d4d; color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 4px; }
-</style>
 </head>
 <body>
     <h1>一般画面</h1>

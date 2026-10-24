@@ -339,8 +339,9 @@ public class AccountDAO {
         }
     }
 
+    /* お問い合わせ内容をDBに新規登録するためのメソッド */
     public void insertContact(String category, String content) throws Exception {
-    // statusは画像に合わせて「未対応」をデフォルト値として挿入
+    // statusは「未対応」をデフォルト値として挿入
         String sql = "INSERT INTO contacts (category, content, status, created_at) VALUES (?, ?, '未対応', NOW())";
 
         try (Connection conn = DBManager.getConnection();
@@ -351,7 +352,7 @@ public class AccountDAO {
         }
     }
 
-    /* 指定したIDのアカウントをDBから完全に削除する */
+    /* 指定したIDのアカウントをDBから完全に削除するメソッド */
 public void hardDelete(int id) throws Exception {
     String deletePostsSql = "DELETE FROM posts WHERE user_id = ?";
     String deleteUserSql = "DELETE FROM users WHERE id = ?";
