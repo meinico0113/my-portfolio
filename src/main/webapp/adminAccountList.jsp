@@ -15,7 +15,9 @@
     <br>
     <a href="${pageContext.request.contextPath}/admin/accountDeletedList">アカウント削除一覧</a>
     <br>
+    <br>
 
+    <%-- 表の項目名 --%>
     <table border="1">
     <tr>
         <th>名前</th>
@@ -26,6 +28,7 @@
         <th>切替</th>
     </tr>
 
+    <%-- 表の中身 --%>
     <c:forEach var="account" items="${accountList}">
         <tr>
             <td><c:out value="${account.name}" /></td>

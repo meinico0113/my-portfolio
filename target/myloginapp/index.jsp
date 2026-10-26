@@ -38,7 +38,7 @@
             // エラーコードに応じた条件分岐
             let errorMessageHtml = '';
             if (errorCode === '1') {
-                errorMessageHtml = '<p style="color: red;">ユーザー名かパスワードが違います.</p>';
+                errorMessageHtml = '<p style="color: red;">ユーザー名かパスワードが違います。</p>';
             } else if (errorCode === '2') {
                 errorMessageHtml = '<p style="color: red;">ユーザー名は255文字以内で入力してください。</p>';
             }　else if (errorCode === '3') {

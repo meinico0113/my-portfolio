@@ -1,56 +1,41 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
-<%@ page import="model.Account" %>
-<%
-    Account account = (Account)request.getAttribute("account");
-    if (account == null) {
-        account = new Account(); // null安全対策
-    }
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-    // ロールの判定
-    String role = (account.getRole() != null) ? account.getRole() : "user";
-    
-    // 一般ユーザー項目の null 対策（画面に "null" と表示されないようにする）
-    String name = (account.getName() != null) ? account.getName() : "";
-    String email = (account.getEmail() != null) ? account.getEmail() : "";
-    String kana = (account.getKana() != null) ? account.getKana() : "";
-    String gender = (account.getGender() != null) ? account.getGender() : "";
-    int age = account.getAge(); // int型
-    String profile = (account.getProfile() != null) ? account.getProfile() : "";
-    String imagePath = account.getImagePath();
-
-    // エラーメッセージの取得
-    String errorMessage = (String) request.getAttribute("error");
-%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>アカウント編集</title>
+</head>
+<body>
 
 <h2>アカウント編集</h2>
 
 <%-- サーバーからのエラーメッセージ表示エリア --%>
 <div id="errorDisplay" style="color: red; font-weight: bold; margin-bottom: 15px;">
-    <% if (errorMessage != null && !errorMessage.isEmpty()) { %>
-        <%= errorMessage %>
-    <% } %>
+    <c:if test="${not empty error}">${error}</c:if>
 </div>
 
-<form action="<%= request.getContextPath() %>/admin/accountUpdate" 
+<form action="${pageContext.request.contextPath}/admin/accountUpdate" 
       method="post" 
       enctype="multipart/form-data">
 
-    <%-- 共通項目：IDとロール --%>
-    <input type="hidden" name="id" value="<%= account.getId() %>">
+    <%-- 共通項目：ID --%>
+    <input type="hidden" name="id" value="${account.id}">
 
     <%-- 一般、管理者切替ラジオボタン --%>
     <div style="margin-bottom: 15px;">
         種別：
-        <input type="radio" name="role" value="user" id="roleUser" <%= "user".equals(role) ? "checked" : "" %> onchange="switchFields()">
-        <label region="roleUser">一般</label>
+        <input type="radio" name="role" value="user" id="roleUser" ${account.role == 'admin' ? '' : 'checked'} onchange="switchFields()">
+        <label for="roleUser">一般</label>
         
-        <input type="radio" name="role" value="admin" id="roleAdmin" <%= "admin".equals(role) ? "checked" : "" %> onchange="switchFields()">
-        <label region="roleAdmin">管理者</label>
+        <input type="radio" name="role" value="admin" id="roleAdmin" ${account.role == 'admin' ? 'checked' : ''} onchange="switchFields()">
+        <label for="roleAdmin">管理者</label>
     </div>
 
-    <hr region="separator">
+    <hr>
 
-    <%-- 一般ユーザー用項目・管理者用項目グループ共通 --%>
+    <%-- 共通項目グループ --%>
     <div style="margin-bottom: 15px;">
         名前：
         <input type="text" name="name" value="${account.name}">
@@ -61,9 +46,10 @@
         <br><br>
         ステータス：
         <select name="status">
-            <option value="0" <%= account.getStatus() == 0 ? "selected" : "" %>>アクセス許可</option>
-            <option value="1" <%= account.getStatus() == 1 ? "selected" : "" %>>アクセス禁止</option>
-        </select><br>
+            <option value="0" ${account.status == 0 ? 'selected' : ''}>アクセス許可</option>
+            <option value="1" ${account.status == 1 ? 'selected' : ''}>アクセス禁止</option>
+        </select>
+        <br>
     </div>
 
     <%-- 管理者用項目グループ（ラジオボタンで管理者が選ばれた場合は、共通項目以外に表示するものがないため空でOK） --%>
@@ -77,37 +63,36 @@
         --%>
 
         ふりがな：
-        <input type="text" name="kana" value="<%= kana %>">
+        <input type="text" name="kana" value="${account.kana}">
         <br><br>
         性別：
-        <input type="radio" name="gender" value="male" <%= "male".equals(gender) ? "checked" : "" %>>男性
-        <input type="radio" name="gender" value="female" <%= "female".equals(gender) ? "checked" : "" %>>女性
-        <br>
+        <input type="radio" name="gender" value="male" ${account.gender == 'male' ? 'checked' : ''}>男性
+        <input type="radio" name="gender" value="female" ${account.gender == 'female' ? 'checked' : ''}>女性
+        <br><br>
 
         年齢：
-        <input type="number" name="age" value="<%= age %>">
+        <input type="number" name="age" value="${account.age}">
         <br><br>
 
         自己紹介
-        <textarea name="profile"><%= profile %></textarea>
+        <textarea name="profile">${account.profile}</textarea>
         <br><br>
 
         <%-- 現在の画像がある場合に表示（任意） --%>
-       <% if (imagePath != null && !imagePath.isEmpty()) { %>
+       <c:if test="${not empty account.imagePath}">
             <p>現在の画像：<br>
-                <img src="<%= request.getContextPath() %>/uploads/<%= imagePath %>" width="100" alt="現在の画像">
+                <img src="${pageContext.request.contextPath}/uploads/${account.imagePath}" width="100" alt="現在の画像">
             </p>
-        <% } %>
+        </c:if>
         プロフィール画像変更：<input type="file" name="image"><br>
     </div>
 
     <br>
     <button type="submit">更新保存</button>
-    <a href="<%= request.getContextPath() %>/admin/accountList">キャンセル</a>
+    <a href="${pageContext.request.contextPath}/admin/accountList">キャンセル</a>
 
 </form>
 
-<%-- リアルタイム切り替え用JavaScript --%>
 <script>
 function switchFields() {
     // ラジオボタンの選択状態を取得
@@ -133,3 +118,5 @@ window.onload = function() {
     switchFields();
 };
 </script>
+</body>
+</html>

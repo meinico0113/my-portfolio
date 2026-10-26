@@ -19,8 +19,8 @@ try{
     int page = 1; // デフォルトは1ページ目を表示する
     int limit = 5; // 1ページあたりに表示する件数は5件と決める
 
-    // URLパラメータ取得
     String pageParam = request.getParameter("page");
+
     // もしURLに「?page=2」などの指定があれば、その数字を現在のページ番号にする
     // 指定がなければ、初期値の「1」のまま進む
     if(pageParam != null){
@@ -28,9 +28,9 @@ try{
     }
 
     // 取得する開始位置（offset）の計算
-    // 1ページ目 → (1 - 1) * 5 = 0 件目から（最初から）
-    // 2ページ目 → (2 - 1) * 5 = 5 件目から
-    // 3ページ目 → (3 - 1) * 5 = 10 件目から
+    // 1ページ目 → (1 - 1) * 5 = 0件目から（最初から）
+    // 2ページ目 → (2 - 1) * 5 = 5件目から
+    // 3ページ目 → (3 - 1) * 5 = 10件目から
     int offset = (page - 1) * limit;
 
     AccountDAO dao = new AccountDAO();
@@ -49,13 +49,12 @@ try{
     int totalPages = (int)Math.ceil((double)total / limit);
 
     // JSPに渡す
-    request.setAttribute("accountList", list); // 今のページに表示する5人分のデータ
+    request.setAttribute("accountList", list); // 今のページに表示する全員分のデータ
     request.setAttribute("currentPage", page); // いま自分が何ページ目を見ているか
     request.setAttribute("totalPages", totalPages); // 全部で何ページあるか
 
-    // 一覧表示画面へ
-    request.getRequestDispatcher("/adminAccountList.jsp")
-           .forward(request, response);
+    // アカウント一覧画面へ
+    request.getRequestDispatcher("/adminAccountList.jsp").forward(request, response);
 
 }catch(Exception e){
     e.printStackTrace();

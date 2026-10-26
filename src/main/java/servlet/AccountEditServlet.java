@@ -15,10 +15,8 @@ public class AccountEditServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // パラメータ取得
         int id = Integer.parseInt(request.getParameter("id"));
 
-        // DBから1件取得
         AccountDAO dao = new AccountDAO();
         Account account = dao.findById(id);
 

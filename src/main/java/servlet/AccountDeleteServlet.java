@@ -13,14 +13,12 @@ public class AccountDeleteServlet extends HttpServlet {
             throws ServletException, IOException {
 
         try {
-            // id取得
             int id = Integer.parseInt(request.getParameter("id"));
 
-            // DAOで削除
             AccountDAO dao = new AccountDAO();
             dao.delete(id);
 
-            // 一覧に戻る
+            // アカウント一覧へ
             response.sendRedirect(request.getContextPath() + "/admin/accountList");
 
         } catch (Exception e) {
