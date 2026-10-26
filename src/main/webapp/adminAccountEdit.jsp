@@ -27,7 +27,7 @@
     <div style="margin-bottom: 15px;">
         種別：
         <label><input type="radio" name="role" value="user" ${account.role == 'admin' ? '' : 'checked'} onchange="switchFields()">一般</label>
-        <label><input type="radio" name="role" value="admin" ${account.role == 'admin' ? 'checked' : ''} onchange="switchFields()">管理者</label>
+        <label><input type="radio" name="role" value="admin" id="roleAdmin" ${account.role == 'admin' ? 'checked' : ''} onchange="switchFields()">管理者</label>
     </div>
 
     <hr>
@@ -78,6 +78,7 @@
     </div>
 
     <button type="submit">更新保存</button>
+    <br>
     <a href="${pageContext.request.contextPath}/admin/accountList">キャンセル</a>
 
 </form>

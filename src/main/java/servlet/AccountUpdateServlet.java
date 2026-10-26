@@ -30,7 +30,7 @@ public class AccountUpdateServlet extends HttpServlet {
             //エラーメッセージを格納するための変数を、最初はnullで用意する
             String errorMsg = null;
 
-            // ステータスのチェック
+            // ステータスのバリデーション
             if (statusStr == null || !statusStr.matches("^[0-9]+$")) {
                 errorMsg = "ステータスを入力してください。";
             }
@@ -57,7 +57,7 @@ public class AccountUpdateServlet extends HttpServlet {
                 }
             }
 
-            // --- ここから一般ユーザーのみのチェック ---
+            // --- 一般ユーザーのみのチェック ---
             String kana = request.getParameter("kana");
             String gender = request.getParameter("gender");
             String ageStr = request.getParameter("age");
@@ -94,7 +94,7 @@ public class AccountUpdateServlet extends HttpServlet {
                     }
                 }
 
-                // 自己紹介のバリデーション
+            // 自己紹介のバリデーション
                 if (errorMsg == null) {
                     if (profile != null && profile.length() > 1500) {
                         errorMsg = "自己紹介は1500文字以内で入力してください。";
@@ -102,24 +102,23 @@ public class AccountUpdateServlet extends HttpServlet {
                 }
 
             // 画像のバリデーション
-            if (errorMsg == null && !"admin".equals(role)) {
-                try {
-                    Part image = request.getPart("image");
-                    if (image != null && image.getSize() > 0) {
+                if (errorMsg == null) {
+                    try {
+                        Part image = request.getPart("image");
+                        if (image != null && image.getSize() > 0) {
                         // 2MB = 2 * 1024 * 1024 bytes
                         long maxSize = 2 * 1024 * 1024; 
                         if (image.getSize() > maxSize) {
                             errorMsg = "プロフィール画像は2MB以内のファイルを選択してください。";
                         }
                     }
-                } catch (Exception e) {
-                    // getPart() でエラーが出た場合など
-                    errorMsg = "画像の読み込み中にエラーが発生しました。";
+                    } catch (Exception e) {
+                        errorMsg = "画像の読み込み中にエラーが発生しました。";
+                    }
                 }
             }
-            }
 
-            // エラーがあった場合の処理
+            // エラーがあった場合の入力保持処理
             if (errorMsg != null) {
                 Account account = new Account();
                 account.setId(id);
@@ -155,22 +154,22 @@ public class AccountUpdateServlet extends HttpServlet {
             // バリデーション全通過：DB更新処理
             if ("admin".equals(role)) {
                 dao.updateAdmin(id, name, email, status, role);
-            } else {
-                int age = (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) ? Integer.parseInt(ageStr) : 0;
-Part image = request.getPart("image");
+                } else {
+                    int age = (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) ? Integer.parseInt(ageStr) : 0;
+                    Part image = request.getPart("image");
 
-// 実体ファイルをサーバー上の uploads フォルダに保存する処理（更新時）
-if (image != null && image.getSize() > 0) {
-    String uploadPath = getServletContext().getRealPath("/uploads");
-    java.io.File uploadDir = new java.io.File(uploadPath);
-    if (!uploadDir.exists()) {
-        uploadDir.mkdir();
-    }
-    String fileName = java.nio.file.Paths.get(image.getSubmittedFileName()).getFileName().toString();
-    image.write(uploadPath + java.io.File.separator + fileName);
-}
+            // 実体ファイルをサーバー上の uploads フォルダに保存する処理（更新時）
+                if (image != null && image.getSize() > 0) {
+                    String uploadPath = getServletContext().getRealPath("/uploads");
+                    java.io.File uploadDir = new java.io.File(uploadPath);
+                        if (!uploadDir.exists()) {
+                            uploadDir.mkdir();
+                        }
+                    String fileName = java.nio.file.Paths.get(image.getSubmittedFileName()).getFileName().toString();
+                    image.write(uploadPath + java.io.File.separator + fileName);
+                }
 
-dao.updateUser(id, name, email, status, role, kana, gender, age, profile, image);
+                dao.updateUser(id, name, email, status, role, kana, gender, age, profile, image);
             }
 
             // 成功時は一覧へリダイレクト
