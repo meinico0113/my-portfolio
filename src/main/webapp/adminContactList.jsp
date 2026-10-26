@@ -11,6 +11,7 @@
 <body>
 
 <h2>問い合わせ一覧</h2>
+<hr>
 
 <p>
     <a href="${pageContext.request.contextPath}/admin/categoryList">

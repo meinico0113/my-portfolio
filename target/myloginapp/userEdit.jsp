@@ -15,6 +15,7 @@
 <body>
 
 <h2>プロフィール編集</h2>
+<hr>
 
 <%-- エラーメッセージ表示エリア --%>
 <c:if test="${not empty error}">
@@ -58,7 +59,7 @@
 
     <p>
         自己紹介<br>
-        <textarea name="introduction" rows="5" cols="40">${fn:escapeXml(userProfile.profile)}</textarea>
+        <textarea name="introduction" rows="5" cols="40" required>${fn:escapeXml(userProfile.profile)}</textarea>
     </p>
 
     <p>

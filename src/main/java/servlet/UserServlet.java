@@ -42,6 +42,7 @@ public class UserServlet extends HttpServlet {
         request.getRequestDispatcher("/user.jsp").forward(request, response);
     }
 
+    // POSTで送られてきたのをそのままdogetメソッドに丸投げ
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         doGet(request, response);

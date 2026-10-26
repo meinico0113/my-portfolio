@@ -1,9 +1,6 @@
 package servlet;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -11,6 +8,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+
+import dao.AccountDAO;
+import model.Account;
 
 @WebServlet("/SettingsServlet")
 public class SettingsServlet extends HttpServlet {
@@ -23,13 +23,12 @@ public class SettingsServlet extends HttpServlet {
         String email = request.getParameter("email");
         String pass = request.getParameter("password");
 
-        // セッションから現在のユーザーを特定する
+        // セッションからユーザー情報を取得
         HttpSession session = request.getSession();
-        // LoginServletが保存した "account" オブジェクトを取得する
-        model.Account currentAccount = (model.Account) session.getAttribute("account");
+        Account currentAccount = (Account) session.getAttribute("account");
 
         if (currentAccount == null) {
-            response.sendRedirect("index.jsp");
+            response.sendRedirect(request.getContextPath() + "/index.jsp");
             return;
         }
 
@@ -66,38 +65,23 @@ public class SettingsServlet extends HttpServlet {
             return;
         }
 
-        // DB保存処理 (UPDATE)
-        String url = "jdbc:mysql://db:3306/test?useUnicode=true&characterEncoding=UTF-8&useSSL=false&serverTimezone=Asia/Tokyo&allowPublicKeyRetrieval=true"; 
-        String user = "root";
-        String dbPass = "koyu0104";
-
+        // DB保存処理
+        AccountDAO dao = new AccountDAO();
+        
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver");
-            try (Connection conn = DriverManager.getConnection(url, user, dbPass)) {
+            boolean isSuccess = dao.updateEmailAndPassword(userId, email, pass);
+
+            if (isSuccess) {
+                // セッション内のオブジェクトも最新の値に更新
+                currentAccount.setEmail(email);
+                currentAccount.setPassword(pass);
+                session.setAttribute("account", currentAccount); // セッション上書き
                 
-                System.out.println("--- デバッグ開始 ---");
-                System.out.println("更新対象ID: [" + userId + "]");
-
-               // emailとpasswordを更新するSQL
-                String sql = "UPDATE users SET email = ?, password = ? WHERE id = ?";
-                PreparedStatement pstmt = conn.prepareStatement(sql);
-                pstmt.setString(1, email);
-                pstmt.setString(2, pass);
-                pstmt.setInt(3, userId);
-
-                int result = pstmt.executeUpdate();
-
-                System.out.println("実行したSQLの更新件数: " + result);
-                System.out.println("--- デバッグ終了 ---");
-
-                if (result > 0) {
-                    currentAccount.setEmail(email);
-                    currentAccount.setPassword(pass);
-                    request.setAttribute("message", "設定を保存しました");
-                } else {
-                    request.setAttribute("message", "DBの更新に失敗しました（一致するユーザーが見つかりません）");
-                }
+                request.setAttribute("message", "設定を保存しました");
+            } else {
+                request.setAttribute("message", "DBの更新に失敗しました（一致するユーザーが見つかりません）");
             }
+
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("message", "エラーが発生しました: " + e.getMessage());

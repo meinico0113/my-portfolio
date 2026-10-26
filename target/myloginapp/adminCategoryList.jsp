@@ -3,6 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <h2>カテゴリ一覧</h2>
+<hr>
 
 <p>
 <a href="${pageContext.request.contextPath}/admin/categoryNew">

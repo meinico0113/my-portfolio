@@ -14,6 +14,7 @@
 <body>
 
 <h2>カテゴリ編集</h2>
+<hr>
 
 <%-- エラーメッセージ表示エリア --%>
 <c:if test="${not empty error}">

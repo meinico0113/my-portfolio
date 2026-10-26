@@ -31,12 +31,13 @@ public class UserUpdateServlet extends HttpServlet {
         // セッションからユーザー情報を取得
         HttpSession session = request.getSession();
         Account loginUser = (Account) session.getAttribute("loginUser");
+
         if (loginUser == null) {
-            loginUser = (Account) session.getAttribute("account"); // ★追加
+            loginUser = (Account) session.getAttribute("account");
         }
 
         if (loginUser == null) {
-            response.sendRedirect("index.jsp");
+            response.sendRedirect(request.getContextPath() + "/index.jsp");
             return;
         }
 
@@ -76,7 +77,7 @@ public class UserUpdateServlet extends HttpServlet {
                 imagePart
             );
 
-            // DBから直接最新のデータ（likes含む）を取得する
+            // DBから直接最新のデータを取得する
             Account dbAccount = dao.findById(loginUser.getId());
 
             // 取得したDBのデータをそのままセッションにセットする

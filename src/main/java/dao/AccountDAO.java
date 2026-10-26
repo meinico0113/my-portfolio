@@ -210,6 +210,26 @@ public class AccountDAO {
         return a;
     }
 
+    /* メールアドレスとパスワードを更新する */
+    public boolean updateEmailAndPassword(int id, String email, String password) {
+        String sql = "UPDATE users SET email = ?, password = ? WHERE id = ?";
+
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, email);
+            ps.setString(2, password);
+            ps.setInt(3, id);
+
+            int result = ps.executeUpdate();
+            return result > 0; // 1件以上更新できたらtrueを返す
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     /* ページング用 */
     public List<Account> findByPage(int offset, int limit) throws Exception {
         List<Account> list = new ArrayList<>();

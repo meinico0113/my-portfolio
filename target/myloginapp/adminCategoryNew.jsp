@@ -14,6 +14,7 @@
 <body>
 
 <h2>カテゴリ追加</h2>
+<hr>
 
 <%-- サーバー側のエラーメッセージ表示 --%>
 <c:if test="${not empty errorMessage}">

@@ -41,6 +41,7 @@
 </head>
 <body>
     <h1>公開画面</h1>
+    <hr>
 
     <div style="margin-top: 10px;">
         <a href="${pageContext.request.contextPath}/index.jsp">ログイン</a>

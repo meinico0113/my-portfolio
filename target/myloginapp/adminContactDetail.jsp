@@ -11,6 +11,7 @@
 <body>
 
 <h2>お問い合わせ詳細</h2>
+<hr>
 
 <p><strong>カテゴリー：</strong> ${fn:escapeXml(contact.category)}</p>
 

@@ -11,6 +11,7 @@
 <body>
 
 <h2>アカウント削除済み一覧</h2>
+<hr>
 
 <div style="margin-bottom: 10px;">
     <a href="<%= request.getContextPath() %>/admin/accountList">

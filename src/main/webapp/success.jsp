@@ -9,7 +9,7 @@
 </head>
 <body>
     <h1>管理者画面</h1>
-    
+    <hr>
     <p>
         <a href="${pageContext.request.contextPath}/admin/accountList">
         アカウント一覧

@@ -9,7 +9,6 @@
 </head>
 <body>
     <h1>一般画面</h1>
-
     <hr>
     <div class="like-info">
     <span>あなたの現在の「いいね」数：</span>

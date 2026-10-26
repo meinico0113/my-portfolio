@@ -3,6 +3,7 @@
 <%@ page import="model.Account" %>
 
 <h2>アカウント一覧</h2>
+<hr>
 
 <a href="<%= request.getContextPath() %>/admin/accountNew">
 アカウント追加
