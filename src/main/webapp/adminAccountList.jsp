@@ -15,7 +15,6 @@
     <br>
     <a href="${pageContext.request.contextPath}/admin/accountDeletedList">アカウント削除一覧</a>
     <br>
-    <br>
 
     <%-- 表の項目名 --%>
     <table border="1">
