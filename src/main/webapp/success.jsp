@@ -44,7 +44,7 @@
             // データがない（0件）場合の条件分岐
             if (elements.length === 0) {
                 container.innerHTML = '<p>現在ランキングデータはありません。</p>';
-                return; // 処理を終了
+                return;
             }
 
             // データがある（1件以上）場合のループ処理

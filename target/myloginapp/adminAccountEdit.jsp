@@ -23,7 +23,6 @@
 %>
 
 <h2>アカウント編集</h2>
-<hr>
 
 <%-- サーバーからのエラーメッセージ表示エリア --%>
 <div id="errorDisplay" style="color: red; font-weight: bold; margin-bottom: 15px;">

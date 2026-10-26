@@ -13,12 +13,6 @@
 <h2>アカウント削除済み一覧</h2>
 <hr>
 
-<div style="margin-bottom: 10px;">
-    <a href="<%= request.getContextPath() %>/admin/accountList">
-        アカウント一覧に戻る
-    </a>
-</div>
-
 <table border="1" style="border-collapse: collapse; width: 100%;">
     <tr style="background-color: #eee;">
         <th>メールアドレス</th>
@@ -63,6 +57,12 @@
     </tr>
     <% } %>
 </table>
+
+<div style="margin-bottom: 10px;">
+    <a href="<%= request.getContextPath() %>/admin/accountList">
+        アカウント一覧に戻る
+    </a>
+</div>
 
 </body>
 </html>
