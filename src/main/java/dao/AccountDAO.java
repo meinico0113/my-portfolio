@@ -123,9 +123,9 @@ public class AccountDAO {
         if (image != null && image.getSize() > 0) {
             fileName = Paths.get(image.getSubmittedFileName()).getFileName().toString();
         }
-
+        
+        //ブラウザのセキュリティ上、画像を変更しなければ空っぽとして送信されてしまうため
         String sql;
-        // statusの更新を両方のパターンに追加
         if (fileName != null) {
             sql = "UPDATE users SET name=?, email=?, status=?, role=?, kana=?, gender=?, age=?, profile=?, profile_image=? WHERE id=?";
         } else {

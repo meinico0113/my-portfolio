@@ -50,11 +50,12 @@
     <%-- 管理者用項目グループ（ラジオボタンで管理者が選ばれた場合は、共通項目以外に表示するものがないため空でOK） --%>
     <div id="adminFields" style="display:none;"></div>
 
-     <%-- 一般ユーザー用項目グループ --%>
+    <%-- 一般ユーザー用項目グループ --%>
     <div id="userFields">
         ふりがな：
         <input type="text" name="kana" value="${account.kana}">
         <br><br>
+
         性別：
         <label><input type="radio" name="gender" value="male" ${account.gender == 'male' ? 'checked' : ''}>男性</label>
         <label><input type="radio" name="gender" value="female" ${account.gender == 'female' ? 'checked' : ''}>女性</label>
@@ -106,7 +107,7 @@ function switchFields() {
 // 画面読み込み時に初期状態に合わせて表示を切り替える
 window.onload = function() {
     switchFields();
-};
+}
 </script>
 </body>
 </html>

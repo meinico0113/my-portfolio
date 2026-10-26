@@ -151,14 +151,14 @@ public class AccountUpdateServlet extends HttpServlet {
                 return; 
             }
 
-            // バリデーション全通過：DB更新処理
+            // DB更新処理
             if ("admin".equals(role)) {
                 dao.updateAdmin(id, name, email, status, role);
                 } else {
                     int age = (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) ? Integer.parseInt(ageStr) : 0;
                     Part image = request.getPart("image");
 
-            // 実体ファイルをサーバー上の uploads フォルダに保存する処理（更新時）
+            // 実体ファイルをサーバー上のuploadsフォルダに保存する
                 if (image != null && image.getSize() > 0) {
                     String uploadPath = getServletContext().getRealPath("/uploads");
                     java.io.File uploadDir = new java.io.File(uploadPath);
@@ -172,12 +172,13 @@ public class AccountUpdateServlet extends HttpServlet {
                 dao.updateUser(id, name, email, status, role, kana, gender, age, profile, image);
             }
 
-            // 成功時は一覧へリダイレクト
+            // 成功時はアカウント一覧画面へ
             response.sendRedirect(request.getContextPath() + "/admin/accountList");
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect(request.getContextPath() + "/admin/accountList");
+            
+            request.getRequestDispatcher("/adminAccountEdit.jsp").forward(request, response);
         }
     }
 }
