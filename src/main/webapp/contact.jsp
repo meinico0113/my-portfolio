@@ -55,7 +55,7 @@
             </div>
             <button type="submit" class="send-btn">送信する</button>
         </form>
-        <p style="text-align: center;"><a href="UserListServlet">公開画面へ戻る</a></p>
+        <p style="text-align: center;"><a href="${pageContext.request.contextPath}/UserListServlet">公開画面へ戻る</a></p>
     </div>
 </body>
 </html>

@@ -6,7 +6,6 @@ import java.util.*;
 import model.Category;
 import servlet.DBManager;
 
-/*🟡categoriesテーブル（投稿カテゴリ）のデータを操作するクラス🟡*/
 public class CategoryDAO {
 
     /* すべてのカテゴリを取得する */
@@ -64,77 +63,77 @@ public class CategoryDAO {
     /*新しいカテゴリを登録する*/
     public void insert(String name) throws Exception {
 
-        Connection conn = DBManager.getConnection();
-
-        // 指定した名前を登録するSQL
         String sql = "INSERT INTO categories(name) VALUES(?)";
 
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setString(1, name);
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        // データベースを更新（INSERT実行）
-        ps.executeUpdate();
-
-        ps.close();
-        conn.close();
+            ps.setString(1, name);
+            ps.executeUpdate();
+        }
     }
-
+    
     /*既存のカテゴリ名を更新する*/
     public void update(int id, String name) throws Exception {
 
-        Connection conn = DBManager.getConnection();
+        // 変更前の旧カテゴリ名を取得するSQL
+        String selectSql = "SELECT name FROM categories WHERE id = ?";
+        // 2. categoriesテーブルのカテゴリ名を更新するSQL
+        String sql1 = "UPDATE categories SET name = ? WHERE id = ?";
+        // 3. contactsテーブルのカテゴリ名を一括更新するSQL
+        String sql2 = "UPDATE contacts SET category = ? WHERE category = ?";
 
-        try {
-            // 変更前の旧カテゴリ名を取得する
-            String oldName = "";
-            String selectSql = "SELECT name FROM categories WHERE id = ?";
-            PreparedStatement psSelect = conn.prepareStatement(selectSql);
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement psSelect = conn.prepareStatement(selectSql)) {
+
+            // 旧カテゴリ名を取得
             psSelect.setInt(1, id);
-            ResultSet rs = psSelect.executeQuery();
-            if (rs.next()) {
-                oldName = rs.getString("name");
+            try (ResultSet rs = psSelect.executeQuery()) {
+                String oldName = "";
+                if (rs.next()) {
+                    oldName = rs.getString("name");
+                }
+
+                // categoriesテーブルを更新
+                try (PreparedStatement ps1 = conn.prepareStatement(sql1)) {
+                    ps1.setString(1, name);
+                    ps1.setInt(2, id);
+                    ps1.executeUpdate();
+                }
+
+                // contactsテーブルの旧カテゴリ名も新しいカテゴリ名に一括更新
+                if (!oldName.isEmpty()) {
+                    try (PreparedStatement ps2 = conn.prepareStatement(sql2)) {
+                        ps2.setString(1, name);
+                        ps2.setString(2, oldName);
+                        ps2.executeUpdate();
+                    }
+                }
             }
-            rs.close();
-            psSelect.close();
-
-            // categoriesテーブルのカテゴリ名を更新
-            String sql1 = "UPDATE categories SET name = ? WHERE id = ?";
-            PreparedStatement ps1 = conn.prepareStatement(sql1);
-            ps1.setString(1, name);
-            ps1.setInt(2, id);
-            ps1.executeUpdate();
-            ps1.close();
-
-            // contactsテーブルの旧カテゴリ名も新しいカテゴリ名に一括更新
-            if (!oldName.isEmpty()) {
-                String sql2 = "UPDATE contacts SET category = ? WHERE category = ?";
-                PreparedStatement ps2 = conn.prepareStatement(sql2);
-                ps2.setString(1, name);
-                ps2.setString(2, oldName);
-                ps2.executeUpdate();
-                ps2.close();
-            }
-
-        } finally {
-            conn.close();
         }
     }
 
-    /*指定したIDのカテゴリを削除する*/
-    public void delete(int id) throws Exception {
+    /* 指定したIDのカテゴリを削除する */
+    public void delete(int id) throws Exception{
+        String sql = "DELETE FROM categories WHERE id = ?";
 
-        Connection conn = DBManager.getConnection();
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        // 指定したIDのレコードを消去するSQL
-        String sql = "DELETE FROM categories WHERE id=?";
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        }
+    }
 
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setInt(1, id);   // 1番目の?に削除したいIDをセット
+    /* カテゴリー新規登録メソッド */
+    public void insertCategory(String name) throws Exception {
+        String sql = "INSERT INTO categories (name) VALUES (?)";
 
-        // データベースを更新（DELETE実行）
-        ps.executeUpdate();
-
-        ps.close();
-        conn.close();
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, name);
+            ps.executeUpdate();
+        }
     }
 }

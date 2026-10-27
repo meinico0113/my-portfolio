@@ -75,22 +75,18 @@ public class ContactDAO {
     /* お問い合わせの対応状況（ステータス）を更新する */
     public void updateStatus(int id, String status) throws Exception {
 
-    Connection conn = DBManager.getConnection();
+        // 指定したIDのstatusカラムだけを書き換えるSQL
+        String sql = "UPDATE contacts SET status = ? WHERE id = ?";
 
-    // 指定したIDのstatusカラムだけを書き換えるSQL
-    String sql = "UPDATE contacts SET status = ? WHERE id = ?";
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-    PreparedStatement ps = conn.prepareStatement(sql);
+            // 1番目の?に新しいステータス（完了など）、2番目の?にIDをセット
+            ps.setString(1, status);
+            ps.setInt(2, id);
 
-    // 1番目の?に新しいステータス（完了など）、2番目の?にIDをセット
-    ps.setString(1, status);
-    ps.setInt(2, id);
-
-    // 更新（UPDATE）を実行
-    ps.executeUpdate();
-
-    // 接続を閉じる
-    ps.close();
-    conn.close();
-}
+            // 更新（UPDATE）を実行
+            ps.executeUpdate();
+        }
+    }
 }

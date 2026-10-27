@@ -401,16 +401,4 @@ public class AccountDAO {
         }
         return list;
     }
-
-    /* カテゴリー新規登録メソッド */
-    public void insertCategory(String name) throws Exception {
-        String sql = "INSERT INTO categories (name) VALUES (?)";
-
-        try (Connection conn = DBManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            
-            ps.setString(1, name);
-            ps.executeUpdate();
-        }
-    }
 }

@@ -5,7 +5,7 @@ import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 
-import dao.AccountDAO;
+import dao.CategoryDAO;
 
 @WebServlet("/admin/categoryNew")
 public class CategoryNewServlet extends HttpServlet {
@@ -33,14 +33,14 @@ public class CategoryNewServlet extends HttpServlet {
 
         // 未入力チェック
         if (name == null || name.isEmpty()) {
-            request.setAttribute("errorMessage", "カテゴリ名を入力してください。");
+            request.setAttribute("error", "カテゴリ名を入力してください。");
             request.getRequestDispatcher("/adminCategoryNew.jsp").forward(request, response);
             return;
         }
 
         // 255文字以内チェック
         if (name.length() > 255) {
-            request.setAttribute("errorMessage", "カテゴリ名は255文字以内で入力してください。");
+            request.setAttribute("error", "カテゴリ名は255文字以内で入力してください。");
             request.getRequestDispatcher("/adminCategoryNew.jsp").forward(request, response);
         return;
 }
@@ -48,7 +48,7 @@ public class CategoryNewServlet extends HttpServlet {
         // DB登録処理
         try {
             // DAOにカテゴリー追加メソッドを呼ぶ処理
-            AccountDAO dao = new AccountDAO();
+            CategoryDAO dao = new CategoryDAO();
             dao.insertCategory(name);
 
             // 成功したら完了画面または一覧画面などへリダイレクト
@@ -56,7 +56,7 @@ public class CategoryNewServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("errorMessage", "登録処理中にエラーが発生しました。");
+            request.setAttribute("error", "登録処理中にエラーが発生しました。");
             request.getRequestDispatcher("/adminCategoryNew.jsp").forward(request, response);
         }
     }
