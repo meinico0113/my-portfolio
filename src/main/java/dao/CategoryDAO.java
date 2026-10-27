@@ -9,64 +9,54 @@ import servlet.DBManager;
 /*🟡categoriesテーブル（投稿カテゴリ）のデータを操作するクラス🟡*/
 public class CategoryDAO {
 
-    /*すべてのカテゴリを取得する*/
-    public List<Category> findAll() throws Exception {
-
-        // データベースに接続
+    /* すべてのカテゴリを取得する */
+    public List<Category> findAll() {
         List<Category> list = new ArrayList<>();
-
-        // 実行するSQL：全件取得
-        Connection conn = DBManager.getConnection();
-
         String sql = "SELECT * FROM categories";
 
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ResultSet rs = ps.executeQuery();
+        // try-with-resources構文でConnection、PreparedStatement、ResultSetを自動クローズ
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
-        // 取得したレコードを一つずつCategoryオブジェクトに変換してリストに追加
-        while (rs.next()) {
+            // 取得したレコードを一つずつCategoryオブジェクトに変換してリストに追加
+            while (rs.next()) {
+                Category category = new Category();
+                category.setId(rs.getInt("id"));
+                category.setName(rs.getString("name"));
 
-            Category category = new Category();
-            category.setId(rs.getInt("id"));
-            category.setName(rs.getString("name"));
+                list.add(category);
+            }
 
-            list.add(category);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        // 接続を閉じる
-        rs.close();
-        ps.close();
-        conn.close();
 
         return list;
     }
 
-    /*IDを指定して特定のカテゴリを1件取得する*/
-     public Category findById(int id) throws Exception {
-
+    /* IDを指定して特定のカテゴリを1件取得する */
+    public Category findById(int id) {
         Category category = null;
-
-        Connection conn = DBManager.getConnection();
-
-        // ?（プレースホルダ）を使ってIDで絞り込むSQL
         String sql = "SELECT * FROM categories WHERE id = ?";
 
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setInt(1, id);
+        // try-with-resources構文：ConnectionとPreparedStatementを自動でcloseする
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        ResultSet rs = ps.executeQuery();
+            ps.setInt(1, id);
 
-        // データが存在すればオブジェクトを作成
-        if (rs.next()) {
-            category = new Category();
-            category.setId(rs.getInt("id"));
-            category.setName(rs.getString("name"));
+            // ResultSetも同様に囲むか、中で処理する
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    category = new Category();
+                    category.setId(rs.getInt("id"));
+                    category.setName(rs.getString("name"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        // 接続を閉じる
-        rs.close();
-        ps.close();
-        conn.close();
 
         return category;
     }

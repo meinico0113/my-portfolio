@@ -40,5 +40,7 @@
 </table>
 
     <p>
-    <a href="<%= request.getContextPath() %>/admin/contactList">問い合わせ一覧に戻る</a>
-    </p>
+    <a href="${pageContext.request.contextPath}/admin/contactList">
+        問い合わせ一覧に戻る
+    </a>
+</p>

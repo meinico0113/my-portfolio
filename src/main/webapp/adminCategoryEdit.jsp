@@ -21,11 +21,11 @@
     <p class="error-msg">${error}</p>
 </c:if>
 
-<form action="${pageContext.request.contextPath}/admin/categoryUpdate" method="post">
+<form action="${pageContext.request.contextPath}/admin/categoryUpdate" method="post" onsubmit="return validateForm();">
     <input type="hidden" name="id" value="${category.id}">
     
     カテゴリ名 
-    <input type="text" name="name" value="${fn:escapeXml(category.name)}">
+    <input type="text" id="categoryName" name="name" value="${fn:escapeXml(category.name)}">
     
     <input type="submit" value="更新">
 </form>
@@ -50,8 +50,10 @@ function validateForm() {
 </script>
 
 <p>
-    <a href="<%= request.getContextPath() %>/admin/categoryList">カテゴリ一覧に戻る</a>
-    </p>
+    <a href="${pageContext.request.contextPath}/admin/categoryList">
+        カテゴリ一覧に戻る
+    </a>
+</p>
 
 </body>
 </html>

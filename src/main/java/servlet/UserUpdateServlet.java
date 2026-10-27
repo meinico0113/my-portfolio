@@ -63,7 +63,7 @@ public class UserUpdateServlet extends HttpServlet {
                 }
             }
 
-            // ふりがなのバリデーション（ひらがなチェック）
+            // ふりがなのバリデーション
             if (errorMsg == null) {
                 String kanaPattern = "^[\\u3041-\\u3096ー]*$";
                 if (kana == null || kana.trim().isEmpty()) {
