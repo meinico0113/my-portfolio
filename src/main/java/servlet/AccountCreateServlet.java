@@ -126,64 +126,71 @@ public class AccountCreateServlet extends HttpServlet {
                 }
             }
 
-            // エラーがあった場合の処理
+            // エラーがあった場合の入力保持処理
             if (errorMsg != null) {
-                // 今回入力された値を「仮のaccountオブジェクト」に詰めてJSPへ返す
                 Account account = new Account();
                 account.setRole(role);
                 account.setName(name);
                 account.setEmail(email);
                 account.setStatus(status);
-                request.setAttribute("kana", kana);
-                request.setAttribute("gender", gender);
-                request.setAttribute("age", ageStr);
-                request.setAttribute("profile", profile);
-                request.setAttribute("account", account);
-                request.setAttribute("error", errorMsg);
+                
+                if (!"admin".equals(role)) {
+                    account.setKana(kana);
+                    account.setGender(gender);
+                    
+                    if (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) {
+                        account.setAge(Integer.parseInt(ageStr));
+                    } else {
+                        account.setAge(0);
+                    }
+                    account.setProfile(profile);
+                }
+
+            request.setAttribute("account", account);
+            request.setAttribute("error", errorMsg);
+            request.getRequestDispatcher("/adminAccountNew.jsp").forward(request, response);
+            return; 
+            }
+
+            // DB登録処理
+            if ("admin".equals(role)) {
+                dao.insertAdmin(name, email, password, status);
+            } else {
+                int age = (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) ? Integer.parseInt(ageStr) : 0;
+                
+                // 保存するファイル名を保持する変数
+                String profileImage = null;
+
+                // 画像のアップロード処理（重複防止タイムスタンプ付与）
+                try {
+                    Part image = request.getPart("image");
+                    if (image != null && image.getSize() > 0 && image.getSubmittedFileName() != null && !image.getSubmittedFileName().isEmpty()) {
+                        
+                        // 保存先フォルダのパスを取得・生成する処理
+                        String uploadPath = getServletContext().getRealPath("/uploads");
+                        java.io.File uploadDir = new java.io.File(uploadPath);
+                        if (!uploadDir.exists()) {
+                            uploadDir.mkdirs();
+                        }
+
+                        String fileName = java.nio.file.Paths.get(image.getSubmittedFileName()).getFileName().toString();
+                        profileImage = System.currentTimeMillis() + "_" + fileName;
+                        image.write(uploadPath + java.io.File.separator + profileImage);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                dao.insertUser(name, email, password, status, kana, gender, age, profile, profileImage);
+            }
+
+                    // 成功時はアカウント一覧画面へ
+                    response.sendRedirect(request.getContextPath() + "/admin/accountList");
+
+                } catch (Exception e) { 
+                    e.printStackTrace();
+
                 request.getRequestDispatcher("/adminAccountNew.jsp").forward(request, response);
-                return; 
-            }
-
- // バリデーション全通過：DB登録処理
-if ("admin".equals(role)) {
-    dao.insertAdmin(name, email, password, status);
-} else {
-    int age = (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) ? Integer.parseInt(ageStr) : 0;
-    
-    // 保存するファイル名を保持する変数
-    String profileImage = null;
-
-    // 画像の処理
-    try {
-        Part image = request.getPart("image");
-        if (image != null && image.getSize() > 0 && image.getSubmittedFileName() != null && !image.getSubmittedFileName().isEmpty()) {
-            
-            String uploadPath = getServletContext().getRealPath("/uploads");
-            java.io.File uploadDir = new java.io.File(uploadPath);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
-            }
-            
-            // ファイル名の取得と保存
-            String fileName = java.nio.file.Paths.get(image.getSubmittedFileName()).getFileName().toString();
-            // 重複防止用タイムスタンプ付与（推奨）
-            profileImage = System.currentTimeMillis() + "_" + fileName;
-            image.write(uploadPath + java.io.File.separator + profileImage);
-        }
-    } catch (Exception e) {
-        // 画像がない、または保存失敗時のログ出力（登録処理自体は続行）
-        e.printStackTrace();
-    }
-
-    dao.insertUser(name, email, password, status, kana, gender, age, profile, profileImage);
-}
-
-// 成功時は一覧へリダイレクト
-response.sendRedirect(request.getContextPath() + "/admin/accountList");
-
-} catch (Exception e) {
-    e.printStackTrace();
-    response.sendRedirect(request.getContextPath() + "/admin/accountList");
 }
 }
 }
