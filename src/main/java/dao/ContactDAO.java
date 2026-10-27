@@ -9,46 +9,36 @@ import java.util.List;
 import model.Contact;
 import servlet.DBManager;
 
-/*🟡contactsテーブル（お問い合わせ情報）のデータを操作するクラス🟡*/
 public class ContactDAO {
 
-    /*すべてのお問い合わせを取得する
-    　新しい順（created_atの降順）に並び替えて取得*/
+    /* すべてのお問い合わせを取得する */
     public List<Contact> findAll() throws Exception {
-
         List<Contact> contactList = new ArrayList<>();
-
-        // DBに接続
-        Connection conn = DBManager.getConnection();
-
-        // SQL実行：categoriesテーブルから全件取得する
         String sql = "SELECT * FROM contacts ORDER BY created_at DESC";
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ResultSet rs = ps.executeQuery();
 
-        // 取得したレコードをループでContactオブジェクトに詰め替える
-        while (rs.next()) {
-            Contact contact = new Contact();
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
 
-            contact.setId(rs.getInt("id"));
-            contact.setCategory(rs.getString("category"));
-            contact.setContent(rs.getString("content"));
-            contact.setStatus(rs.getString("status"));
-            // TIMESTAMP型をJavaのTimestampとして取得
-            contact.setCreatedAt(rs.getTimestamp("created_at"));
-
-            contactList.add(contact);
+            while (rs.next()) {
+                contactList.add(mapToContact(rs));
+            }
         }
-
-        // 接続を閉じる
-        rs.close();
-        ps.close();
-        conn.close();
-
         return contactList;
     }
 
-        /*IDを指定して特定のお問い合わせを1件取得する*/
+    /* ResultSetからContactオブジェクトにマッピングするヘルパーメソッド */
+    private Contact mapToContact(ResultSet rs) throws Exception {
+        Contact contact = new Contact();
+        contact.setId(rs.getInt("id"));
+        contact.setCategory(rs.getString("category"));
+        contact.setContent(rs.getString("content"));
+        contact.setStatus(rs.getString("status"));
+        contact.setCreatedAt(rs.getTimestamp("created_at"));
+        return contact;
+    }
+
+        /* IDを指定して特定のお問い合わせを1件取得する */
         public Contact findById(int id) throws Exception {
 
         Contact contact = null;
@@ -82,7 +72,7 @@ public class ContactDAO {
         return contact;
     }
 
-    /*お問い合わせの対応状況（ステータス）を更新する*/
+    /* お問い合わせの対応状況（ステータス）を更新する */
     public void updateStatus(int id, String status) throws Exception {
 
     Connection conn = DBManager.getConnection();

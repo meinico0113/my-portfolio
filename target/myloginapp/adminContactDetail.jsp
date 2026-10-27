@@ -13,16 +13,22 @@
 <h2>お問い合わせ詳細</h2>
 <hr>
 
-<p><strong>カテゴリー：</strong> ${fn:escapeXml(contact.category)}</p>
+<%-- エラーメッセージ表示エリア --%>
+<c:if test="${not empty error}">
+    <p class="error-msg">${error}</p>
+</c:if>
 
-<p><strong>本文：</strong><br>
+<p>カテゴリー： ${fn:escapeXml(contact.category)}</p>
+
+<div>
+    本文：<br>
     <div style="white-space: pre-wrap;"><c:out value="${contact.content}" /></div>
-</p>
+</div>
 
 <form action="${pageContext.request.contextPath}/admin/updateStatus" method="post">
     <input type="hidden" name="id" value="${contact.id}">
 
-    <p><strong>ステータス：</strong>
+    <p>ステータス：
         <select name="status">
             <option value="未対応" ${contact.status == '未対応' ? 'selected' : ''}>未対応</option>
             <option value="対応中" ${contact.status == '対応中' ? 'selected' : ''}>対応中</option>
@@ -33,11 +39,11 @@
     <input type="submit" value="更新">
 </form>
 
-<p><strong>作成日時：</strong> ${fn:escapeXml(contact.createdAt)}</p>
+<p>作成日時： ${fn:escapeXml(contact.createdAt)}</p>
 
 <p>
     <a href="${pageContext.request.contextPath}/admin/contactList">
-        一覧へ戻る
+        問い合わせ一覧へ戻る
     </a>
 </p>
 
