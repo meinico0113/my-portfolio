@@ -67,7 +67,7 @@
         <br><br>
 
         年齢
-        <input type="number" name="age" value="${account.age}">
+        <input type="number" name="age" value="${account.age != null && account.age != 0 ? account.age : ''}">
         <br><br>
 
         自己紹介
