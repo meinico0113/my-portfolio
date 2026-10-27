@@ -13,11 +13,10 @@
 <h2>問い合わせ一覧</h2>
 <hr>
 
-<p>
-    <a href="${pageContext.request.contextPath}/admin/categoryList">
-    カテゴリー一覧
-    </a>
-</p>
+<%-- エラーメッセージ表示エリア --%>
+<c:if test="${not empty error}">
+    <p class="error-msg">${error}</p>
+</c:if>
 
 <table border="1" style="border-collapse: collapse; width: 100%;">
 <thead>
@@ -28,6 +27,7 @@
         <th>詳細</th>
     </tr>
 </thead>
+
 <tbody id="contact-list-container"></tbody>
 </table>
 
@@ -52,6 +52,7 @@
             // 隠しタグからデータをすべて取得
             const elements = document.querySelectorAll('.contact-item');
 
+            // データを1件ずつループして処理
             elements.forEach(el => {
                 const id = el.getAttribute('data-id');
                 const category = el.getAttribute('data-category');
@@ -78,11 +79,17 @@
             });
         }
 
-        // ページが読み込まれたら実行
+        // ページが読み込まれたらrenderContactList関数を実行
         window.addEventListener('DOMContentLoaded', renderContactList);
     </script>
+
     <p>
-    <a href="<%= request.getContextPath() %>/AdminServlet">管理者画面に戻る</a>
+    <a href="${pageContext.request.contextPath}/admin/categoryList">
+    カテゴリー一覧
+    </a>
+    </p>
+    <p>
+    <a href="${pageContext.request.contextPath}/AdminServlet">管理者画面に戻る</a>
     </p>
 </body>
 </html>
