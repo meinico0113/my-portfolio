@@ -134,7 +134,7 @@ public class UserUpdateServlet extends HttpServlet {
 
                 request.setAttribute("userProfile", userProfile);
                 request.setAttribute("error", errorMsg);
-                request.getRequestDispatcher("profileEdit.jsp").forward(request, response);
+                request.getRequestDispatcher("/userEdit.jsp").forward(request, response);
                 return; 
             }
 
@@ -177,7 +177,7 @@ public class UserUpdateServlet extends HttpServlet {
             e.printStackTrace();
             request.setAttribute("error", "プロフィールの更新に失敗しました。");
             request.setAttribute("userProfile", loginUser);
-            request.getRequestDispatcher("profileEdit.jsp").forward(request, response);
+            request.getRequestDispatcher("/userEdit.jsp").forward(request, response);
         }
     }
 }
