@@ -371,38 +371,17 @@ public class AccountDAO {
     }
 
     /* 指定したIDのアカウントをDBから完全に削除するメソッド */
-public void hardDelete(int id) throws Exception {
-    String deletePostsSql = "DELETE FROM posts WHERE user_id = ?";
-    String deleteUserSql = "DELETE FROM users WHERE id = ?";
+    public void hardDelete(int id) throws Exception {
+        String deleteUserSql = "DELETE FROM users WHERE id = ?";
 
-    try (Connection conn = DBManager.getConnection()) {
-        // トランザクション開始（途中で失敗した時に元に戻せるようにする）
-        conn.setAutoCommit(false);
-
-        try (PreparedStatement psPosts = conn.prepareStatement(deletePostsSql);
-             PreparedStatement psUser = conn.prepareStatement(deleteUserSql)) {
-
-            // 関連するpostsテーブルのデータを削除
-            psPosts.setInt(1, id);
-            psPosts.executeUpdate();
+        try (Connection conn = DBManager.getConnection();
+            PreparedStatement ps = conn.prepareStatement(deleteUserSql)) {
 
             // usersテーブル本体のデータを削除
-            psUser.setInt(1, id);
-            psUser.executeUpdate();
-
-            // どちらも成功したらDBに反映
-            conn.commit();
-
-        } catch (Exception e) {
-            // エラーが発生したら元の状態にロールバック
-            conn.rollback();
-            throw e;
-        } finally {
-            // 自動コミットモードを元に戻す
-            conn.setAutoCommit(true);
+            ps.setInt(1, id);
+            ps.executeUpdate();
         }
     }
-}
 
 /* カテゴリー全件取得メソッド */
     public List<Category> findAllCategories() throws Exception {

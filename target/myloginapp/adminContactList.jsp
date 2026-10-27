@@ -19,9 +19,9 @@
     </a>
 </p>
 
-<table border="1">
+<table border="1" style="border-collapse: collapse; width: 100%;">
 <thead>
-    <tr>
+    <tr style="background-color: #eee;">
         <th>カテゴリー</th>
         <th>本文（10文字）</th>
         <th>ステータス</th>

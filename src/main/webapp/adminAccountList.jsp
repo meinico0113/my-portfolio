@@ -18,14 +18,16 @@
 
     <%-- 表の項目名 --%>
     <table border="1" style="border-collapse: collapse; width: 100%;">
-    <tr style="background-color: #eee;">
-        <th>名前</th>
-        <th>メールアドレス</th>
-        <th>ステータス</th>
-        <th>編集</th>
-        <th>削除</th>
-        <th>切替</th>
-    </tr>
+    <thead>
+        <tr style="background-color: #eee;">
+            <th>名前</th>
+            <th>メールアドレス</th>
+            <th>ステータス</th>
+            <th>編集</th>
+            <th>削除</th>
+            <th>切替</th>
+        </tr>
+    </thead>
 
     <%-- 表の中身 --%>
     <c:forEach var="account" items="${accountList}">

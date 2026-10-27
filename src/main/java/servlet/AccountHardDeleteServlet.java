@@ -22,6 +22,10 @@ public class AccountHardDeleteServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
+
+            // 失敗したらエラーを表示して編集画面に戻す
+            request.setAttribute("error", "完全削除に失敗しました。");
+            request.getRequestDispatcher("/adminAccountDeletedList.jsp").forward(request, response);
         }
     }
 }

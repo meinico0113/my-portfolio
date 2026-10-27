@@ -11,12 +11,14 @@
 </a>
 </p>
 
-<table border="1">
-<tr>
-    <th>名前</th>
-    <th>編集</th>
-    <th>削除</th>
-</tr>
+<table border="1" style="border-collapse: collapse; width: 100%;">
+<thead>
+    <tr style="background-color: #eee;">
+        <th>名前</th>
+        <th>編集</th>
+        <th>削除</th>
+    </tr>
+</thead>
 
 <c:forEach var="category" items="${categoryList}">
     <tr>

@@ -12,7 +12,13 @@
 <h2>アカウント削除済み一覧</h2>
 <hr>
 
+<%-- エラーメッセージ表示エリア --%>
+<c:if test="${not empty error}">
+    <p class="error-msg">${error}</p>
+</c:if>
+
 <table border="1" style="border-collapse: collapse; width: 100%;">
+<thead>
     <tr style="background-color: #eee;">
         <th>メールアドレス</th>
         <th>名前</th>
@@ -20,9 +26,9 @@
         <th>完全削除</th>
         <th>復活</th>
     </tr>
+</thead>
 
     <c:choose>
-        <%-- リストが存在し、かつ空ではない場合 --%>
         <c:when test="${not empty deletedList}">
             <c:forEach var="account" items="${deletedList}">
                 <tr>
@@ -32,15 +38,15 @@
                         <%-- 削除済みであることを明示 --%>
                         <span style="color: red;">削除済み</span>
                     </td>
-                    <td style="text-align: center;">
+                    <td>
                         <%-- 完全削除は危険な操作なので、JavaScriptで確認ダイアログを出す --%>
                         <a href="${pageContext.request.contextPath}/admin/accountHardDelete?id=${account.id}" 
-                           onclick="return confirm('このアカウントをデータベースから完全に削除します。よろしいですか？');" 
+                           onclick="return confirm('このアカウントを完全削除します。よろしいですか？');" 
                            style="color: red;">
                             完全削除
                         </a>
                     </td>
-                    <td style="text-align: center;">
+                    <td>
                         <a href="${pageContext.request.contextPath}/admin/accountRestore?id=${account.id}">
                             復活
                         </a>
@@ -48,7 +54,6 @@
                 </tr>
             </c:forEach>
         </c:when>
-        <%-- リストが空またはnullの場合 --%>
         <c:otherwise>
             <tr>
                 <td colspan="5" style="text-align: center;">削除済みのデータはありません。</td>
