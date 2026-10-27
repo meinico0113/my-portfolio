@@ -27,7 +27,7 @@ public class AccountDAO {
         return list;
     }
 
-    /* 新しい管理者を登録する */
+    /* 管理者を登録する */
     public void insertAdmin(String name, String email, String password, int status) throws Exception {
         // roleに 'admin' を、statusに選択値を保存する
         String sql = "INSERT INTO users(name, email, password, role, status) VALUES (?, ?, ?, 'admin', ?)";
@@ -45,27 +45,25 @@ public class AccountDAO {
 
     /* 一般ユーザーを登録する */
     public void insertUser(String name, String email, String password, int status, 
-                       String kana, String gender, int age, String profile, String profileImage) {
+                       String kana, String gender, int age, String profile, String profileImage) throws Exception{
     
-    String sql = "INSERT INTO users (name, email, password, status,role, kana, gender, age, profile, profile_image)VALUES (?, ?, ?, ?, 'user', ?, ?, ?, ?, ?)";
-    try (Connection conn = DBManager.getConnection();
-         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        String sql = "INSERT INTO users (name, email, password, status,role, kana, gender, age, profile, profile_image)VALUES (?, ?, ?, ?, 'user', ?, ?, ?, ?, ?)";
 
-        pstmt.setString(1, name);
-        pstmt.setString(2, email);
-        pstmt.setString(3, password);
-        pstmt.setInt(4, status);
-        pstmt.setString(5, kana);
-        pstmt.setString(6, gender);
-        pstmt.setInt(7, age);
-        pstmt.setString(8, profile);
-        pstmt.setString(9, profileImage);
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        pstmt.executeUpdate();
-    } catch (Exception e) {
-        e.printStackTrace();
+            ps.setString(1, name);
+            ps.setString(2, email);
+            ps.setString(3, password);
+            ps.setInt(4, status);
+            ps.setString(5, kana);
+            ps.setString(6, gender);
+            ps.setInt(7, age);
+            ps.setString(8, profile);
+            ps.setString(9, profileImage);
+            ps.executeUpdate();
+        }
     }
-}
 
     /* 指定したIDのアカウントを1件検索する */
     public Account findById(int id) {

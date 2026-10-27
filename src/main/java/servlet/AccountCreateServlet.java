@@ -158,7 +158,6 @@ public class AccountCreateServlet extends HttpServlet {
             } else {
                 int age = (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) ? Integer.parseInt(ageStr) : 0;
                 
-                // 保存するファイル名を保持する変数
                 String profileImage = null;
 
                 // 画像のアップロード処理（重複防止タイムスタンプ付与）
@@ -184,7 +183,7 @@ public class AccountCreateServlet extends HttpServlet {
                 dao.insertUser(name, email, password, status, kana, gender, age, profile, profileImage);
             }
 
-                    // 成功時はアカウント一覧画面へ
+                    // アカウント一覧画面へ
                     response.sendRedirect(request.getContextPath() + "/admin/accountList");
 
                 } catch (Exception e) { 

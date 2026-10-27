@@ -1,6 +1,5 @@
-<%@ page contentType="text/html; charset=UTF-8" %>
-<%@ page import="java.util.List" %>
-<%@ page import="model.Account" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 <!DOCTYPE html>
 <html>
@@ -22,44 +21,44 @@
         <th>復活</th>
     </tr>
 
-    <%
-    List<Account> list = (List<Account>)request.getAttribute("deletedList");
-    if (list != null && !list.isEmpty()) {
-        for(Account account : list) {
-    %>
-    <tr>
-        <td><%= account.getEmail() %></td>
-        <td><%= account.getName() %></td>
-        <td>
-            <%-- 削除済みであることを明示 --%>
-            <span style="color: red;">削除済み</span>
-        </td>
-        <td style="text-align: center;">
-            <%-- 完全削除は危険な操作なので、JavaScriptで確認ダイアログを出す --%>
-            <a href="<%= request.getContextPath() %>/admin/accountHardDelete?id=<%= account.getId() %>" 
-               onclick="return confirm('このアカウントをデータベースから完全に削除します。よろしいですか？');" 
-               style="color: red;">
-                完全削除
-            </a>
-        </td>
-        <td style="text-align: center;">
-            <a href="<%= request.getContextPath() %>/admin/accountRestore?id=<%= account.getId() %>">
-                復活
-            </a>
-        </td>
-    </tr>
-    <% 
-        }
-    } else { 
-    %>
-    <tr>
-        <td colspan="5" style="text-align: center;">削除済みのデータはありません。</td>
-    </tr>
-    <% } %>
+    <c:choose>
+        <%-- リストが存在し、かつ空ではない場合 --%>
+        <c:when test="${not empty deletedList}">
+            <c:forEach var="account" items="${deletedList}">
+                <tr>
+                    <td>${account.email}</td>
+                    <td>${account.name}</td>
+                    <td>
+                        <%-- 削除済みであることを明示 --%>
+                        <span style="color: red;">削除済み</span>
+                    </td>
+                    <td style="text-align: center;">
+                        <%-- 完全削除は危険な操作なので、JavaScriptで確認ダイアログを出す --%>
+                        <a href="${pageContext.request.contextPath}/admin/accountHardDelete?id=${account.id}" 
+                           onclick="return confirm('このアカウントをデータベースから完全に削除します。よろしいですか？');" 
+                           style="color: red;">
+                            完全削除
+                        </a>
+                    </td>
+                    <td style="text-align: center;">
+                        <a href="${pageContext.request.contextPath}/admin/accountRestore?id=${account.id}">
+                            復活
+                        </a>
+                    </td>
+                </tr>
+            </c:forEach>
+        </c:when>
+        <%-- リストが空またはnullの場合 --%>
+        <c:otherwise>
+            <tr>
+                <td colspan="5" style="text-align: center;">削除済みのデータはありません。</td>
+            </tr>
+        </c:otherwise>
+    </c:choose>
 </table>
 
-<div style="margin-bottom: 10px;">
-    <a href="<%= request.getContextPath() %>/admin/accountList">
+<div style="margin-top: 10px;">
+    <a href="${pageContext.request.contextPath}/admin/accountList">
         アカウント一覧に戻る
     </a>
 </div>
