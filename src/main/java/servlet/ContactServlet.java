@@ -18,7 +18,8 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import dao.AccountDAO;
+import dao.CategoryDAO;
+import dao.ContactDAO;
 import model.Category;
 
 @WebServlet("/ContactServlet")
@@ -29,7 +30,7 @@ public class ContactServlet extends HttpServlet {
 
         try {
             // DBからカテゴリー一覧を取得
-            AccountDAO dao = new AccountDAO();
+            CategoryDAO dao = new CategoryDAO();
             List<Category> categoryList = dao.findAllCategories();
 
             // リクエストスコープにセット
@@ -50,7 +51,7 @@ public class ContactServlet extends HttpServlet {
 
         try {
             // DBに保存
-            AccountDAO dao = new AccountDAO();
+            ContactDAO dao = new ContactDAO();
             dao.insertContact(category, content);
 
             // 運営メールへの送信処理
@@ -75,7 +76,9 @@ public class ContactServlet extends HttpServlet {
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.office365.com");
         props.put("mail.smtp.port", "587");
+        // パスワード認証
         props.put("mail.smtp.auth", "true");
+        // 暗号化
         props.put("mail.smtp.starttls.enable", "true");
 
         // 認証情報の作成

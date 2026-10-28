@@ -89,4 +89,17 @@ public class ContactDAO {
             ps.executeUpdate();
         }
     }
+
+    /* お問い合わせ内容をDBに新規登録するためのメソッド */
+    public void insertContact(String category, String content) throws Exception {
+    // statusは「未対応」をデフォルト値として挿入
+        String sql = "INSERT INTO contacts (category, content, status, created_at) VALUES (?, ?, '未対応', NOW())";
+
+        try (Connection conn = DBManager.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, category);
+            ps.setString(2, content);
+            ps.executeUpdate();
+        }
+    }
 }

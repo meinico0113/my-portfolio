@@ -42,6 +42,8 @@ public class AccountUpdateServlet extends HttpServlet {
                     errorMsg = "名前を入力してください。";
             } else if (name.trim().length() > 255) {
                     errorMsg = "名前は255文字以内で入力してください。";
+            } else if (dao.checknameDuplicate(name.trim(), id)) {
+                    errorMsg = "この名前はすでに使用されています。";
             }
             }
 

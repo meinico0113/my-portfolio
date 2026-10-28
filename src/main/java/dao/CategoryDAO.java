@@ -72,7 +72,7 @@ public class CategoryDAO {
             ps.executeUpdate();
         }
     }
-    
+
     /*既存のカテゴリ名を更新する*/
     public void update(int id, String name) throws Exception {
 
@@ -135,5 +135,24 @@ public class CategoryDAO {
             ps.setString(1, name);
             ps.executeUpdate();
         }
+    }
+
+    /* カテゴリー全件取得メソッド */
+    public List<Category> findAllCategories() throws Exception {
+        List<Category> list = new ArrayList<>();
+        String sql = "SELECT id, name FROM categories ORDER BY id";
+
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Category cat = new Category();
+                cat.setId(rs.getInt("id"));
+                cat.setName(rs.getString("name"));
+                list.add(cat);
+            }
+        }
+        return list;
     }
 }

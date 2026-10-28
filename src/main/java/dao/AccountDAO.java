@@ -6,7 +6,6 @@ import java.util.*;
 import javax.servlet.http.Part;
 
 import model.Account;
-import model.Category;
 import servlet.DBManager;
 
 public class AccountDAO {
@@ -357,19 +356,6 @@ public class AccountDAO {
         }
     }
 
-    /* お問い合わせ内容をDBに新規登録するためのメソッド */
-    public void insertContact(String category, String content) throws Exception {
-    // statusは「未対応」をデフォルト値として挿入
-        String sql = "INSERT INTO contacts (category, content, status, created_at) VALUES (?, ?, '未対応', NOW())";
-
-        try (Connection conn = DBManager.getConnection();
-            PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, category);
-            ps.setString(2, content);
-            ps.executeUpdate();
-        }
-    }
-
     /* 指定したIDのアカウントをDBから完全に削除するメソッド */
     public void hardDelete(int id) throws Exception {
         String deleteUserSql = "DELETE FROM users WHERE id = ?";
@@ -383,22 +369,26 @@ public class AccountDAO {
         }
     }
 
-/* カテゴリー全件取得メソッド */
-    public List<Category> findAllCategories() throws Exception {
-        List<Category> list = new ArrayList<>();
-        String sql = "SELECT id, name FROM categories ORDER BY id";
+    /* 名前が重複していないかチェックするメソッド */
+    public boolean checknameDuplicate(String name, int id) throws Exception {
+        boolean exists = false;
+        // 自分以外のIDを対象にれる
+        String Sql = "SELECT COUNT(*) FROM users WHERE name = ? AND id != ?";
 
         try (Connection conn = DBManager.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+            PreparedStatement ps = conn.prepareStatement(Sql)) {
 
-            while (rs.next()) {
-                Category cat = new Category();
-                cat.setId(rs.getInt("id"));
-                cat.setName(rs.getString("name"));
-                list.add(cat);
+            ps.setString(1, name);
+            ps.setInt(2, id);
+
+            try (ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                if (rs.getInt(1) > 0) {
+                    exists = true;
+                }
             }
+            }
+        return exists;
         }
-        return list;
     }
 }
