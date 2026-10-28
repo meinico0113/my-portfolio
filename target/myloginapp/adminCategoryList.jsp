@@ -2,14 +2,23 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
-<h2>カテゴリ一覧</h2>
-<hr>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>アカウント編集</title>
+    <style>
+        .error-msg { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>カテゴリ一覧</h2>
+    <hr>
 
-<p>
-<a href="${pageContext.request.contextPath}/admin/categoryNew">
-カテゴリ追加
-</a>
-</p>
+    <%-- エラーメッセージ表示エリア --%>
+    <c:if test="${not empty error}">
+        <p class="error-msg">${error}</p>
+    </c:if>
 
 <table border="1" style="border-collapse: collapse; width: 100%;">
 <thead>
@@ -39,8 +48,9 @@
 </c:forEach>
 </table>
 
-    <p>
-    <a href="${pageContext.request.contextPath}/admin/contactList">
-        問い合わせ一覧に戻る
-    </a>
+<p>
+<a href="${pageContext.request.contextPath}/admin/categoryNew">カテゴリ追加</a>
+</p>
+<p>
+<a href="${pageContext.request.contextPath}/admin/contactList">問い合わせ一覧に戻る</a>
 </p>

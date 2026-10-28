@@ -1,20 +1,24 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>アカウント一覧</title>
+    <meta charset="UTF-8">
+    <title>アカウント一覧</title>
+    <style>
+        .error-msg { color: red; font-weight: bold; }
+    </style>
 </head>
 <body>
     <h2>アカウント一覧</h2>
     <hr>
 
-    <a href="${pageContext.request.contextPath}/admin/accountNew">アカウント追加</a>
-    <br>
-    <a href="${pageContext.request.contextPath}/admin/accountDeletedList">アカウント削除一覧</a>
-    <br>
+    <%-- エラーメッセージ表示エリア --%>
+    <c:if test="${not empty error}">
+        <p class="error-msg">${error}</p>
+    </c:if>
 
     <%-- 表の項目名 --%>
     <table border="1" style="border-collapse: collapse; width: 100%;">
@@ -32,8 +36,8 @@
     <%-- 表の中身 --%>
     <c:forEach var="account" items="${accountList}">
         <tr>
-            <td><c:out value="${account.name}" /></td>
-            <td><c:out value="${account.email}" /></td>
+            <td>${fn:escapeXml(account.name)}</td>
+            <td>${fn:escapeXml(account.email)}</td>
 
             <td>
                 <%-- ステータスの条件分岐 --%>
@@ -70,8 +74,15 @@
         </c:forEach>
     </div>
 
-    <br>
-    <a href="${pageContext.request.contextPath}/AdminServlet">管理者画面に戻る</a>
+    <p>
+        <a href="${pageContext.request.contextPath}/admin/accountNew">アカウント追加</a>
+    </p>
+    <p>
+        <a href="${pageContext.request.contextPath}/admin/accountDeletedList">アカウント削除一覧</a>
+    </p>
+    <p>
+        <a href="${pageContext.request.contextPath}/AdminServlet">管理者画面に戻る</a>
+    </p>
 
 </body>
 </html>

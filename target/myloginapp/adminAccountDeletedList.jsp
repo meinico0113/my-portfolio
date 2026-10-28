@@ -1,16 +1,19 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>アカウント削除済み一覧</title>
+    <style>
+        .error-msg { color: red; font-weight: bold; }
+    </style>
 </head>
 <body>
-
-<h2>アカウント削除済み一覧</h2>
-<hr>
+    <h2>アカウント削除済み一覧</h2>
+    <hr>
 
 <%-- エラーメッセージ表示エリア --%>
 <c:if test="${not empty error}">
@@ -32,8 +35,8 @@
         <c:when test="${not empty deletedList}">
             <c:forEach var="account" items="${deletedList}">
                 <tr>
-                    <td>${account.email}</td>
-                    <td>${account.name}</td>
+                    <td>${fn:escapeXml(account.email)}</td>
+                    <td>${fn:escapeXml(account.name)}</td>
                     <td>
                         <%-- 削除済みであることを明示 --%>
                         <span style="color: red;">削除済み</span>
@@ -62,11 +65,11 @@
     </c:choose>
 </table>
 
-<div style="margin-top: 10px;">
+<p>
     <a href="${pageContext.request.contextPath}/admin/accountList">
         アカウント一覧に戻る
     </a>
-</div>
+</p>
 
 </body>
 </html>

@@ -7,11 +7,13 @@
 <head>
     <meta charset="UTF-8">
     <title>問い合わせ一覧</title>
+    <style>
+        .error-msg { color: red; font-weight: bold; }
+    </style>
 </head>
 <body>
-
-<h2>問い合わせ一覧</h2>
-<hr>
+    <h2>問い合わせ一覧</h2>
+    <hr>
 
 <%-- エラーメッセージ表示エリア --%>
 <c:if test="${not empty error}">
@@ -40,6 +42,13 @@
               data-status="${fn:escapeXml(contact.status)}"></span>
     </c:forEach>
 </div>
+
+    <p>
+        <a href="${pageContext.request.contextPath}/admin/categoryList">カテゴリー一覧</a>
+    </p>
+    <p>
+        <a href="${pageContext.request.contextPath}/AdminServlet">管理者画面に戻る</a>
+    </p>
 
     <script>
         function renderContactList() {
@@ -82,14 +91,5 @@
         // ページが読み込まれたらrenderContactList関数を実行
         window.addEventListener('DOMContentLoaded', renderContactList);
     </script>
-
-    <p>
-    <a href="${pageContext.request.contextPath}/admin/categoryList">
-    カテゴリー一覧
-    </a>
-    </p>
-    <p>
-    <a href="${pageContext.request.contextPath}/AdminServlet">管理者画面に戻る</a>
-    </p>
 </body>
 </html>

@@ -1,11 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <title>アカウント追加</title>
+    <style>
+        .error-msg { color: red; font-weight: bold; }
+    </style>
 </head>
 <body>
 
@@ -35,7 +39,7 @@
     <%-- 共通項目グループ --%>
     <div style="margin-bottom: 15px;">
         名前
-        <input type="text" name="name" value="${account.name}">
+        <input type="text" name="name" value="${fn:escapeXml(account.name)}">
         <br><br>
 
         パスワード
@@ -43,7 +47,7 @@
         <br><br>
 
         メールアドレス
-        <input type="text" name="email" value="${account.email}">
+        <input type="text" name="email" value="${fn:escapeXml(account.email)}"
         <br><br>
 
         ステータス
@@ -58,7 +62,7 @@
     <%-- 一般ユーザー用項目グループ --%>
     <div id="userFields">
         ふりがな
-        <input type="text" name="kana" value="${account.kana}">
+        <input type="text" name="kana" value="${fn:escapeXml(account.kana)}">
         <br><br>
 
         性別
@@ -72,7 +76,7 @@
 
         自己紹介
         <br>
-        <textarea name="profile">${account.profile}</textarea>
+        <textarea name="profile">${fn:escapeXml(account.profile)}</textarea>
         <br><br>
 
         プロフィール画像：
