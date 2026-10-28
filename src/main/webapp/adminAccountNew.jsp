@@ -11,14 +11,14 @@
 
 <h2>アカウント追加</h2>
 
-<%-- サーバーからのエラーメッセージ表示エリア --%>
-<div id="errorDisplay" style="color: red; font-weight: bold; margin-bottom: 15px;">
-    <c:if test="${not empty error}">${error}</c:if>
-</div>
+<%-- エラーメッセージ表示エリア --%>
+<c:if test="${not empty error}">
+    <p class="error-msg">${error}</p>
+</c:if>
 
 <form action="${pageContext.request.contextPath}/admin/accountCreate" 
-    method="post" 
-    enctype="multipart/form-data">
+      method="post" 
+      enctype="multipart/form-data">
 
     <%-- 共通項目：ID --%>
     <input type="hidden" name="id" value="${account.id}">
@@ -81,7 +81,7 @@
     </div>
 
 <button type="submit">登録</button>
-<br>
+<br><br>
 
 <a href="${pageContext.request.contextPath}/admin/accountList">アカウント一覧に戻る</a>
 
@@ -109,6 +109,5 @@ window.onload = function() {
     switchFields();
 }
 </script>
-
 </body>
 </html>

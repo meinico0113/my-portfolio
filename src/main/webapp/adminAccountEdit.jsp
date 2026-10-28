@@ -4,17 +4,17 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>アカウント編集</title>
+    <meta charset="UTF-8">
+    <title>アカウント編集</title>
 </head>
 <body>
 
 <h2>アカウント編集</h2>
 
-<%-- サーバーからのエラーメッセージ表示エリア --%>
-<div id="errorDisplay" style="color: red; font-weight: bold; margin-bottom: 15px;">
-    <c:if test="${not empty error}">${error}</c:if>
-</div>
+<%-- エラーメッセージ表示エリア --%>
+<c:if test="${not empty error}">
+    <p class="error-msg">${error}</p>
+</c:if>
 
 <form action="${pageContext.request.contextPath}/admin/accountUpdate" 
       method="post" 
@@ -34,14 +34,19 @@
 
     <%-- 共通項目グループ --%>
     <div style="margin-bottom: 15px;">
-        名前：
+        名前
         <input type="text" name="name" value="${account.name}">
         <br><br>
 
-        メールアドレス：
+        パスワード
+        <input type="password" name="password" value="${account.password}">
+        <br><br>
+
+        メールアドレス
         <input type="text" name="email" value="${account.email}">
         <br><br>
-        ステータス：
+
+        ステータス
         <label><input type="radio" name="status" value="0" ${account.status == 0 ? 'checked' : ''}>アクセス許可</label>
         <label><input type="radio" name="status" value="1" ${account.status == 1 ? 'checked' : ''}>アクセス禁止</label>
         <br>
@@ -52,25 +57,25 @@
 
     <%-- 一般ユーザー用項目グループ --%>
     <div id="userFields">
-        ふりがな：
+        ふりがな
         <input type="text" name="kana" value="${account.kana}">
         <br><br>
 
-        性別：
+        性別
         <label><input type="radio" name="gender" value="male" ${account.gender == 'male' ? 'checked' : ''}>男性</label>
         <label><input type="radio" name="gender" value="female" ${account.gender == 'female' ? 'checked' : ''}>女性</label>
         <br><br>
 
-        年齢：
-        <input type="number" name="age" value="${account.age}">
+        年齢
+        <input type="number" name="age" value="${account.age != null && account.age != 0 ? account.age : ''}">
         <br><br>
 
-        自己紹介：
+        自己紹介
         <br>
         <textarea name="profile">${account.profile}</textarea>
         <br><br>
 
-        プロフィール画像変更：<input type="file" name="image">
+        プロフィール画像変更<input type="file" name="image">
         <br>
 
         現在の画像<br>
@@ -79,9 +84,9 @@
     </div>
 
     <button type="submit">更新保存</button>
-    <br>
-    <a href="${pageContext.request.contextPath}/admin/accountList">キャンセル</a>
+    <br><br>
 
+    <a href="${pageContext.request.contextPath}/admin/accountList">アカウント一覧に戻る</a>
 </form>
 
 <script>

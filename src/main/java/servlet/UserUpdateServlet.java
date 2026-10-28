@@ -156,6 +156,7 @@ public class UserUpdateServlet extends HttpServlet {
                 loginUser.getId(),
                 name,
                 loginUser.getEmail(),
+                loginUser.getPassword(),
                 loginUser.getStatus(),
                 loginUser.getRole(),
                 kana,

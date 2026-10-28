@@ -9,7 +9,7 @@ import dao.AccountDAO;
 import model.Account;
 
 @WebServlet("/admin/accountUpdate")
-@MultipartConfig
+@MultipartConfig // 画像アップロード用
 public class AccountUpdateServlet extends HttpServlet {
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -25,9 +25,10 @@ public class AccountUpdateServlet extends HttpServlet {
             String role = request.getParameter("role");
             String name = request.getParameter("name");
             String email = request.getParameter("email");
+            String password = request.getParameter("password");
             String statusStr = request.getParameter("status");
 
-            //エラーメッセージを格納するための変数を、最初はnullで用意する
+            // エラーメッセージを最初はnullで用意
             String errorMsg = null;
 
             // ステータスのバリデーション
@@ -45,6 +46,16 @@ public class AccountUpdateServlet extends HttpServlet {
             } else if (dao.checknameDuplicate(name.trim(), id)) {
                     errorMsg = "この名前はすでに使用されています。";
             }
+            }
+
+            // パスワードのバリデーション
+            if (errorMsg == null) {
+                String passPattern = "^[a-zA-Z0-9_-]{8,32}$";
+                if (password == null || password.trim().isEmpty()) {
+                    errorMsg = "新しいパスワードを入力してください。";
+                } else if (!password.matches(passPattern)) {
+                    errorMsg = "パスワードは8〜32文字の半角英数字と_（アンダーバー）-（ハイフン）のみ使用可能です。";
+                }
             }
 
             // メールのバリデーション
@@ -66,7 +77,7 @@ public class AccountUpdateServlet extends HttpServlet {
             String profile = request.getParameter("profile");
 
             if (!"admin".equals(role)) {
-            // ふりがなのバリデーション
+                // ふりがなのバリデーション
                 if (errorMsg == null) {
                     String kanaPattern = "^[\\u3041-\\u3096ー]*$";
                     if (kana == null || kana.trim().isEmpty()) {
@@ -78,7 +89,7 @@ public class AccountUpdateServlet extends HttpServlet {
                     }
                 }
 
-            // 性別のバリデーション
+                // 性別のバリデーション
                 if (errorMsg == null) {
                     if (gender == null || gender.trim().isEmpty()) {
                         errorMsg = "性別を選択してください。";
@@ -87,7 +98,7 @@ public class AccountUpdateServlet extends HttpServlet {
                     }
                 }
 
-           // 年齢のバリデーション
+                // 年齢のバリデーション
                 if (errorMsg == null) {
                     if (ageStr == null || ageStr.trim().isEmpty()) {
                         errorMsg = "年齢を入力してください。";
@@ -96,24 +107,24 @@ public class AccountUpdateServlet extends HttpServlet {
                     }
                 }
 
-            // 自己紹介のバリデーション
+                // 自己紹介のバリデーション
                 if (errorMsg == null) {
                     if (profile != null && profile.length() > 1500) {
                         errorMsg = "自己紹介は1500文字以内で入力してください。";
                     }
                 }
 
-            // 画像のバリデーション
+                // 画像のバリデーション
                 if (errorMsg == null) {
                     try {
                         Part image = request.getPart("image");
                         if (image != null && image.getSize() > 0) {
                         // 2MB = 2 * 1024 * 1024 bytes
                         long maxSize = 2 * 1024 * 1024; 
-                        if (image.getSize() > maxSize) {
-                            errorMsg = "プロフィール画像は2MB以内のファイルを選択してください。";
+                            if (image.getSize() > maxSize) {
+                                errorMsg = "プロフィール画像は2MB以内のファイルを選択してください。";
+                            }
                         }
-                    }
                     } catch (Exception e) {
                         errorMsg = "画像の読み込み中にエラーが発生しました。";
                     }
@@ -155,7 +166,7 @@ public class AccountUpdateServlet extends HttpServlet {
 
             // DB更新処理
             if ("admin".equals(role)) {
-                dao.updateAdmin(id, name, email, status, role);
+                dao.updateAdmin(id, name, email, password, status, role);
                 } else {
                     int age = (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) ? Integer.parseInt(ageStr) : 0;
                     Part image = request.getPart("image");
@@ -171,7 +182,7 @@ public class AccountUpdateServlet extends HttpServlet {
                     image.write(uploadPath + java.io.File.separator + fileName);
                 }
 
-                dao.updateUser(id, name, email, status, role, kana, gender, age, profile, image);
+                dao.updateUser(id, name, email, password, status, role, kana, gender, age, profile, image);
             }
 
             // 成功時はアカウント一覧画面へ
@@ -180,6 +191,7 @@ public class AccountUpdateServlet extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
             
+            request.setAttribute("error", "アカウント編集に失敗しました。");
             request.getRequestDispatcher("/adminAccountEdit.jsp").forward(request, response);
         }
     }

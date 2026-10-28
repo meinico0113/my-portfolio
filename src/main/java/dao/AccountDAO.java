@@ -95,25 +95,26 @@ public class AccountDAO {
     }
 
    /* 管理者情報を更新する */
-    public void updateAdmin(int id, String name, String email, int status, String role) throws Exception {
+    public void updateAdmin(int id, String name, String email,  String password, int status, String role) throws Exception {
 
-        String sql = "UPDATE users SET name=?, email=?, status=?, role=? WHERE id=?";
+        String sql = "UPDATE users SET name=?, email=?, password=?, status=?, role=? WHERE id=?";
 
         try (Connection conn = DBManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setString(1, name);
             ps.setString(2, email);
-            ps.setInt(3, status);
-            ps.setString(4, role);
-            ps.setInt(5, id);
+            ps.setString(3, password);
+            ps.setInt(4, status);
+            ps.setString(5, role);
+            ps.setInt(6, id);
             
             ps.executeUpdate();
         }
     }
 
     /* 一般ユーザー情報を更新する */
-    public void updateUser(int id, String name, String email, int status, String role, String kana, 
+    public void updateUser(int id, String name, String email,  String password, int status, String role, String kana, 
                            String gender, int age, String profile, Part image) throws Exception {
         
         String fileName = null;
@@ -124,9 +125,9 @@ public class AccountDAO {
         //ブラウザのセキュリティ上、画像を変更しなければ空っぽとして送信されてしまうため
         String sql;
         if (fileName != null) {
-            sql = "UPDATE users SET name=?, email=?, status=?, role=?, kana=?, gender=?, age=?, profile=?, profile_image=? WHERE id=?";
+            sql = "UPDATE users SET name=?, email=?, password=?, status=?, role=?, kana=?, gender=?, age=?, profile=?, profile_image=? WHERE id=?";
         } else {
-            sql = "UPDATE users SET name=?, email=?, status=?, role=?, kana=?, gender=?, age=?, profile=? WHERE id=?";
+            sql = "UPDATE users SET name=?, email=?, password=?, status=?, role=?, kana=?, gender=?, age=?, profile=? WHERE id=?";
         }
 
         try (Connection conn = DBManager.getConnection();
@@ -134,18 +135,19 @@ public class AccountDAO {
 
             ps.setString(1, name);
             ps.setString(2, email);
-            ps.setInt(3, status);
-            ps.setString(4, role);
-            ps.setString(5, kana);
-            ps.setString(6, gender);
-            ps.setInt(7, age);
-            ps.setString(8, profile);
+            ps.setString(3, password);
+            ps.setInt(4, status);
+            ps.setString(5, role);
+            ps.setString(6, kana);
+            ps.setString(7, gender);
+            ps.setInt(8, age);
+            ps.setString(9, profile);
             
             if (fileName != null) {
-                ps.setString(9, fileName);
-                ps.setInt(10, id);
+                ps.setString(10, fileName);
+                ps.setInt(11, id);
             } else {
-                ps.setInt(9, id);
+                ps.setInt(10, id);
             }
 
             ps.executeUpdate();

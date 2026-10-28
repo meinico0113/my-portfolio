@@ -20,6 +20,8 @@ public class AccountCreateServlet extends HttpServlet {
 
         try {
             // パラメータ取得
+            // 画面から送られてきた各入力内容を、文字列や数値に変換して受け取る
+            int id = Integer.parseInt(request.getParameter("id"));
             String role = request.getParameter("role");
             String name = request.getParameter("name");
             String email = request.getParameter("email");
@@ -29,7 +31,7 @@ public class AccountCreateServlet extends HttpServlet {
             // エラーメッセージを最初はnullで用意
             String errorMsg = null;
 
-            // ステータスのチェック
+            // ステータスのバリデーション
             if (statusStr == null || !statusStr.matches("^[0-9]+$")) {
                 errorMsg = "ステータスを入力してください。";
             }
@@ -39,9 +41,11 @@ public class AccountCreateServlet extends HttpServlet {
             if (errorMsg == null) {
                 if (name == null || name.trim().isEmpty()) {
                     errorMsg = "名前を入力してください。";
-                } else if (name.length() > 255) {
+            } else if (name.trim().length() > 255) {
                     errorMsg = "名前は255文字以内で入力してください。";
-                }
+            } else if (dao.checknameDuplicate(name.trim(), id)) {
+                    errorMsg = "この名前はすでに使用されています。";
+            }
             }
 
             // パスワードのバリデーション
@@ -59,10 +63,10 @@ public class AccountCreateServlet extends HttpServlet {
                 String emailPattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
                 if (email == null || email.trim().isEmpty()) {
                     errorMsg = "メールアドレスを入力してください。";
-                } else if (email.length() > 255) {
+                } else if (email.trim().length() > 255) {
                     errorMsg = "メールアドレスは255文字以内で入力してください。";
-                } else if (!email.matches(emailPattern)) {
-                     errorMsg = "正しいメールアドレスの形式で入力してください。";
+                } else if (!email.trim().matches(emailPattern)) {
+                    errorMsg = "正しいメールアドレスの形式で入力してください。";
                 }
             }
 
@@ -115,7 +119,8 @@ public class AccountCreateServlet extends HttpServlet {
                     try {
                         Part image = request.getPart("image");
                         if (image != null && image.getSize() > 0) {
-                            long maxSize = 2 * 1024 * 1024; 
+                        // 2MB = 2 * 1024 * 1024 bytes
+                        long maxSize = 2 * 1024 * 1024; 
                             if (image.getSize() > maxSize) {
                                 errorMsg = "プロフィール画像は2MB以内のファイルを選択してください。";
                             }
@@ -189,6 +194,7 @@ public class AccountCreateServlet extends HttpServlet {
                 } catch (Exception e) { 
                     e.printStackTrace();
 
+                request.setAttribute("error", "アカウント追加に失敗しました。");
                 request.getRequestDispatcher("/adminAccountNew.jsp").forward(request, response);
 }
 }
