@@ -94,7 +94,7 @@ public class AccountDAO {
         }
     }
 
-   /* 管理者情報を更新する */
+   /* 管理者情報を更新する */ 
     public void updateAdmin(int id, String name, String email,  String password, int status, String role) throws Exception {
 
         String sql = "UPDATE users SET name=?, email=?, password=?, status=?, role=? WHERE id=?";

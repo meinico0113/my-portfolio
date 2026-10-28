@@ -6,19 +6,19 @@
 <head>
     <meta charset="UTF-8">
     <title>アカウント編集</title>
+    <style>
+        .error-msg { color: red; font-weight: bold; }
+    </style>
 </head>
 <body>
-
-<h2>アカウント編集</h2>
+    <h2>アカウント編集</h2>
 
 <%-- エラーメッセージ表示エリア --%>
 <c:if test="${not empty error}">
     <p class="error-msg">${error}</p>
 </c:if>
 
-<form action="${pageContext.request.contextPath}/admin/accountUpdate" 
-      method="post" 
-      enctype="multipart/form-data">
+<form action="${pageContext.request.contextPath}/admin/accountUpdate" method="post" enctype="multipart/form-data">
 
     <%-- 共通項目：ID --%>
     <input type="hidden" name="id" value="${account.id}">
