@@ -5,7 +5,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>一般ユーザー画面</title>
+<title>一般画面</title>
 </head>
 <body>
     <h1>一般画面</h1>

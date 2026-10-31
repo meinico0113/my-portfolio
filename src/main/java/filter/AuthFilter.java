@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import model.Account;
+
 // アプリケーション内の全リクエストを対象にする
 @WebFilter("/*")
 public class AuthFilter implements Filter {
@@ -54,14 +56,36 @@ public class AuthFilter implements Filter {
                                path.startsWith("/uploads/");
 
         // セッションからログインユーザー情報を取得
-        Object loginUser = (session != null) ? session.getAttribute("account") : null;
+        Account account = (session != null) ? (Account) session.getAttribute("account") : null;
 
-        if (isPublicPage || loginUser != null) {
-            // 公開ページか、ログイン済みならそのまま通す
+        // 1. 公開ページは誰でもアクセスOK
+        if (isPublicPage) {
             chain.doFilter(request, response);
-        } else {
-            // 未ログインで制限ページにアクセスしたら、サーブレットを経由させて公開画面
+            return;
+        }
+
+        // 2. 未ログインの場合のアクセス制御
+        if (account == null) {
             httpResponse.sendRedirect(contextPath + "/UserRankingServlet"); 
+            return;
+        }
+
+        // 3. ログイン済みユーザーの権限（ロール）チェック
+        // 管理者専用ページのパス（例: /admin/ で始まるURLや、AdminServletなど）
+        boolean isAdminPage = path.startsWith("/admin/") || path.equals("/AdminServlet");
+
+        if (isAdminPage) {
+            // 管理者専用ページにアクセスしようとした場合
+            if ("admin".equals(account.getRole())) {
+                // 管理者であればアクセスを許可
+                chain.doFilter(request, response);
+            } else {
+                // 一般ユーザーが管理者ページに侵入しようとしたら、一般画面へ強制送還
+                httpResponse.sendRedirect(contextPath + "/UserServlet");
+            }
+        } else {
+            // 一般ページへのアクセスは、ログインしていれば許可
+            chain.doFilter(request, response);
         }
     }
 
