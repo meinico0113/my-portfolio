@@ -55,41 +55,47 @@ public class AuthFilter implements Filter {
                                requestURI.contains("/UserDetailServlet") ||
                                path.startsWith("/uploads/");
 
-        // セッションからログインユーザー情報を取得
-        Account account = (session != null) ? (Account) session.getAttribute("account") : null;
-
-        // 1. 公開ページは誰でもアクセスOK
         if (isPublicPage) {
             chain.doFilter(request, response);
             return;
         }
 
-        // 2. 未ログインの場合のアクセス制御
+        // 2. セッションからログインユーザー情報を取得
+        Account account = (session != null) ? (Account) session.getAttribute("account") : null;
+
+        // 未ログインの場合のアクセス制御
         if (account == null) {
             httpResponse.sendRedirect(contextPath + "/UserRankingServlet"); 
             return;
         }
 
-        // 3. ログイン済みユーザーの権限（ロール）とアクセス先の切り分け
-        boolean isAdminPage = path.startsWith("/admin/") || path.equals("/AdminServlet");
+        // 3. 権限（ロール）による完全なエリア分け
+        boolean isAdminPage = path.startsWith("/admin/") || 
+                              path.equals("/AdminServlet");
+        
         String role = account.getRole(); // "admin" または "user"
 
         if ("admin".equals(role)) {
-            // --- 【管理者としてログインしている場合】 ---
+            // --- 【管理者の場合】 ---
             if (isAdminPage) {
-                // 管理者ページへのアクセスは許可
+                // 管理者ページならアクセスOK
                 chain.doFilter(request, response);
             } else {
-                // 管理者が一般ページのURLを直打ちしたら、管理者専用画面へ強制送還
-                httpResponse.sendRedirect(contextPath + "/AdminServlet");
+                // 管理者が一般画面に入ろうとしたら、無限ループを防ぐために
+                // すでに /AdminServlet にいる場合はリダイレクトしないようにチェックする
+                if (!path.equals("/AdminServlet")) {
+                    httpResponse.sendRedirect(contextPath + "/AdminServlet");
+                } else {
+                    chain.doFilter(request, response);
+                }
             }
         } else {
-            // --- 【一般ユーザー（user）としてログインしている場合】 ---
+            // --- 【一般ユーザーの場合】 ---
             if (isAdminPage) {
-                // 一般ユーザーが管理者ページに入ろうとしたら、一般画面へ強制送還
+                // 一般ユーザーが管理者画面に入ろうとしたら、一般画面へ強制送還
                 httpResponse.sendRedirect(contextPath + "/UserServlet");
             } else {
-                // 一般ページへのアクセスは許可
+                // 一般ページならアクセスOK
                 chain.doFilter(request, response);
             }
         }
