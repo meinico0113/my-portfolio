@@ -393,4 +393,34 @@ public class AccountDAO {
         return exists;
         }
     }
+
+    /* アクセス禁止かチェックするメソッド */
+    public Account findByStatus(String name, String password) {
+        Account account = null;
+        
+        // is_deleted = 0（未削除）のユーザーを検索
+        String sql = "SELECT * FROM users WHERE name = ? AND password = ? AND is_deleted = 0";
+
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, name);
+            pstmt.setString(2, password);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    account = new Account();
+                    account.setId(rs.getInt("id"));
+                    account.setName(rs.getString("name"));
+                    account.setRole(rs.getString("role"));
+                    account.setLikes(rs.getInt("likes"));
+                    account.setStatus(rs.getInt("status"));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        return account;
+    }
 }

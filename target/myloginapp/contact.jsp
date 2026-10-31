@@ -8,13 +8,9 @@
     <meta charset="UTF-8">
     <title>お問い合わせ</title>
     <style>
-        .field { margin-bottom: 15px; }
-
         label { display: block; margin-bottom: 5px; font-weight: bold; }
 
         select, textarea {
-            padding: 8px;
-            border: 1px solid #ccc;
             border-radius: 4px;
         }
 
@@ -22,26 +18,34 @@
     </style>
 </head>
     <body>
-        <div class="contact-form">
-            <h2>お問い合わせ</h2>
-            <hr>
-            <form action="ContactServlet" method="post">
-                <div class="field">
-                    <label>カテゴリー</label>
-                    <select name="category">
-                        <%-- DBから取得したリストをループ表示 --%>
-                        <c:forEach var="cat" items="${categoryList}">
-                        <option value="${cat.name}">${cat.name}</option>
-                        </c:forEach>
-                    </select>
-                </div>
-                <div class="field">
-                    <label>内容</label>
-                    <textarea name="content" rows="5" required placeholder="お問い合わせ内容を入力してください"></textarea>
-                </div>
-                <button type="submit" class="send-btn">送信する</button>
-            </form>
-            <p style="text-align: center;"><a href="${pageContext.request.contextPath}/UserListServlet">公開画面へ戻る</a></p>
-        </div>
+        <h1>お問い合わせ</h1>
+        <hr>
+
+        <%-- エラーメッセージ表示エリア --%>
+        <c:if test="${not empty error}">
+            <p class="error-msg">${error}</p>
+        </c:if>
+
+        <form action="ContactServlet" method="post">
+            <div>
+                <label>カテゴリー</label>
+                <select name="category">
+                    <%-- DBから取得したリストをループ表示 --%>
+                    <c:forEach var="cat" items="${categoryList}">
+                        <option value="${fn:escapeXml(cat.name)}">${fn:escapeXml(cat.name)}</option>
+                    </c:forEach>
+                </select>
+            </div>
+            <div>
+                <label>内容</label>
+                <textarea name="content" rows="5" required placeholder="お問い合わせ内容を入力してください"></textarea>
+            </div>
+
+            <button type="submit">送信する</button>
+        </form>
+
+        <p>
+            <a href="${pageContext.request.contextPath}/UserListServlet">公開画面へ戻る</a>
+        </p>
     </body>
 </html>

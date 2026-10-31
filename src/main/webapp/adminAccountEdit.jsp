@@ -12,7 +12,7 @@
     </style>
 </head>
 <body>
-    <h2>アカウント編集</h2>
+    <h1>アカウント編集</h1>
 
 <%-- エラーメッセージ表示エリア --%>
 <c:if test="${not empty error}">
@@ -84,7 +84,7 @@
         <br>
     </div>
 
-    <button type="submit">更新保存</button>
+    <button type="submit">更新</button>
     <br><br>
 
     <a href="${pageContext.request.contextPath}/admin/accountList">アカウント一覧に戻る</a>

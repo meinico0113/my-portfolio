@@ -12,7 +12,7 @@
     </style>
 </head>
 <body>
-    <h2>お問い合わせ詳細</h2>
+    <h1>お問い合わせ詳細</h1>
     <hr>
 
     <%-- エラーメッセージ表示エリア --%>
@@ -38,7 +38,7 @@
         </select>
     </p>
 
-    <input type="submit" value="更新">
+    <button type="submit">更新</button>
 </form>
 
 <p>作成日時： ${fn:escapeXml(contact.createdAt)}</p>

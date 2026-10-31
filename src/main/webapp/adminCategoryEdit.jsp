@@ -12,7 +12,7 @@
     </style>
 </head>
 <body>
-    <h2>カテゴリ編集</h2>
+    <h1>カテゴリ編集</h1>
     <hr>
 
     <%-- エラーメッセージ表示エリア --%>
@@ -26,7 +26,8 @@
         カテゴリ名 
         <input type="text" id="categoryName" name="name" value="${fn:escapeXml(category.name)}">
     
-        <input type="submit" value="更新">
+        <button type="submit">更新</button>
+
     </form>
     <p>
         <a href="${pageContext.request.contextPath}/admin/categoryList">カテゴリ一覧に戻る</a>

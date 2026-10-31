@@ -37,7 +37,8 @@
 </style>
 </head>
 <body>
-
+    <h1>アカウント詳細</h1>
+    <hr>
     <c:if test="${not empty user}">
         <div class="profile-item">
             名前： <c:out value="${user.name}" />

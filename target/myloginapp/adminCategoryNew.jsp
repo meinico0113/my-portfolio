@@ -12,7 +12,7 @@
     </style>
 </head>
 <body>
-    <h2>カテゴリ追加</h2>
+    <h1>カテゴリ追加</h1>
     <hr>
 
     <%-- エラーメッセージ表示エリア --%>
@@ -23,7 +23,8 @@
     <form action="${pageContext.request.contextPath}/admin/categoryNew" method="post">
     カテゴリ名
     <input type="text" name="name" value="${fn:escapeXml(name)}">
-    <input type="submit" value="登録">
+    <button type="submit">登録</button>
+
     </form>
 
     <p>
