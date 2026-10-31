@@ -162,10 +162,9 @@ public class AccountCreateServlet extends HttpServlet {
                 dao.insertAdmin(name, email, password, status);
             } else {
                 int age = (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) ? Integer.parseInt(ageStr) : 0;
-                
-                String profileImage = null;
 
                 // 画像のアップロード処理（重複防止タイムスタンプ付与）
+                String profileImage = null;
                 try {
                     Part image = request.getPart("image");
                     if (image != null && image.getSize() > 0 && image.getSubmittedFileName() != null && !image.getSubmittedFileName().isEmpty()) {

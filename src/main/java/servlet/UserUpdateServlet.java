@@ -51,6 +51,10 @@ public class UserUpdateServlet extends HttpServlet {
             String gender = request.getParameter("gender");
             String ageStr = request.getParameter("age");
             String profile = request.getParameter("introduction");
+            // 自己紹介が未入力（null）の場合は空文字にしておく
+            if (profile == null) {
+                profile = "";
+            }
 
             // エラーメッセージ用変数
             String errorMsg = null;
@@ -102,7 +106,7 @@ public class UserUpdateServlet extends HttpServlet {
                     errorMsg = "自己紹介は1500文字以内で入力してください。";
                 }
             }
-
+        
             // 画像のバリデーション（2MB制限）
             Part image = null;
             if (errorMsg == null) {
@@ -141,15 +145,28 @@ public class UserUpdateServlet extends HttpServlet {
                 return; 
             }
 
-        // 画像ファイルが選択されている場合はサーバーに保存
-            if (image != null && image.getSize() > 0) {
-                String uploadPath = getServletContext().getRealPath("") + File.separator + "uploads";
-                File uploadDir = new File(uploadPath);
-                if (!uploadDir.exists()) {
-                    uploadDir.mkdir();
+        // === 画像のアップロード処理（画像が選択されている場合のみ） ===
+            String profileImage = null;
+            try {
+                if (image != null && image.getSize() > 0 && image.getSubmittedFileName() != null && !image.getSubmittedFileName().isEmpty()) {
+                    
+                    String uploadPath = getServletContext().getRealPath("/uploads");
+                    File uploadDir = new File(uploadPath);
+                    if (!uploadDir.exists()) {
+                        uploadDir.mkdirs();
+                    }
+
+                    String fileName = Paths.get(image.getSubmittedFileName()).getFileName().toString();
+                    profileImage = System.currentTimeMillis() + "_" + fileName;
+                    image.write(uploadPath + File.separator + profileImage);
                 }
-                String fileName = Paths.get(image.getSubmittedFileName()).getFileName().toString();
-                image.write(uploadPath + File.separator + fileName);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            // 画像が選択されなかった場合は、既存の画像をそのまま維持する
+            if (profileImage == null) {
+                profileImage = loginUser.getImagePath();
             }
 
             int age = Integer.parseInt(ageStr);

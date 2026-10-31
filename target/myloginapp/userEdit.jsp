@@ -29,11 +29,9 @@
     <input type="hidden" name="id" value="${userProfile.id}">
 
     <p>
-        プロフィール画像<br>
-        <c:if test="${not empty userProfile.imagePath}">
-            <img src="${pageContext.request.contextPath}/uploads/${userProfile.imagePath}" class="preview-img" alt="現在の画像">
-        </c:if>
-        <input type="file" name="profileImage" accept="image/*">
+        プロフィール画像：
+        <input type="file" name="image">
+        <br><br>
     </p>
 
     <p>

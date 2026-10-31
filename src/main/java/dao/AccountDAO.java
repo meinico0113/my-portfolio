@@ -113,7 +113,7 @@ public class AccountDAO {
         }
     }
 
-    /* 一般ユーザー情報を更新する */
+    /* 一般ユーザー情報を更新する（管理者側） */
     public void updateUser(int id, String name, String email,  String password, int status, String role, String kana, 
                            String gender, int age, String profile, Part image) throws Exception {
         
@@ -154,7 +154,7 @@ public class AccountDAO {
         }
     }
 
-    /* プロフィール編集画面からの一般ユーザー情報更新 */
+    /* 一般ユーザー情報を更新する（一般側） */
     public boolean updateProfile(Account account) {
         String sql;
         boolean hasImage = account.getImagePath() != null && !account.getImagePath().isEmpty();
