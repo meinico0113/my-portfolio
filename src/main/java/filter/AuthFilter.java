@@ -12,8 +12,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import model.Account;
-
 // アプリケーション内の全リクエストを対象にする
 @WebFilter("/*")
 public class AuthFilter implements Filter {
@@ -55,49 +53,15 @@ public class AuthFilter implements Filter {
                                requestURI.contains("/UserDetailServlet") ||
                                path.startsWith("/uploads/");
 
-        if (isPublicPage) {
+        // セッションからログインユーザー情報を取得
+        Object loginUser = (session != null) ? session.getAttribute("account") : null;
+
+        if (isPublicPage || loginUser != null) {
+            // 公開ページか、ログイン済みならそのまま通す
             chain.doFilter(request, response);
-            return;
-        }
-
-        // 2. セッションからログインユーザー情報を取得
-        Account account = (session != null) ? (Account) session.getAttribute("account") : null;
-
-        // 未ログインの場合のアクセス制御
-        if (account == null) {
-            httpResponse.sendRedirect(contextPath + "/UserRankingServlet"); 
-            return;
-        }
-
-        // 3. 権限（ロール）による完全なエリア分け
-        boolean isAdminPage = path.startsWith("/admin/") || 
-                              path.equals("/AdminServlet");
-        
-        String role = account.getRole(); // "admin" または "user"
-
-        if ("admin".equals(role)) {
-            // --- 【管理者の場合】 ---
-            if (isAdminPage) {
-                // 管理者ページならアクセスOK
-                chain.doFilter(request, response);
-            } else {
-                // 管理者が一般画面に入ろうとしたら、無限ループを防ぐために
-                // すでに /AdminServlet にいる場合はリダイレクトしないようにチェックする
-                if (!path.equals("/AdminServlet")) {
-                    httpResponse.sendRedirect(contextPath + "/AdminServlet");
-                } else {
-                    chain.doFilter(request, response);
-                }
-            }
         } else {
-            // --- 【一般ユーザーの場合】 ---
-            if (isAdminPage) {
-                // 一般ユーザーが管理者画面に入ろうとしたら、一般画面へ強制送還
-                httpResponse.sendRedirect(contextPath + "/UserServlet");
-            } else {
-                // 一般ページならアクセスOK
-                chain.doFilter(request, response);
-            }
+            // 未ログインで制限ページにアクセスしたら、サーブレットを経由させて公開画面
+            httpResponse.sendRedirect(contextPath + "/UserRankingServlet"); 
         }
     }
 
