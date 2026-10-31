@@ -45,6 +45,7 @@ public class UserUpdateServlet extends HttpServlet {
 
         try {
             // パラメータ取得
+            int id = Integer.parseInt(request.getParameter("id"));
             String name = request.getParameter("name");
             String kana = request.getParameter("kana");
             String gender = request.getParameter("gender");
@@ -58,9 +59,11 @@ public class UserUpdateServlet extends HttpServlet {
             if (errorMsg == null) {
                 if (name == null || name.trim().isEmpty()) {
                     errorMsg = "名前を入力してください。";
-                } else if (name.trim().length() > 255) {
+            } else if (name.trim().length() > 255) {
                     errorMsg = "名前は255文字以内で入力してください。";
-                }
+            } else if (dao.checknameDuplicate(name.trim(), id)) {
+                    errorMsg = "この名前はすでに使用されています。";
+            }
             }
 
             // ふりがなのバリデーション
