@@ -21,11 +21,13 @@
     </c:if>
 
     <form action="LoginServlet" method="post">
-        ユーザー名：<br>
-        <input type="text" name="name" required><br><br>
+        名前：<br>
+        <input type="text" name="name" value="${fn:escapeXml(account.name)}">
+        <br><br>
         
         パスワード：<br>
-        <input type="password" name="password" required><br><br>
+        <input type="password" name="password">
+        <br><br>
         
         <button type="submit">ログイン</button>
     </form>
