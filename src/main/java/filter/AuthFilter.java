@@ -70,22 +70,28 @@ public class AuthFilter implements Filter {
             return;
         }
 
-        // 3. ログイン済みユーザーの権限（ロール）チェック
-        // 管理者専用ページのパス（例: /admin/ で始まるURLや、AdminServletなど）
+        // 3. ログイン済みユーザーの権限（ロール）とアクセス先の切り分け
         boolean isAdminPage = path.startsWith("/admin/") || path.equals("/AdminServlet");
+        String role = account.getRole(); // "admin" または "user"
 
-        if (isAdminPage) {
-            // 管理者専用ページにアクセスしようとした場合
-            if ("admin".equals(account.getRole())) {
-                // 管理者であればアクセスを許可
+        if ("admin".equals(role)) {
+            // --- 【管理者としてログインしている場合】 ---
+            if (isAdminPage) {
+                // 管理者ページへのアクセスは許可
                 chain.doFilter(request, response);
             } else {
-                // 一般ユーザーが管理者ページに侵入しようとしたら、一般画面へ強制送還
-                httpResponse.sendRedirect(contextPath + "/UserServlet");
+                // 管理者が一般ページのURLを直打ちしたら、管理者専用画面へ強制送還
+                httpResponse.sendRedirect(contextPath + "/AdminServlet");
             }
         } else {
-            // 一般ページへのアクセスは、ログインしていれば許可
-            chain.doFilter(request, response);
+            // --- 【一般ユーザー（user）としてログインしている場合】 ---
+            if (isAdminPage) {
+                // 一般ユーザーが管理者ページに入ろうとしたら、一般画面へ強制送還
+                httpResponse.sendRedirect(contextPath + "/UserServlet");
+            } else {
+                // 一般ページへのアクセスは許可
+                chain.doFilter(request, response);
+            }
         }
     }
 
