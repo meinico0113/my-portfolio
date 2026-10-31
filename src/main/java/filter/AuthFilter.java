@@ -53,20 +53,47 @@ public class AuthFilter implements Filter {
                                requestURI.contains("/UserDetailServlet") ||
                                path.startsWith("/uploads/");
 
-        // セッションからログインユーザー情報を取得
-        Object loginUser = (session != null) ? session.getAttribute("account") : null;
+        // 2. 「管理者専用」のページやサーブレットのパス定義（例：パスに "/admin/" を含む、または特定のサーブレット）
+        boolean isAdminPage = path.startsWith("/admin/") || 
+                              path.contains("Admin") || 
+                              path.equals("/AdminServlet"); // ← 実際の管理画面のパスに合わせて変更してください
 
-        if (isPublicPage || loginUser != null) {
-            // 公開ページか、ログイン済みならそのまま通す
-            chain.doFilter(request, response);
-        } else {
-            // 未ログインで制限ページにアクセスしたら、サーブレットを経由させて公開画面
-            httpResponse.sendRedirect(contextPath + "/UserRankingServlet"); 
+        // セッションからログインユーザー情報および権限を取得
+        Object loginUser = (session != null) ? session.getAttribute("account") : null;
+        String role = (session != null) ? (String) session.getAttribute("role") : null; // "ADMIN" または "USER" など
+
+        if (!isPublicPage && loginUser == null) {
+            // ① 未ログインの場合：ログイン画面やランキングへリダイレクト
+            httpResponse.sendRedirect(contextPath + "/UserRankingServlet");
+            return;
         }
+
+        if (loginUser != null) {
+            // ② 管理者でログインしている場合
+            if ("ADMIN".equals(role)) {
+                // 管理者が一般画面（公開ページのうち、ログイン後も使うが「一般専用」としたい画面など、または明確に分ける場合）にアクセスした時の制御
+                // ※公開ページは通してよい場合が多いですが、「一般専用画面（例: マイページなど）」へのアクセスを弾きたい場合はここでチェックします
+                // ここでは分かりやすく「管理者が一般用の特定画面にアクセス不可」にする場合の例：
+                if (path.equals("/userServlet")) { // ← 例：一般専用ページ
+                    httpResponse.sendRedirect(contextPath + "/AdminServlet"); // 管理者用トップへ
+                    return;
+                }
+            }
+            
+            // ③ 一般ユーザーでログインしている場合
+            if ("USER".equals(role)) {
+                // 一般ユーザーが「管理者画面」にアクセスした場合
+                if (isAdminPage) {
+                    httpResponse.sendRedirect(contextPath + "/UserServlet"); // 一般用のトップやエラーページへ
+                    return;
+                }
+            }
+        }
+
+        // すべてのチェックを通過したらそのまま通す
+        chain.doFilter(request, response);
     }
 
     @Override
-    public void destroy() {
-        // 破棄処理
-    }
+    public void destroy() {}
 }
