@@ -49,6 +49,29 @@ public class ContactServlet extends HttpServlet {
         String category = request.getParameter("category");
         String content = request.getParameter("content");
 
+        // サーブレット側でのバリデーション（空チェック）
+        if (content == null || content.trim().isEmpty()) {
+            try {
+                // JSPに戻すため、カテゴリー一覧を再度取得してリクエストスコープにセット
+                CategoryDAO dao = new CategoryDAO();
+                List<Category> categoryList = dao.findAllCategories();
+                request.setAttribute("categoryList", categoryList);
+
+                // 入力値を保持するためにリクエストスコープに再セット
+                request.setAttribute("selectedCategory", category);
+                request.setAttribute("content", content);
+
+                // エラーメッセージをセット
+                request.setAttribute("error", "お問い合わせ内容を入力してください。");
+
+                // forwardを使ってJSPへ戻る（※redirectではない点に注意）
+                request.getRequestDispatcher("contact.jsp").forward(request, response);
+                return;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         try {
             // DBに保存
             ContactDAO dao = new ContactDAO();
@@ -60,6 +83,7 @@ public class ContactServlet extends HttpServlet {
             response.sendRedirect("UserListServlet");
         } catch (Exception e) {
             e.printStackTrace();
+            // データベースエラー等の場合はクエリパラメータ等でエラーを渡す既存の仕様を維持、または同様にフォワードする
             response.sendRedirect("contact.jsp?error=1");
         }
     }

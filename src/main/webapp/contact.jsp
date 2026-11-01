@@ -38,7 +38,7 @@
             </div>
             <div>
                 <label>内容</label>
-                <textarea name="content" rows="5" required placeholder="お問い合わせ内容を入力してください"></textarea>
+                <textarea name="content" rows="5">${fn:escapeXml(content)}</textarea>
             </div>
 
             <button type="submit">送信する</button>
