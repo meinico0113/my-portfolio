@@ -107,7 +107,7 @@ public class UserUpdateServlet extends HttpServlet {
             Part image = null;
             if (errorMsg == null) {
                 try {
-                    image = request.getPart("profileImage");
+                    image = request.getPart("image");
                     if (image != null && image.getSize() > 0) {
                         long maxSize = 2 * 1024 * 1024; // 2MB
                         if (image.getSize() > maxSize) {
@@ -119,29 +119,8 @@ public class UserUpdateServlet extends HttpServlet {
                 }
             }
 
-            // --- エラーがあった場合の処理（入力内容を保持して画面に戻す） ---
-            if (errorMsg != null) {
-                Account userProfile = new Account();
-                userProfile.setId(loginUser.getId());
-                userProfile.setName(name);
-                userProfile.setKana(kana);
-                userProfile.setGender(gender);
-                
-                if (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) {
-                    userProfile.setAge(Integer.parseInt(ageStr));
-                } else {
-                    userProfile.setAge(0);
-                }
-                userProfile.setProfile(profile);
-                userProfile.setImagePath(loginUser.getImagePath()); // 既存の画像を維持
-
-                request.setAttribute("userProfile", userProfile);
-                request.setAttribute("error", errorMsg);
-                request.getRequestDispatcher("/userEdit.jsp").forward(request, response);
-                return; 
-            }
-
-        // 画像ファイルが選択されている場合はサーバーに保存
+            // --- 画像ファイルが選択されている場合の保存処理 ---
+            String imagePath = null;
             if (image != null && image.getSize() > 0) {
                 String uploadPath = getServletContext().getRealPath("") + File.separator + "uploads";
                 File uploadDir = new File(uploadPath);
@@ -150,26 +129,42 @@ public class UserUpdateServlet extends HttpServlet {
                 }
                 String fileName = Paths.get(image.getSubmittedFileName()).getFileName().toString();
                 image.write(uploadPath + File.separator + fileName);
+                
+                // DBに保存するファイルパス（※プロジェクトの設計に合わせて調整してください）
+                imagePath = "uploads/" + fileName;
             }
 
             int age = Integer.parseInt(ageStr);
 
-            // DBのプロフィール情報を更新
-            dao.updateUser(
-                loginUser.getId(),
-                name,
-                loginUser.getEmail(),
-                loginUser.getPassword(),
-                loginUser.getStatus(),
-                loginUser.getRole(),
-                kana,
-                gender,
-                age,
-                profile,
-                image
-            );
+            // --- DAOに渡すためのAccountオブジェクトを作成 ---
+            Account updateAccount = new Account();
+            updateAccount.setId(loginUser.getId()); // セッションのIDを安全に使用
+            updateAccount.setName(name);
+            updateAccount.setKana(kana);
+            updateAccount.setGender(gender);
+            updateAccount.setAge(age);
+            updateAccount.setProfile(profile);
+            
+            // 新しい画像がアップロードされた場合のみパスを設定
+            // (未選択の場合は null のままで、DAO側が「画像更新なし」と判定するようにする)
+            if (imagePath != null) {
+                updateAccount.setImagePath(imagePath);
+            } else {
+                updateAccount.setImagePath(null);
+            }
 
-            // DBから最新のデータを取得してセッションを更新
+            // --- DBのプロフィール情報を更新 ---
+            boolean isSuccess = dao.updateProfile(updateAccount);
+
+            if (!isSuccess) {
+                // 更新失敗時の処理
+                request.setAttribute("error", "プロフィールの更新に失敗しました。");
+                request.setAttribute("userProfile", updateAccount);
+                request.getRequestDispatcher("/userEdit.jsp").forward(request, response);
+                return;
+            }
+
+            // --- DBから最新のデータを取得してセッションを更新 ---
             Account dbAccount = dao.findById(loginUser.getId());
             session.setAttribute("account", dbAccount);
             session.setAttribute("loginUser", dbAccount);

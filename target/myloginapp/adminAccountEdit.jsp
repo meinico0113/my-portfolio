@@ -76,7 +76,7 @@
         <textarea name="profile">${fn:escapeXml(account.profile)}</textarea>
         <br><br>
 
-        プロフィール画像変更<input type="file" name="image">
+        プロフィール画像<input type="file" name="image">
         <br>
 
         現在の画像<br>
