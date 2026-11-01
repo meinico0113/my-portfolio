@@ -40,7 +40,7 @@ public class LoginServlet extends HttpServlet {
             if (errorMsg == null) {
                 String passPattern = "^[a-zA-Z0-9_-]{8,32}$";
                 if (password == null || password.trim().isEmpty()) {
-                    errorMsg = "新しいパスワードを入力してください。";
+                    errorMsg = "パスワードを入力してください。";
                 } else if (!password.matches(passPattern)) {
                     errorMsg = "パスワードは8〜32文字の半角英数字と_（アンダーバー）-（ハイフン）のみ使用可能です。";
                 }

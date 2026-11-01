@@ -37,6 +37,12 @@
 
     /* 横並びに配置 */
     .button-group { display: flex; gap: 10px; margin-top: 10px; }
+
+    /*　自己紹介文の改行や空白を保持して表示する */
+    .user-profile {
+        white-space: pre-wrap; 
+        word-break: break-all; 
+    }
 </style>
 </head>
 <body>
@@ -113,12 +119,15 @@
             } else if (gender === 'female') {
                 gender = '女性';
             }
+
+            // エスケープ処理をした後に、改行コードを <br> タグに置換する
+            const escapedProfile = escapeHtml(profile).replace(/\r\n|\r|\n/g, '<br>');
             
             const cardHtml = 
                 '<div class="user-card">' +
                     '<strong>ニックネーム: ' + escapeHtml(kana) + '</strong><br>' +
                     '<span>性別: ' + escapeHtml(gender) + ' / 年齢: ' + escapeHtml(age) + '歳</span><br>' +
-                    '<p>自己紹介: ' + escapeHtml(profile) + '</p>' +
+                    '<p class="user-profile">自己紹介: ' + escapedProfile + '</p>' +
                     '<p>❤ 現在のいいね数: <strong id="like-count-' + id + '">' + escapeHtml(likes) + '</strong></p>' +
                     '<div class="button-group">' +
                         '<button type="button" class="btn detail-btn" onclick="location.href=\'' + contextPath + '/UserDetailServlet?id=' + id + '\'">詳細を見る</button>' +
