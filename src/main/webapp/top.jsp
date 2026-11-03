@@ -4,46 +4,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>公開画面</title>
-<style>
-    /* ユーザー1人分の情報の枠線 */
-    .user-card {
-        border: 1px solid #ddd;
-        margin: 10px; /* boxの外側の余白 */
-        padding: 10px; /* boxの内側の余白 */
-        border-radius: 8px; /* boxの丸み */
-        width: 300px;
-    }
-    
-    /* ボタンの共通スタイル */
-    .btn { 
-        display: inline-block;
-        padding: 5px 10px; 
-        cursor: pointer; /* ボタンに合わせた際、カーソルが指のマークに変わる */
-        border-radius: 4px; 
-        border: none;
-        text-decoration: none; /* リンクの下線を消す */
-        font-size: 13.333px; /* ボタンのデフォルトフォントサイズに合わせる */
-        font-family: Arial;
-        color: white;
-    }
-    
-    /* いいねボタン */
-    .like-btn { background-color: #ff4d4d; }
-    
-    /* 詳細ボタン */
-    .detail-btn { background-color: #888888; }
+    <meta charset="UTF-8">
+    <title>公開画面</title>
+    <style>
+        /* 1人分の情報のレイアウト */
+        .user-card {
+            border: 1px solid #ddd;
+            margin: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            width: 300px;
+        }
+        
+        /* ボタンの共通スタイル */
+        .btn { 
+            display: inline-block;
+            padding: 5px 10px; 
+            cursor: pointer; /* ボタンに合わせた際、カーソルが指のマークに変わる */
+            border-radius: 4px; 
+            border: none;
+            color: white;
+        }
+        
+        /* いいねボタン */
+        .like-btn { background-color: #ff4d4d; }
+        
+        /* 詳細ボタン */
+        .detail-btn { background-color: #888888; }
 
-    /* 横並びに配置 */
-    .button-group { display: flex; gap: 10px; margin-top: 10px; }
+        /* 横並びに配置 */
+        .button-group { display: flex; gap: 10px; }
 
-    /*　自己紹介文の改行や空白を保持して表示する */
-    .user-profile {
-        white-space: pre-wrap; 
-        word-break: break-all; 
-    }
-</style>
+        /*　自己紹介文の改行や空白を保持して表示する */
+        .user-profile {
+            white-space: pre-wrap; 
+            word-break: break-all; 
+        }
+    </style>
 </head>
 <body>
     <h1>公開画面</h1>
