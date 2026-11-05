@@ -302,11 +302,11 @@ public class AccountDAO {
         }
     }
 
-    /* 一般ユーザー(role='user')を年間のいいね数が多い順に取得する */
+    /* ⭐️一般ユーザー(role='user')を年間のいいね数が多い順に取得する */
     public List<Account> findGeneralUsersOrderByLikes() throws Exception {
         List<Account> list = new ArrayList<>();
         
-        // 今年（YEAR(created_at) = YEAR(CURRENT_DATE)）のいいね数のみを集計するSQL
+        // 退会未、一般を対象に、今年受け取ったいいねの数を1人ずつ集計し、いいね数が多い順に並べ替える
         String sql = "SELECT u.*, COUNT(l.id) AS year_likes "
                    + "FROM users u "
                    + "LEFT JOIN likes_log l ON u.id = l.target_user_id "
@@ -321,7 +321,7 @@ public class AccountDAO {
 
             while (rs.next()) {
                 Account acc = mapToAccount(rs);
-                // 総合いいね数ではなく、今年集計したいいね数（year_likes）で上書きしてセット
+                // 今年集計したいいね数（year_likes）で上書きしてセット
                 acc.setLikes(rs.getInt("year_likes"));
                 list.add(acc);
             }
@@ -329,7 +329,7 @@ public class AccountDAO {
         return list;
     }
 
-    /* 指定したIDのいいね数を+1し、履歴ログ（likes_log）を追加する */
+    /* ⭐️指定したIDのいいね数を+1し、履歴ログ（likes_log）を追加する */
     public void incrementLikes(int id) throws Exception {
         String updateUsersSql = "UPDATE users SET likes = likes + 1 WHERE id = ?";
         String insertLogSql = "INSERT INTO likes_log (target_user_id) VALUES (?)";

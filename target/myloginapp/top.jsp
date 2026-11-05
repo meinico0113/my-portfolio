@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 
 <!DOCTYPE html>
 <html>
@@ -22,7 +23,7 @@
             padding: 5px 10px; 
             cursor: pointer; /* ボタンに合わせた際、カーソルが指のマークに変わる */
             border-radius: 4px; 
-            border: none;
+            border: none; /* 要素の周りにある枠線をすべてなくす */
             color: white;
         }
         
@@ -34,37 +35,30 @@
 
         /* 横並びに配置 */
         .button-group { display: flex; gap: 10px; }
-
-        /*　自己紹介文の改行や空白を保持して表示する */
-        .user-profile {
-            white-space: pre-wrap; 
-            word-break: break-all; 
-        }
     </style>
 </head>
 <body>
     <h1>公開画面</h1>
     <hr>
 
-    <div style="margin-top: 10px;">
-        <a href="${pageContext.request.contextPath}/index.jsp">ログイン</a>
-        <a href="${pageContext.request.contextPath}/ContactServlet">お問い合わせ</a>
-    </div>
+    <a href="${pageContext.request.contextPath}/index.jsp">ログイン</a>
+    <a href="${pageContext.request.contextPath}/ContactServlet">お問い合わせ</a>
 
     <h2>いいねランキング</h2>
     <!-- 画面には表示しない隠しデータ置き場 -->
     <div id="user-data-store" style="display: none;">
         <c:forEach var="acc" items="${userList}">
             <span class="user-raw-data" 
-                  data-id="${acc.id}"
-                  data-kana="<c:out value='${acc.kana}'/>"
-                  data-gender="<c:out value='${acc.gender}'/>"
-                  data-age="<c:out value='${acc.age}'/>"
-                  data-profile="<c:out value='${acc.profile}'/>"
+                  data-id="${fn:escapeXml(acc.id)}"
+                  data-kana="${fn:escapeXml(acc.kana)}"
+                  data-gender="${fn:escapeXml(acc.gender)}"
+                  data-age="${fn:escapeXml(acc.age)}"
+                  data-profile="${fn:escapeXml(acc.profile)}"
                   data-likes="${acc.likes}"></span>
         </c:forEach>
     </div>
 
+     <!-- JS側でHTMLのパーツを組み立て、この箱の中に流し込む -->
     <div id="user-list-container"></div>
         
     <script>
@@ -72,8 +66,8 @@
     // 開発環境と本番環境でアプリ名や階層が変わっても、コードを書き換える必要がなくなる
     const contextPath = "${pageContext.request.contextPath}";
 
-    // セキュリティ上入れるべきもの、ブラウザがそのままユーザーが入力したJSやHTMLを実行してしまう
-    // 「g」= Global(全体)という意味で文字列に含まれる該当記号
+    // ユーザーが入力した文字列の中に、HTMLの仕組みで使われる特殊な記号が含まれていた場合、安全な「ただの文字」に置き換えるための関数
+    // 「g」= Global(全体)という意味で全ての文字列に含まれる該当記号
     function escapeHtml(str) {
         if (str === null || str === undefined) return '';
         return String(str)

@@ -16,13 +16,12 @@ import model.Account;
 public class UserRankingServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    // 1.ランキング画面を表示する処理
+    // ランキング画面を表示する処理
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
         try {
-            // DBからユーザー一覧（ランキング）を取得
             AccountDAO dao = new AccountDAO();
             List<Account> userList = dao.findGeneralUsersOrderByLikes();
 
@@ -37,7 +36,7 @@ public class UserRankingServlet extends HttpServlet {
         request.getRequestDispatcher("top.jsp").forward(request, response);
     }
 
-    // 2.いいね！ボタンが押された時の処理
+    // いいねボタンが押された時の処理
     protected void doPost(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
         
