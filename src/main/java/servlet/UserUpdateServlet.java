@@ -152,7 +152,8 @@ public class UserUpdateServlet extends HttpServlet {
             if (imagePath != null) {
                 updateAccount.setImagePath(imagePath);
             } else {
-                updateAccount.setImagePath(null);
+                // 既存の画像パスをそのままキープする
+                updateAccount.setImagePath(loginUser.getImagePath());
             }
 
             // --- DBのプロフィール情報を更新 ---

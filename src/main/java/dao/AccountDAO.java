@@ -159,11 +159,7 @@ public class AccountDAO {
         String sql;
         boolean hasImage = account.getImagePath() != null && !account.getImagePath().isEmpty();
 
-        if (hasImage) {
-            sql = "UPDATE users SET name=?, kana=?, gender=?, age=?, profile=?, profile_image=? WHERE id=?";
-        } else {
-            sql = "UPDATE users SET name=?, kana=?, gender=?, age=?, profile=? WHERE id=?";
-        }
+        sql = "UPDATE users SET name=?, kana=?, gender=?, age=?, profile=?, profile_image=? WHERE id=?";
 
         try (Connection conn = DBManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -173,13 +169,8 @@ public class AccountDAO {
             ps.setString(3, account.getGender());
             ps.setInt(4, account.getAge());
             ps.setString(5, account.getProfile());
-
-            if (hasImage) {
-                ps.setString(6, account.getImagePath());
-                ps.setInt(7, account.getId());
-            } else {
-                ps.setInt(6, account.getId());
-            }
+            ps.setString(6, account.getImagePath());
+            ps.setInt(7, account.getId());
 
             int result = ps.executeUpdate();
             return result > 0;
