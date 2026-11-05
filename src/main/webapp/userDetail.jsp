@@ -45,8 +45,10 @@
         自己紹介：
         <br>
         <span>${fn:replace(fn:escapeXml(user.profile), '&#10;', '<br>')}</span>
+        <br><br>
 
-        現在の画像：<br>
+        現在の画像：
+        <br>
         <c:choose>
             <c:when test="${not empty user.imagePath}">
                 <img src="${pageContext.request.contextPath}/uploads/${fn:escapeXml(user.imagePath)}" class="profile-img" width="100" alt="プロフィール画像">

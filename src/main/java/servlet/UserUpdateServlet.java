@@ -121,16 +121,18 @@ public class UserUpdateServlet extends HttpServlet {
 
             // --- 画像ファイルが選択されている場合の保存処理 ---
             String imagePath = null;
-            if (image != null && image.getSize() > 0) {
-                String uploadPath = getServletContext().getRealPath("") + File.separator + "uploads";
+            if (errorMsg == null && image != null && image.getSize() > 0) {
+                String uploadPath = getServletContext().getRealPath("/uploads");
                 File uploadDir = new File(uploadPath);
                 if (!uploadDir.exists()) {
                     uploadDir.mkdir();
                 }
                 String fileName = Paths.get(image.getSubmittedFileName()).getFileName().toString();
+                
+                // ここで実際にファイルをサーバーに書き込む
                 image.write(uploadPath + File.separator + fileName);
                 
-                // DBに保存するファイルパス（※プロジェクトの設計に合わせて調整してください）
+                // DBに保存するパス
                 imagePath = "uploads/" + fileName;
             }
 
