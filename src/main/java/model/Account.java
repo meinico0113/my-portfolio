@@ -114,4 +114,17 @@ public class Account {
 
     public int getLikes() { return likes; }
     public void setLikes(int likes) { this.likes = likes; }
+
+    public String getFormattedProfile() {
+        if (this.profile == null) {
+            return "";
+        }
+        String escaped = this.profile
+                .replace("&", "&amp;")
+                .replace("<", "&lt;")
+                .replace(">", "&gt;")
+                .replace("\"", "&quot;")
+                .replace("'", "&#39;");
+        return escaped.replace("\r\n", "<br>").replace("\n", "<br>");
+    }
 }

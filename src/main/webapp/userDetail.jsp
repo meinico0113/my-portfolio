@@ -44,7 +44,7 @@
 
         自己紹介：
         <br>
-        <span>${fn:replace(fn:escapeXml(user.profile), '&#10;', '<br>')}</span>
+        <span><c:out value="${user.formattedProfile}" escapeXml="false" /></span>
         <br><br>
 
         現在の画像：
