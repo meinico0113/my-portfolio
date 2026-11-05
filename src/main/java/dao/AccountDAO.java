@@ -335,16 +335,17 @@ public class AccountDAO {
         String insertLogSql = "INSERT INTO likes_log (target_user_id) VALUES (?)";
 
         try (Connection conn = DBManager.getConnection()) {
-            conn.setAutoCommit(false); // トランザクション開始
+            // トランザクション開始(すべて成功するか、すべて無かったことにするかを管理する仕組みのスタート)
+            conn.setAutoCommit(false);
 
             try (PreparedStatement psUser = conn.prepareStatement(updateUsersSql);
                  PreparedStatement psLog = conn.prepareStatement(insertLogSql)) {
 
-                // 1. usersテーブルの累計いいねを+1
+                // usersテーブルの累計いいねを+1
                 psUser.setInt(1, id);
                 psUser.executeUpdate();
 
-                // 2. likes_logテーブルにいいね履歴を記録
+                // likes_logテーブルにいいね履歴を記録
                 psLog.setInt(1, id);
                 psLog.executeUpdate();
 
@@ -352,6 +353,7 @@ public class AccountDAO {
             } catch (Exception e) {
                 conn.rollback(); // エラー時は元に戻す
                 throw e;
+            // 必ず元に戻す
             } finally {
                 conn.setAutoCommit(true);
             }

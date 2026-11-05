@@ -1,82 +1,63 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" isELIgnored="false" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>アカウント詳細</title>
-<style>
-    body {
-        font-family: sans-serif;
-        margin: 20px;
-    }
-    .profile-item {
-        margin-bottom: 15px;
-    }
-    .profile-img {
-        max-width: 150px;
-        max-height: 150px;
-        display: block;
-        margin-top: 5px;
-    }
-    /* いいねボタンのスタイル */
-    .btn {
-        display: inline-block;
-        padding: 5px 10px;
-        cursor: pointer;
-        border-radius: 4px;
-        border: none;
-        font-size: 13.333px;
-        font-family: Arial;
-        color: white;
-    }
-    .like-btn {
-        background-color: #ff4d4d;
-    }
-
-</style>
+    <meta charset="UTF-8">
+    <title>アカウント詳細</title>
+    <style>
+        /* いいねボタンのスタイル */
+        .like-btn { 
+            display: inline-block;
+            padding: 5px 10px; 
+            cursor: pointer; /* ボタンに合わせた際、カーソルが指のマークに変わる */
+            border-radius: 4px; 
+            border: none; /* 要素の周りにある枠線をすべてなくす */
+            color: white;
+            background-color: #ff4d4d;
+        }
+    </style>
 </head>
 <body>
     <h1>アカウント詳細</h1>
     <hr>
     <c:if test="${not empty user}">
-        <div class="profile-item">
-            名前： <c:out value="${user.name}" />
-        </div>
+        <div style="margin-bottom: 15px;">
+        名前：
+        <input type="text" name="name" value="${fn:escapeXml(user.name)}">
+        <br><br>
 
-        <div class="profile-item">
-            ふりがな： <c:out value="${user.kana}" />
-        </div>
+        ふりがな：
+        <input type="text" name="kana" value="${fn:escapeXml(user.kana)}">
+        <br><br>
 
-        <div class="profile-item">
-            性別： 
+        性別： 
         <c:choose>
             <c:when test="${user.gender == 'male'}">男性</c:when>
             <c:when test="${user.gender == 'female'}">女性</c:when>
-        <c:otherwise><c:out value="${user.gender}" /></c:otherwise>
+        <c:otherwise><c:out value="${fn:escapeXml(user.gender)}" /></c:otherwise>
         </c:choose> 
-        </div>
 
-        <div class="profile-item">
-            年齢： <c:out value="${user.age}" />歳
-        </div>
+        年齢：
+        <input type="number" name="age" value="${user.age != null && user.age != 0 ? user.age : ''}">
+        <br><br>
 
-        <div class="profile-item">
-            自己紹介：<br>
-            <c:out value="${user.profile}" />
-        </div>
+        自己紹介：
+        <br>
+        <textarea name="profile">${fn:escapeXml(user.profile)}</textarea>
+        <br><br>
 
-        <div class="profile-item">
-            現在の画像：<br>
-            <c:choose>
-                <c:when test="${not empty user.imagePath}">
-                    <img src="${pageContext.request.contextPath}/uploads/${user.imagePath}" class="profile-img" alt="プロフィール画像">
-                </c:when>
-                <c:otherwise>
-                    <img src="${pageContext.request.contextPath}/uploads/default.png" class="profile-img" alt="デフォルト画像">
-                </c:otherwise>
-            </c:choose>
-        </div>
+        現在の画像：<br>
+        <c:choose>
+            <c:when test="${not empty user.imagePath}">
+                <img src="${pageContext.request.contextPath}/uploads/${fn:escapeXml(user.imagePath)}" class="profile-img" width="100" alt="プロフィール画像">
+            </c:when>
+            <c:otherwise>
+                <img src="${pageContext.request.contextPath}/uploads/default.png" class="profile-img" width="100" alt="デフォルト画像">
+            </c:otherwise>
+        </c:choose>
     </c:if>
 
     <c:if test="${empty user}">
@@ -84,9 +65,8 @@
     </c:if>
 
     <!-- いいね数表示といいねボタン -->
-        <div class="profile-item">
-            <button type="button" class="btn like-btn" id="like-btn" data-id="${user.id}">いいね！</button>
-        </div>
+        <p>現在のいいね数: <strong id="like-count"><c:out value="${user.likes}" /></strong></p>
+        <button type="button" class="like-btn" id="like-btn" data-id="${user.id}">いいね！</button>
     
     <p>
         <a href="${pageContext.request.contextPath}/UserRankingServlet">公開画面に戻る</a>
