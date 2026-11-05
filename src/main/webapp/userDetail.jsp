@@ -24,13 +24,10 @@
     <h1>アカウント詳細</h1>
     <hr>
     <c:if test="${not empty user}">
-        <div style="margin-bottom: 15px;">
-        名前：
-        <input type="text" name="name" value="${fn:escapeXml(user.name)}">
+        名前：${fn:escapeXml(user.name)}
         <br><br>
 
-        ふりがな：
-        <input type="text" name="kana" value="${fn:escapeXml(user.kana)}">
+        ふりがな：${fn:escapeXml(user.kana)}
         <br><br>
 
         性別： 
@@ -39,15 +36,15 @@
             <c:when test="${user.gender == 'female'}">女性</c:when>
         <c:otherwise><c:out value="${fn:escapeXml(user.gender)}" /></c:otherwise>
         </c:choose> 
+        <br><br>
 
         年齢：
-        <input type="number" name="age" value="${user.age != null && user.age != 0 ? user.age : ''}">
+        ${user.age != null && user.age != 0 ? user.age : ''}歳
         <br><br>
 
         自己紹介：
         <br>
-        <textarea name="profile">${fn:escapeXml(user.profile)}</textarea>
-        <br><br>
+        <span>${fn:replace(fn:escapeXml(user.profile), '&#10;', '<br>')}</span>
 
         現在の画像：<br>
         <c:choose>
@@ -65,7 +62,7 @@
     </c:if>
 
     <!-- いいね数表示といいねボタン -->
-        <p>現在のいいね数: <strong id="like-count"><c:out value="${user.likes}" /></strong></p>
+        <p>現在のいいね数： <strong id="like-count"><c:out value="${user.likes}" /></strong></p>
         <button type="button" class="like-btn" id="like-btn" data-id="${user.id}">いいね！</button>
     
     <p>
