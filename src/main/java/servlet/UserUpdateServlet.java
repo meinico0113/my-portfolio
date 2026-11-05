@@ -157,7 +157,7 @@ public class UserUpdateServlet extends HttpServlet {
             }
 
             // --- DBのプロフィール情報を更新 ---
-            boolean isSuccess = dao.updateProfile(updateAccount);
+            boolean isSuccess = dao.updateProfile(updateAccount, image);
 
             if (!isSuccess) {
                 // 更新失敗時の処理
