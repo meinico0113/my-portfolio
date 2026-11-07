@@ -405,11 +405,10 @@ public class AccountDAO {
         }
     }
 
-    /* アクセス禁止かチェックするメソッド */
-    public Account findByStatus(String name, String password) {
+    /* ⭐️アクセス禁止かチェックする */
+    public Account findByStatus(String name, String password) throws Exception{
         Account account = null;
         
-        // is_deleted = 0（未削除）のユーザーを検索
         String sql = "SELECT * FROM users WHERE name = ? AND password = ? AND is_deleted = 0";
 
         try (Connection conn = DBManager.getConnection();
@@ -428,10 +427,7 @@ public class AccountDAO {
                     account.setStatus(rs.getInt("status"));
                 }
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
-        
         return account;
     }
 }
