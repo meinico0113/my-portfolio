@@ -10,10 +10,12 @@
 <body>
     <h1>一般画面</h1>
     <hr>
+
     <div class="like-info">
     <span>あなたの現在の「いいね」数：</span>
     <span class="likes-count">${account.likes}</span>
-    </div>
+    </div><br>
+
     <a href="${pageContext.request.contextPath}/UserEditServlet">プロフィールの編集</a><br>
     <a href="${pageContext.request.contextPath}/settings.jsp">設定（メアド・パスワード）</a><br>
     <a href="${pageContext.request.contextPath}/LogoutServlet">ログアウト</a>

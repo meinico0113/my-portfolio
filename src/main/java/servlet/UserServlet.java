@@ -15,14 +15,11 @@ import model.Account;
 public class UserServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+        throws ServletException, IOException {
         
         HttpSession session = request.getSession();
         Account loginUser = (Account) session.getAttribute("account");
-        if (loginUser == null) {
-            loginUser = (Account) session.getAttribute("loginUser");
-        }
 
         // 未ログインならログイン画面へ
         if (loginUser == null) {
@@ -36,15 +33,8 @@ public class UserServlet extends HttpServlet {
 
         // セッションを最新情報に更新
         session.setAttribute("account", freshAccount);
-        session.setAttribute("loginUser", freshAccount);
 
         // user.jsp へフォワード
         request.getRequestDispatcher("/user.jsp").forward(request, response);
-    }
-
-    // POSTで送られてきたのをそのままdogetメソッドに丸投げ
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        doGet(request, response);
     }
 }
