@@ -17,35 +17,35 @@
         .error-msg { color: red; font-weight: bold; }
     </style>
 </head>
-    <body>
-        <h1>お問い合わせ</h1>
-        <hr>
+<body>
+    <h1>お問い合わせ</h1>
+    <hr>
 
-        <%-- エラーメッセージ表示エリア --%>
-        <c:if test="${not empty error}">
-            <p class="error-msg">${error}</p>
-        </c:if>
+    <%-- エラーメッセージ表示エリア --%>
+    <c:if test="${not empty error}">
+        <p class="error-msg">${error}</p>
+     </c:if>
 
-        <form action="ContactServlet" method="post">
-            <div>
-                <label>カテゴリー</label>
-                <select name="category">
-                    <%-- DBから取得したリストをループ表示 --%>
-                    <c:forEach var="cat" items="${categoryList}">
-                        <option value="${fn:escapeXml(cat.name)}">${fn:escapeXml(cat.name)}</option>
-                    </c:forEach>
-                </select>
-            </div>
-            <div>
-                <label>内容</label>
-                <textarea name="content" rows="5">${fn:escapeXml(content)}</textarea>
-            </div>
+     <form action="ContactServlet" method="post">
+        <div>
+             <label>カテゴリー</label>
+             <select name="category">
+                <%-- DBから取得したリストをループ表示 --%>
+                 <c:forEach var="cat" items="${categoryList}">
+                    <option value="${fn:escapeXml(cat.name)}">${fn:escapeXml(cat.name)}</option>
+                </c:forEach>
+            </select>
+        </div>
+         <div>
+            <label>内容</label>
+            <textarea name="content" rows="5">${fn:escapeXml(content)}</textarea>
+        </div>
 
-            <button type="submit">送信する</button>
-        </form>
+        <button type="submit">送信する</button>
+    </form>
 
-        <p>
-            <a href="${pageContext.request.contextPath}/UserListServlet">公開画面へ戻る</a>
-        </p>
-    </body>
+    <p>
+        <a href="${pageContext.request.contextPath}/UserListServlet">公開画面へ戻る</a>
+    </p>
+</body>
 </html>

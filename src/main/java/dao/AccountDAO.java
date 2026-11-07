@@ -64,7 +64,7 @@ public class AccountDAO {
         }
     }
 
-    /* 指定したIDのアカウントを1件検索する */
+    /* ⭐️指定したIDのアカウントを1件検索する */
     public Account findById(int id) {
         Account account = null;
         String sql = "SELECT * FROM users WHERE id = ?";

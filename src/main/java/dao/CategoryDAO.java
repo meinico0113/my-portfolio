@@ -137,7 +137,7 @@ public class CategoryDAO {
         }
     }
 
-    /* カテゴリー全件取得メソッド */
+    /* ⭐️カテゴリー全件取得メソッド */
     public List<Category> findAllCategories() throws Exception {
         List<Category> list = new ArrayList<>();
         String sql = "SELECT id, name FROM categories ORDER BY id";

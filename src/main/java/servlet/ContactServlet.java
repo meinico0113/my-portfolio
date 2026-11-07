@@ -27,19 +27,7 @@ public class ContactServlet extends HttpServlet {
 
     // 画面を表示する
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        try {
-            // DBからカテゴリー一覧を取得
-            CategoryDAO dao = new CategoryDAO();
-            List<Category> categoryList = dao.findAllCategories();
-
-            // リクエストスコープにセット
-            request.setAttribute("categoryList", categoryList);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        
+        setCategoryListToRequest(request);
         request.getRequestDispatcher("contact.jsp").forward(request, response);
     }
 
@@ -49,27 +37,15 @@ public class ContactServlet extends HttpServlet {
         String category = request.getParameter("category");
         String content = request.getParameter("content");
 
-        // サーブレット側でのバリデーション（空チェック）
+        // 1. contentの空チェック
         if (content == null || content.trim().isEmpty()) {
-            try {
-                // JSPに戻すため、カテゴリー一覧を再度取得してリクエストスコープにセット
-                CategoryDAO dao = new CategoryDAO();
-                List<Category> categoryList = dao.findAllCategories();
-                request.setAttribute("categoryList", categoryList);
+            setCategoryListToRequest(request);
+            request.setAttribute("selectedCategory", category);
+            request.setAttribute("content", content);
 
-                // 入力値を保持するためにリクエストスコープに再セット
-                request.setAttribute("selectedCategory", category);
-                request.setAttribute("content", content);
-
-                // エラーメッセージをセット
-                request.setAttribute("error", "お問い合わせ内容を入力してください。");
-
-                // forwardを使ってJSPへ戻る（※redirectではない点に注意）
-                request.getRequestDispatcher("contact.jsp").forward(request, response);
-                return;
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            request.setAttribute("error", "お問い合わせ内容を入力してください。");
+            request.getRequestDispatcher("contact.jsp").forward(request, response);
+            return;
         }
 
         try {
@@ -77,19 +53,39 @@ public class ContactServlet extends HttpServlet {
             ContactDAO dao = new ContactDAO();
             dao.insertContact(category, content);
 
-            // 運営メールへの送信処理
+            // メールへの送信処理
             sendEmailToAdmin(category, content);
 
-            response.sendRedirect("UserListServlet");
+            // 成功時は公開画面へリダイレクト
+            response.sendRedirect("UserRankingServlet");
+
         } catch (Exception e) {
             e.printStackTrace();
-            // データベースエラー等の場合はクエリパラメータ等でエラーを渡す既存の仕様を維持、または同様にフォワードする
-            response.sendRedirect("contact.jsp?error=1");
+            
+            // 失敗時は入力内容とカテゴリ一覧を再セットしてJSPへフォワード
+            setCategoryListToRequest(request);
+            request.setAttribute("selectedCategory", category);
+            request.setAttribute("content", content);
+            request.setAttribute("error", "システムの処理中にエラーが発生しました。");
+            request.getRequestDispatcher("contact.jsp").forward(request, response);
+        }
+    }
+
+    // 共通の便利メソッド
+    // カテゴリ一覧をDBから取得してリクエストスコープにセットする処理
+    private void setCategoryListToRequest(HttpServletRequest request) {
+        try {
+            CategoryDAO dao = new CategoryDAO();
+            List<Category> categoryList = dao.findAllCategories();
+            request.setAttribute("categoryList", categoryList);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
     // 問い合わせ通知メール送信メソッド
-    private void sendEmailToAdmin(String category, String content) {
+    private void sendEmailToAdmin(String category, String content) throws Exception{
         // 送信先・送信元の設定
         final String toEmail = "k.kawara@oplan.co.jp";
         final String fromEmail = "k.kawara@oplan.co.jp"; 
@@ -112,34 +108,28 @@ public class ContactServlet extends HttpServlet {
                 return new PasswordAuthentication(fromEmail, password);
             }
         });
+        
+        // メールの内容を作成
+        Message message = new MimeMessage(session);
+        //差出人
+        message.setFrom(new InternetAddress(fromEmail, "お問い合わせシステム", "UTF-8"));
+        // 宛先
+        message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
+        // 件名
+        message.setSubject("【通知】新しいお問い合わせが届きました");
+        // 本文
+        StringBuilder sb = new StringBuilder();
+        sb.append("管理者様\n\n");
+        sb.append("Webサイトから新しくお問い合わせが届きました。\n\n");
+        sb.append("--------------------------------------------------\n");
+        sb.append("【カテゴリ】: ").append(category).append("\n");
+        sb.append("【お問い合わせ内容】:\n").append(content).append("\n");
+        sb.append("--------------------------------------------------\n\n");
+        sb.append("管理画面より対応ステータスをご確認ください。");
 
-        try {
-            // メールの内容を作成
-            Message message = new MimeMessage(session);
-            //差出人
-            message.setFrom(new InternetAddress(fromEmail, "お問い合わせシステム", "UTF-8"));
-            // 宛先
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toEmail));
-            // 件名
-            message.setSubject("【通知】新しいお問い合わせが届きました");
-            // 本文
-            StringBuilder sb = new StringBuilder();
-            sb.append("管理者様\n\n");
-            sb.append("Webサイトから新しくお問い合わせが届きました。\n\n");
-            sb.append("--------------------------------------------------\n");
-            sb.append("【カテゴリ】: ").append(category).append("\n");
-            sb.append("【お問い合わせ内容】:\n").append(content).append("\n");
-            sb.append("--------------------------------------------------\n\n");
-            sb.append("管理画面より対応ステータスをご確認ください。");
+        message.setText(sb.toString());
 
-            message.setText(sb.toString());
-
-            // メール送信実行
-            Transport.send(message);
-
-        } catch (Exception e) {
-            System.err.println("メール送信に失敗しました: " + e.getMessage());
-            e.printStackTrace();
-        }
+        // メール送信実行
+        Transport.send(message);
     }
 }

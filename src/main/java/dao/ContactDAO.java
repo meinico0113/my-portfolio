@@ -90,7 +90,7 @@ public class ContactDAO {
         }
     }
 
-    /* お問い合わせ内容をDBに新規登録するためのメソッド */
+    /* ⭐️お問い合わせ内容をDBに新規登録する */
     public void insertContact(String category, String content) throws Exception {
     // statusは「未対応」をデフォルト値として挿入
         String sql = "INSERT INTO contacts (category, content, status, created_at) VALUES (?, ?, '未対応', NOW())";
