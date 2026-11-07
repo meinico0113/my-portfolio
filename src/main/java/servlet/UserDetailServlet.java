@@ -26,6 +26,8 @@ public class UserDetailServlet extends HttpServlet {
                 Account user = dao.findById(id); // ID検索メソッドを実行
                 
                 request.setAttribute("user", user);
+            
+            // 起きるエラーが分かっているためピンポイントで指定(Integer.parseInt(idStr))
             } catch (NumberFormatException e) {
                 e.printStackTrace();
             }

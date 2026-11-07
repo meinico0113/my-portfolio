@@ -75,6 +75,7 @@ public class AccountDAO {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
+                    /* AmapToAccount = ccountオブジェクトを作って返すメソッド */
                     account = mapToAccount(rs);
                 }
             }

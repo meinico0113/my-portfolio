@@ -34,7 +34,7 @@
         <c:choose>
             <c:when test="${user.gender == 'male'}">男性</c:when>
             <c:when test="${user.gender == 'female'}">女性</c:when>
-        <c:otherwise><c:out value="${fn:escapeXml(user.gender)}" /></c:otherwise>
+            <c:otherwise>${fn:escapeXml(user.gender)}</c:otherwise>
         </c:choose> 
         <br><br>
 
@@ -44,17 +44,17 @@
 
         自己紹介：
         <br>
-        <span><c:out value="${user.formattedProfile}" escapeXml="false" /></span>
+        <c:out value="${user.formattedProfile}" escapeXml="false" />
         <br><br>
 
         現在の画像：
         <br>
         <c:choose>
             <c:when test="${not empty user.imagePath}">
-                <img src="${pageContext.request.contextPath}/uploads/${fn:escapeXml(user.imagePath)}" class="profile-img" width="100" alt="プロフィール画像">
+                <img src="${pageContext.request.contextPath}/uploads/${fn:escapeXml(user.imagePath)}" width="100" alt="プロフィール画像">
             </c:when>
             <c:otherwise>
-                <img src="${pageContext.request.contextPath}/uploads/default.png" class="profile-img" width="100" alt="デフォルト画像">
+                <img src="${pageContext.request.contextPath}/uploads/default.png" width="100" alt="デフォルト画像">
             </c:otherwise>
         </c:choose>
     </c:if>
@@ -64,7 +64,7 @@
     </c:if>
 
     <!-- いいね数表示といいねボタン -->
-        <p>現在のいいね数： <strong id="like-count"><c:out value="${user.likes}" /></strong></p>
+        <p>現在のいいね数： <span id="like-count"><c:out value="${user.likes}" /></span></p>
         <button type="button" class="like-btn" id="like-btn" data-id="${user.id}">いいね！</button>
     
     <p>
@@ -72,6 +72,7 @@
     </p>
 
 <script>
+    // いいねボタンが押された時
     document.addEventListener('DOMContentLoaded', function() {
         // 画面内から ID名がlike-btnである要素を探して取得する
         const likeBtn = document.getElementById('like-btn');
@@ -83,8 +84,9 @@
         }
     });
 
-    // 「いいね！」ボタンを押したときに画面をリロードせず、裏側でサーバー通信を行い、画面のいいね数を増やす処理
+    // いいねボタンを押したときに画面をリロードせず、裏側でサーバー通信を行い、画面のいいね数を増やす処理
     function sendLike(targetId) {
+        // Servletへ送るためのフォームデータを準備
         const formData = new URLSearchParams();
         formData.append('targetId', targetId);
 
