@@ -11,6 +11,7 @@ import model.Account;
 @WebServlet("/admin/accountCreate")
 @MultipartConfig // 画像アップロード用
 public class AccountCreateServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {

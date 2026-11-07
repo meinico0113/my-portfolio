@@ -9,6 +9,7 @@ import dao.CategoryDAO;
 
 @WebServlet("/admin/categoryNew")
 public class CategoryNewServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
 
     protected void doGet(HttpServletRequest request,
                          HttpServletResponse response)

@@ -11,6 +11,7 @@ import model.Account;
 
 @WebServlet("/admin/accountNew")
 public class AccountNewServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

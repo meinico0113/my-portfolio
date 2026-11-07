@@ -24,6 +24,7 @@ import model.Category;
 
 @WebServlet("/ContactServlet")
 public class ContactServlet extends HttpServlet {
+    private static final long serialVersionUID = 1L;
 
     // 画面を表示する
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
