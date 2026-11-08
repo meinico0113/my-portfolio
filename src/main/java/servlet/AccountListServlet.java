@@ -16,10 +16,10 @@ public class AccountListServlet extends HttpServlet {
             throws ServletException, IOException {
 
 try{
-
     int page = 1; // デフォルトは1ページ目を表示する
     int limit = 5; // 1ページあたりに表示する件数は5件と決める
 
+    // "page" = リンクにあるもの
     String pageParam = request.getParameter("page");
 
     // もしURLに「?page=2」などの指定があれば、その数字を現在のページ番号にする

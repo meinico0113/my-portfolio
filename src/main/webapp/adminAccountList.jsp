@@ -14,7 +14,6 @@
 <body>
     <h1>アカウント一覧</h1>
     <hr>
-
     <%-- エラーメッセージ表示エリア --%>
     <c:if test="${not empty error}">
         <p class="error-msg">${error}</p>
@@ -42,7 +41,7 @@
             <td>
                 <%-- ステータスの条件分岐 --%>
                 <c:choose>
-                    <c:when test="${account.status == 0}">アクセス許可</c:when>
+                    <c:when test="${account.status == 1}">アクセス許可</c:when>
                     <c:otherwise>アクセス禁止</c:otherwise>
                 </c:choose>
             </td>
@@ -62,11 +61,14 @@
 
     <%-- ページネーション部分 --%>
     <div style="margin-top:20px;">
+        <%-- 総ページ数分だけ1から順にループを回す --%>
         <c:forEach begin="1" end="${totalPages}" var="i">
             <c:choose>
+                <%-- 現在表示中のページ番号なら、リンクにせず太字にする --%>
                 <c:when test="${i == currentPage}">
                     <strong>${i}</strong>
                 </c:when>
+                <%-- 現在のページ以外なら、クリックして移動できるリンクにする --%>
                 <c:otherwise>
                     <a href="${pageContext.request.contextPath}/admin/accountList?page=${i}">${i}</a>
                 </c:otherwise>

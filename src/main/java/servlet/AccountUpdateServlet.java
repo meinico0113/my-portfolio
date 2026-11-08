@@ -1,6 +1,8 @@
 package servlet;
 
 import java.io.IOException;
+import java.nio.file.Paths;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -33,10 +35,13 @@ public class AccountUpdateServlet extends HttpServlet {
             String errorMsg = null;
 
             // ステータスのバリデーション
+            int status = 0;
             if (statusStr == null || !statusStr.matches("^[0-9]+$")) {
                 errorMsg = "ステータスを入力してください。";
+            } else {
+                // 正しいときだけ数値に変換する
+                status = Integer.parseInt(statusStr);
             }
-            int status = (statusStr != null && statusStr.matches("^[0-9]+$")) ? Integer.parseInt(statusStr) : 0;
 
             // 名前のバリデーション
             if (errorMsg == null) {
@@ -172,18 +177,25 @@ public class AccountUpdateServlet extends HttpServlet {
                     int age = (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) ? Integer.parseInt(ageStr) : 0;
                     Part image = request.getPart("image");
 
-            // 実体ファイルをサーバー上のuploadsフォルダに保存する
-                if (image != null && image.getSize() > 0) {
+                    String profileImage = null;
+
+                // 画像ファイルが選択されている場合の保存処理
+                if (image != null && image.getSize() > 0 && image.getSubmittedFileName() != null && !image.getSubmittedFileName().isEmpty()) {
+                    // 保存先フォルダのパスを特定
                     String uploadPath = getServletContext().getRealPath("/uploads");
                     java.io.File uploadDir = new java.io.File(uploadPath);
+                        // なければ作成
                         if (!uploadDir.exists()) {
                             uploadDir.mkdir();
                         }
-                    String fileName = java.nio.file.Paths.get(image.getSubmittedFileName()).getFileName().toString();
-                    image.write(uploadPath + java.io.File.separator + fileName);
+                    // 元のファイル名を取り出して、タイムスタンプを付与
+                    String originalFileName = java.nio.file.Paths.get(image.getSubmittedFileName()).getFileName().toString();
+                    profileImage = System.currentTimeMillis() + "_" + originalFileName;
+                    // 実際にファイルをサーバーに書き込む
+                    image.write(uploadPath + java.io.File.separator + profileImage);
                 }
 
-                dao.updateUser(id, name, email, password, status, role, kana, gender, age, profile, image);
+                dao.updateUser(id, name, email, password, status, role, kana, gender, age, profile, profileImage);
             }
 
             // 成功時はアカウント一覧画面へ

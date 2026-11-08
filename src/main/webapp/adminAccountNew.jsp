@@ -51,8 +51,8 @@
         <br><br>
 
         ステータス
-        <label><input type="radio" name="status" value="0" ${account.status == 0 ? 'checked' : ''}>アクセス許可</label>
-        <label><input type="radio" name="status" value="1" ${account.status == 1 ? 'checked' : ''}>アクセス禁止</label>
+        <label><input type="radio" name="status" value="1" ${account.status == 1 ? 'checked' : ''}>アクセス許可</label>
+        <label><input type="radio" name="status" value="0" ${account.status == 0 ? 'checked' : ''}>アクセス禁止</label>
         <br><br>
     </div>
 

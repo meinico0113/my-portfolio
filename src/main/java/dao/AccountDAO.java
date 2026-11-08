@@ -116,16 +116,11 @@ public class AccountDAO {
 
     /* 一般ユーザー情報を更新する（管理者側） */
     public void updateUser(int id, String name, String email,  String password, int status, String role, String kana, 
-                           String gender, int age, String profile, Part image) throws Exception {
-        
-        String fileName = null;
-        if (image != null && image.getSize() > 0) {
-            fileName = Paths.get(image.getSubmittedFileName()).getFileName().toString();
-        }
+                           String gender, int age, String profile, String profileImage) throws Exception {
         
         //ブラウザのセキュリティ上、画像を変更しなければ空っぽとして送信されてしまうため
         String sql;
-        if (fileName != null) {
+        if (profileImage != null) {
             sql = "UPDATE users SET name=?, email=?, password=?, status=?, role=?, kana=?, gender=?, age=?, profile=?, profile_image=? WHERE id=?";
         } else {
             sql = "UPDATE users SET name=?, email=?, password=?, status=?, role=?, kana=?, gender=?, age=?, profile=? WHERE id=?";
@@ -144,8 +139,8 @@ public class AccountDAO {
             ps.setInt(8, age);
             ps.setString(9, profile);
             
-            if (fileName != null) {
-                ps.setString(10, fileName);
+            if (profileImage != null) {
+                ps.setString(10, profileImage);
                 ps.setInt(11, id);
             } else {
                 ps.setInt(10, id);
@@ -239,7 +234,7 @@ public class AccountDAO {
         }
     }
 
-    /* ページング用 */
+    /* ⭐️ページング用 */
     public List<Account> findByPage(int offset, int limit) throws Exception {
         List<Account> list = new ArrayList<>();
         String sql = "SELECT * FROM users WHERE is_deleted = 0 ORDER BY id LIMIT ? OFFSET ?";
@@ -259,7 +254,7 @@ public class AccountDAO {
         return list;
     }
 
-    /* 全件数を取得する */
+    /* ⭐️全件数を取得する */
     public int countAll() throws Exception {
         int count = 0;
         String sql = "SELECT COUNT(*) FROM users WHERE is_deleted = 0";
@@ -383,7 +378,7 @@ public class AccountDAO {
         }
     }
 
-    /* 名前が重複していないかチェックするメソッド */
+    /* ⭐️名前が重複していないかチェックするメソッド */
     public boolean checknameDuplicate(String name, int id) throws Exception {
         boolean exists = false;
         // 自分以外のIDを対象にれる

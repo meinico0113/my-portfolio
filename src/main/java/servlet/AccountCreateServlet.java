@@ -33,10 +33,13 @@ public class AccountCreateServlet extends HttpServlet {
             String errorMsg = null;
 
             // ステータスのバリデーション
+            int status = 0;
             if (statusStr == null || !statusStr.matches("^[0-9]+$")) {
                 errorMsg = "ステータスを入力してください。";
+            } else {
+                // 正しいときだけ数値に変換する
+                status = Integer.parseInt(statusStr);
             }
-            int status = (statusStr != null && statusStr.matches("^[0-9]+$")) ? Integer.parseInt(statusStr) : 0;
 
             // 名前のバリデーション
             if (errorMsg == null) {

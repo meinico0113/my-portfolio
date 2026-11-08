@@ -11,13 +11,13 @@
     <h1>管理者画面</h1>
     <hr>
     <h2>いいねランキング</h2>
-    
-    <%-- ランキングデータが空（0件）の場合の判定 --%>
+
+    <%-- ランキングデータが空の場合 --%>
     <c:if test="${empty rankingList}">
         <p>現在ランキングデータはありません。</p>
     </c:if>
 
-    <%-- ランキングデータがある場合のループ処理（varStatusで順位を自動カウント） --%>
+    <%-- ランキングデータがある場合 --%>
     <c:forEach var="record" items="${rankingList}" varStatus="status">
         <p>${status.count}位：${record}</p>
     </c:forEach>

@@ -48,8 +48,8 @@
         <br><br>
 
         ステータス
-        <label><input type="radio" name="status" value="0" ${account.status == 0 ? 'checked' : ''}>アクセス許可</label>
-        <label><input type="radio" name="status" value="1" ${account.status == 1 ? 'checked' : ''}>アクセス禁止</label>
+        <label><input type="radio" name="status" value="1" ${account.status == 1 ? 'checked' : ''}>アクセス許可</label>
+        <label><input type="radio" name="status" value="0" ${account.status == 0 ? 'checked' : ''}>アクセス禁止</label>
         <br>
     </div>
 
@@ -110,7 +110,7 @@ function switchFields() {
     }
 }
 
-// 画面読み込み時に初期状態に合わせて表示を切り替える
+// 自動的に switchFields() 関数を実行する（画面が表示された時点でラジオボタンにチェックが入るようにする）
 window.onload = function() {
     switchFields();
 }
