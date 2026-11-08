@@ -26,15 +26,15 @@ public class SettingsServlet extends HttpServlet {
 
         // セッションからユーザー情報を取得
         HttpSession session = request.getSession();
-        Account currentAccount = (Account) session.getAttribute("account");
+        Account loginUser = (Account) session.getAttribute("account");
 
-        if (currentAccount == null) {
+        if (loginUser == null) {
             response.sendRedirect(request.getContextPath() + "/index.jsp");
             return;
         }
 
         // オブジェクトから「ID」を取得する
-        int userId = currentAccount.getId();
+        int userId = loginUser.getId();
         String errorMsg = null;
 
         // メールアドレスのバリデーション
@@ -59,9 +59,13 @@ public class SettingsServlet extends HttpServlet {
 
         // エラーがあった場合は入力値を保持してJSPへ戻す
         if (errorMsg != null) {
-            request.setAttribute("message", errorMsg);
-            request.setAttribute("email", email);
-            request.setAttribute("password", pass);
+            Account account = new Account();
+            account.setId(userId);
+            account.setEmail(email);
+            account.setPassword(pass);
+
+            request.setAttribute("error", errorMsg);
+            request.setAttribute("account", account);
             request.getRequestDispatcher("settings.jsp").forward(request, response);
             return;
         }
@@ -74,20 +78,21 @@ public class SettingsServlet extends HttpServlet {
 
             if (isSuccess) {
                 // セッション内のオブジェクトも最新の値に更新
-                currentAccount.setEmail(email);
-                currentAccount.setPassword(pass);
-                session.setAttribute("account", currentAccount); // セッション上書き
+                loginUser.setEmail(email);
+                loginUser.setPassword(pass);
+                session.setAttribute("account", loginUser); // セッション上書き
                 
                 request.setAttribute("message", "設定を保存しました");
             } else {
-                request.setAttribute("message", "DBの更新に失敗しました（一致するユーザーが見つかりません）");
+                request.setAttribute("error", "DBの更新に失敗しました（一致するユーザーが見つかりません）");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("message", "エラーが発生しました: " + e.getMessage());
+            request.setAttribute("error", "エラーが発生しました: " + e.getMessage());
         }
 
+        request.setAttribute("account", loginUser);
         request.getRequestDispatcher("settings.jsp").forward(request, response);
     }
 }
