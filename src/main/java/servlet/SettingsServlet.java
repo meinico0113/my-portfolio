@@ -82,14 +82,15 @@ public class SettingsServlet extends HttpServlet {
                 loginUser.setPassword(pass);
                 session.setAttribute("account", loginUser); // セッション上書き
                 
-                request.setAttribute("message", "設定を保存しました");
+                response.sendRedirect(request.getContextPath() + "/UserEditServlet");
+                return;
             } else {
-                request.setAttribute("error", "DBの更新に失敗しました（一致するユーザーが見つかりません）");
+                request.setAttribute("error", "DBの更新に失敗しました");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("error", "エラーが発生しました: " + e.getMessage());
+            request.setAttribute("error", "エラーが発生しました: ");
         }
 
         request.setAttribute("account", loginUser);

@@ -219,7 +219,7 @@ public class AccountDAO {
         return a;
     }
 
-    /* メールアドレスとパスワードを更新する */
+    /* ⭐️メールアドレスとパスワードを更新する */
     public boolean updateEmailAndPassword(int id, String email, String password) {
         String sql = "UPDATE users SET email = ?, password = ? WHERE id = ?";
 
