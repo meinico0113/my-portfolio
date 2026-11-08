@@ -9,11 +9,9 @@
     <title>プロフィール編集</title>
     <style>
         .error-msg { color: red; font-weight: bold; }
-        .preview-img { max-width: 150px; max-height: 150px; display: block; margin: 5px 0; }
     </style>
 </head>
 <body>
-
     <h1>プロフィール編集</h1>
     <hr>
 
@@ -29,9 +27,11 @@
         <input type="hidden" name="id" value="${userProfile.id}">
 
         <p>
-            プロフィール画像：
-            <input type="file" name="image">
-            <br><br>
+            プロフィール画像<input type="file" name="image">
+            <br>
+
+            現在の画像<br>
+            <img src="${pageContext.request.contextPath}/uploads/${not empty userProfile.imagePath ? userProfile.imagePath : 'default.png'}" width="100" alt="現在の画像"><br><br>
         </p>
 
         <p>
