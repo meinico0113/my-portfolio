@@ -24,40 +24,40 @@
     <form action="${pageContext.request.contextPath}/UserUpdateServlet" method="post" enctype="multipart/form-data">
         
         <!-- ID保持用 -->
-        <input type="hidden" name="id" value="${userProfile.id}">
+        <input type="hidden" name="id" value="${account.id}">
 
         <p>
             プロフィール画像<input type="file" name="image">
             <br>
 
             現在の画像<br>
-            <img src="${pageContext.request.contextPath}/uploads/${not empty userProfile.imagePath ? userProfile.imagePath : 'default.png'}" width="100" alt="現在の画像"><br><br>
+            <img src="${pageContext.request.contextPath}/uploads/${not empty account.imagePath ? account.imagePath : 'default.png'}" width="100" alt="現在の画像">
         </p>
 
         <p>
             名前<br>
-            <input type="text" name="name" value="${fn:escapeXml(userProfile.name)}" required>
+            <input type="text" name="name" value="${fn:escapeXml(account.name)}" required>
         </p>
 
         <p>
             ふりがな<br>
-            <input type="text" name="kana" value="${fn:escapeXml(userProfile.kana)}" required>
+            <input type="text" name="kana" value="${fn:escapeXml(account.kana)}" required>
         </p>
 
         <p>
             性別<br>
-            <label><input type="radio" name="gender" value="male" ${userProfile.gender == 'male' ? 'checked' : ''}> 男性</label>
-            <label><input type="radio" name="gender" value="female" ${userProfile.gender == 'female' ? 'checked' : ''}> 女性</label>
+            <label><input type="radio" name="gender" value="male" ${account.gender == 'male' ? 'checked' : ''}> 男性</label>
+            <label><input type="radio" name="gender" value="female" ${account.gender == 'female' ? 'checked' : ''}> 女性</label>
         </p>
 
         <p>
             年齢<br>
-            <input type="number" name="age" value="${fn:escapeXml(userProfile.age)}" required>
+            <input type="number" name="age" value="${fn:escapeXml(account.age)}" required>
         </p>
 
         <p>
             自己紹介<br>
-            <textarea name="introduction" rows="5" cols="40">${fn:escapeXml(userProfile.profile)}</textarea>
+            <textarea name="profile">${fn:escapeXml(account.profile)}</textarea>
         </p>
 
         <p>

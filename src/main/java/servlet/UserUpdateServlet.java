@@ -30,11 +30,7 @@ public class UserUpdateServlet extends HttpServlet {
 
         // セッションからユーザー情報を取得
         HttpSession session = request.getSession();
-        Account loginUser = (Account) session.getAttribute("loginUser");
-
-        if (loginUser == null) {
-            loginUser = (Account) session.getAttribute("account");
-        }
+        Account loginUser = (Account) session.getAttribute("account");
 
         if (loginUser == null) {
             response.sendRedirect(request.getContextPath() + "/index.jsp");
@@ -50,7 +46,7 @@ public class UserUpdateServlet extends HttpServlet {
             String kana = request.getParameter("kana");
             String gender = request.getParameter("gender");
             String ageStr = request.getParameter("age");
-            String profile = request.getParameter("introduction");
+            String profile = request.getParameter("profile");
 
             // エラーメッセージ用変数
             String errorMsg = null;
@@ -119,9 +115,36 @@ public class UserUpdateServlet extends HttpServlet {
                 }
             }
 
+            // --- エラーがあった場合の入力保持処理（AccountUpdateServletスタイルに統一） ---
+            if (errorMsg != null) {
+                Account account = new Account();
+                account.setId(id);
+                account.setName(name);
+                account.setKana(kana);
+                account.setGender(gender);
+                
+                if (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) {
+                    account.setAge(Integer.parseInt(ageStr));
+                } else {
+                    account.setAge(0);
+                }
+                
+                account.setProfile(profile);
+                
+                // 元の画像パスを維持
+                if (loginUser != null) {
+                    account.setImagePath(loginUser.getImagePath());
+                }
+
+                request.setAttribute("account", account);
+                request.setAttribute("error", errorMsg);
+                request.getRequestDispatcher("/userEdit.jsp").forward(request, response);
+                return;
+            }
+
             // --- 画像ファイルが選択されている場合の保存処理 ---
             String imagePath = null;
-            if (errorMsg == null && image != null && image.getSize() > 0) {
+            if (image != null && image.getSize() > 0) {
                 String uploadPath = getServletContext().getRealPath("/uploads");
                 File uploadDir = new File(uploadPath);
                 if (!uploadDir.exists()) {
@@ -129,18 +152,18 @@ public class UserUpdateServlet extends HttpServlet {
                 }
                 String fileName = Paths.get(image.getSubmittedFileName()).getFileName().toString();
                 
-                // ここで実際にファイルをサーバーに書き込む
+                // 実際にファイルをサーバーに書き込む
                 image.write(uploadPath + File.separator + fileName);
                 
                 // DBに保存するパス
                 imagePath = "uploads/" + fileName;
             }
 
-            int age = Integer.parseInt(ageStr);
+            int age = (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) ? Integer.parseInt(ageStr) : 0;
 
             // --- DAOに渡すためのAccountオブジェクトを作成 ---
             Account updateAccount = new Account();
-            updateAccount.setId(loginUser.getId()); // セッションのIDを安全に使用
+            updateAccount.setId(loginUser.getId());
             updateAccount.setName(name);
             updateAccount.setKana(kana);
             updateAccount.setGender(gender);
@@ -148,11 +171,9 @@ public class UserUpdateServlet extends HttpServlet {
             updateAccount.setProfile(profile);
             
             // 新しい画像がアップロードされた場合のみパスを設定
-            // (未選択の場合は null のままで、DAO側が「画像更新なし」と判定するようにする)
             if (imagePath != null) {
                 updateAccount.setImagePath(imagePath);
             } else {
-                // 既存の画像パスをそのままキープする
                 updateAccount.setImagePath(loginUser.getImagePath());
             }
 
@@ -162,7 +183,7 @@ public class UserUpdateServlet extends HttpServlet {
             if (!isSuccess) {
                 // 更新失敗時の処理
                 request.setAttribute("error", "プロフィールの更新に失敗しました。");
-                request.setAttribute("userProfile", updateAccount);
+                request.setAttribute("account", updateAccount);
                 request.getRequestDispatcher("/userEdit.jsp").forward(request, response);
                 return;
             }
@@ -178,7 +199,7 @@ public class UserUpdateServlet extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("error", "プロフィールの更新に失敗しました。");
-            request.setAttribute("userProfile", loginUser);
+            request.setAttribute("account", loginUser);
             request.getRequestDispatcher("/userEdit.jsp").forward(request, response);
         }
     }

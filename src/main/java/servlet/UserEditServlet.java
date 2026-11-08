@@ -27,7 +27,7 @@ public class UserEditServlet extends HttpServlet {
         }
         
         AccountDAO dao = new AccountDAO();
-        Account userProfile = dao.findById(loginUser.getId());
+        Account account = dao.findById(loginUser.getId());
 
         // エラーメッセージがセッションにあればリクエストスコープへ移動して削除
         String error = (String) session.getAttribute("error");
@@ -36,15 +36,7 @@ public class UserEditServlet extends HttpServlet {
             session.removeAttribute("error");
         }
 
-        // エラー時の入力値保持データがあれば、そちらを優先して画面に渡す
-        Account editInput = (Account) session.getAttribute("editInput");
-        if (editInput != null) {
-            request.setAttribute("userProfile", editInput);
-            session.removeAttribute("editInput");
-        } else {
-            request.setAttribute("userProfile", userProfile);
-        }
-
+        request.setAttribute("account", account);
         request.getRequestDispatcher("/userEdit.jsp").forward(request, response);
     }
 }
