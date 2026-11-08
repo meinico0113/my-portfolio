@@ -15,20 +15,14 @@ public class LogoutServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
 
-        // セッションを取得
+        // セッションを取得なければnull
         HttpSession session = request.getSession(false);
-
         if (session != null) {
             // セッションを完全破棄
             session.invalidate();
         }
 
-        // 破棄したらtop.jspへリダイレクト
+        // 破棄したら公開画面へリダイレクト
         response.sendRedirect(request.getContextPath() + "/UserRankingServlet");
-    }
-    
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        doGet(request, response);
     }
 }

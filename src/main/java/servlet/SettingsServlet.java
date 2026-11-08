@@ -82,7 +82,7 @@ public class SettingsServlet extends HttpServlet {
                 loginUser.setPassword(pass);
                 session.setAttribute("account", loginUser); // セッション上書き
                 
-                response.sendRedirect(request.getContextPath() + "/UserEditServlet");
+                response.sendRedirect(request.getContextPath() + "/UserServlet");
                 return;
             } else {
                 request.setAttribute("error", "DBの更新に失敗しました");
