@@ -15,15 +15,12 @@ public class AccountStatusToggleServlet extends HttpServlet {
             throws ServletException, IOException {
 
         try {
-            // 画面から送られてきた「id」という名前の文字列を取得し、Javaの数値（int型）に変換
             int id = Integer.parseInt(request.getParameter("id"));
 
             AccountDAO dao = new AccountDAO();
-
-            // 今のデータ取得
             Account account = dao.findById(id);
 
-            // 今のステータスが 1（有効）なら → 0（無効）にする、そうでなければ → 1（有効）にする
+            // 今のステータスが 1（許可）なら → 0（禁止）にする、そうでなければ → 1（許可）にする
             int newStatus = (account.getStatus() == 1) ? 0 : 1;
 
             dao.updateStatus(id, newStatus);
@@ -33,5 +30,7 @@ public class AccountStatusToggleServlet extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        request.setAttribute("error", "アカウントの切替に失敗しました。");
+            request.getRequestDispatcher("/adminAccountList.jsp").forward(request, response);
     }
 }

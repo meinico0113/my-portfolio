@@ -28,6 +28,12 @@ public class AccountCreateServlet extends HttpServlet {
             String email = request.getParameter("email");
             String password = request.getParameter("password");
             String statusStr = request.getParameter("status");
+            // 安全に数値に変換しておく
+            String ageStr = request.getParameter("age");
+            int age = 0;
+            if (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) {
+                age = Integer.parseInt(ageStr);
+            }
 
             // エラーメッセージを最初はnullで用意
             String errorMsg = null;
@@ -77,8 +83,9 @@ public class AccountCreateServlet extends HttpServlet {
             // --- ここから一般ユーザーのみのチェック ---
             String kana = request.getParameter("kana");
             String gender = request.getParameter("gender");
-            String ageStr = request.getParameter("age");
             String profile = request.getParameter("profile");
+
+            Part image = null;
 
             if (!"admin".equals(role)) {
                 // ふりがなのバリデーション
@@ -121,7 +128,7 @@ public class AccountCreateServlet extends HttpServlet {
                 // 画像のバリデーション
                 if (errorMsg == null) {
                     try {
-                        Part image = request.getPart("image");
+                        image = request.getPart("image");
                         if (image != null && image.getSize() > 0) {
                         // 2MB = 2 * 1024 * 1024 bytes
                         long maxSize = 2 * 1024 * 1024; 
@@ -146,12 +153,7 @@ public class AccountCreateServlet extends HttpServlet {
                 if (!"admin".equals(role)) {
                     account.setKana(kana);
                     account.setGender(gender);
-                    
-                    if (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) {
-                        account.setAge(Integer.parseInt(ageStr));
-                    } else {
-                        account.setAge(0);
-                    }
+                    account.setAge(age);
                     account.setProfile(profile);
                 }
 
@@ -165,23 +167,23 @@ public class AccountCreateServlet extends HttpServlet {
             if ("admin".equals(role)) {
                 dao.insertAdmin(name, email, password, status);
             } else {
-                int age = (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) ? Integer.parseInt(ageStr) : 0;
-
                 // 画像のアップロード処理（重複防止タイムスタンプ付与）
                 String profileImage = null;
                 try {
-                    Part image = request.getPart("image");
                     if (image != null && image.getSize() > 0 && image.getSubmittedFileName() != null && !image.getSubmittedFileName().isEmpty()) {
                         
-                        // 保存先フォルダのパスを取得・生成する処理
+                        // 保存先フォルダのパスを特定
                         String uploadPath = getServletContext().getRealPath("/uploads");
                         java.io.File uploadDir = new java.io.File(uploadPath);
+                        // なければ作成
                         if (!uploadDir.exists()) {
                             uploadDir.mkdirs();
                         }
-
+                        // ファイル名を取り出す
                         String fileName = java.nio.file.Paths.get(image.getSubmittedFileName()).getFileName().toString();
+                        // 実際にファイルをサーバーに書き込む
                         profileImage = System.currentTimeMillis() + "_" + fileName;
+                         // DBに保存するパス
                         image.write(uploadPath + java.io.File.separator + profileImage);
                     }
                 } catch (Exception e) {

@@ -24,6 +24,9 @@ public class AccountDeleteServlet extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
+
+            request.setAttribute("error", "アカウントの削除に失敗しました。");
+            request.getRequestDispatcher("/adminAccountList.jsp").forward(request, response);
         }
     }
 }

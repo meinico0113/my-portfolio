@@ -1,7 +1,6 @@
 package servlet;
 
 import java.io.IOException;
-import java.nio.file.Paths;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -12,6 +11,7 @@ import model.Account;
 
 @WebServlet("/admin/accountUpdate")
 @MultipartConfig // 画像アップロード用
+
 public class AccountUpdateServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
@@ -30,6 +30,12 @@ public class AccountUpdateServlet extends HttpServlet {
             String email = request.getParameter("email");
             String password = request.getParameter("password");
             String statusStr = request.getParameter("status");
+            // 安全に数値に変換しておく
+            String ageStr = request.getParameter("age");
+            int age = 0;
+            if (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) {
+                age = Integer.parseInt(ageStr);
+            }
 
             // エラーメッセージを最初はnullで用意
             String errorMsg = null;
@@ -79,8 +85,9 @@ public class AccountUpdateServlet extends HttpServlet {
             // --- 一般ユーザーのみのチェック ---
             String kana = request.getParameter("kana");
             String gender = request.getParameter("gender");
-            String ageStr = request.getParameter("age");
             String profile = request.getParameter("profile");
+
+             Part image = null;
 
             if (!"admin".equals(role)) {
                 // ふりがなのバリデーション
@@ -123,7 +130,7 @@ public class AccountUpdateServlet extends HttpServlet {
                 // 画像のバリデーション
                 if (errorMsg == null) {
                     try {
-                        Part image = request.getPart("image");
+                        image = request.getPart("image");
                         if (image != null && image.getSize() > 0) {
                         // 2MB = 2 * 1024 * 1024 bytes
                         long maxSize = 2 * 1024 * 1024; 
@@ -149,12 +156,7 @@ public class AccountUpdateServlet extends HttpServlet {
                 if (!"admin".equals(role)) {
                     account.setKana(kana);
                     account.setGender(gender);
-                    
-                    if (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) {
-                        account.setAge(Integer.parseInt(ageStr));
-                    } else {
-                        account.setAge(0);
-                    }
+                    account.setAge(age);
                     account.setProfile(profile);
                     
                     // 元の画像パスを維持
@@ -174,25 +176,27 @@ public class AccountUpdateServlet extends HttpServlet {
             if ("admin".equals(role)) {
                 dao.updateAdmin(id, name, email, password, status, role);
                 } else {
-                    int age = (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) ? Integer.parseInt(ageStr) : 0;
-                    Part image = request.getPart("image");
 
                     String profileImage = null;
 
                 // 画像ファイルが選択されている場合の保存処理
-                if (image != null && image.getSize() > 0 && image.getSubmittedFileName() != null && !image.getSubmittedFileName().isEmpty()) {
-                    // 保存先フォルダのパスを特定
-                    String uploadPath = getServletContext().getRealPath("/uploads");
-                    java.io.File uploadDir = new java.io.File(uploadPath);
-                        // なければ作成
-                        if (!uploadDir.exists()) {
-                            uploadDir.mkdir();
-                        }
-                    // 元のファイル名を取り出して、タイムスタンプを付与
-                    String originalFileName = java.nio.file.Paths.get(image.getSubmittedFileName()).getFileName().toString();
-                    profileImage = System.currentTimeMillis() + "_" + originalFileName;
-                    // 実際にファイルをサーバーに書き込む
-                    image.write(uploadPath + java.io.File.separator + profileImage);
+                try {
+                    if (image != null && image.getSize() > 0 && image.getSubmittedFileName() != null && !image.getSubmittedFileName().isEmpty()) {
+                        // 保存先フォルダのパスを特定
+                        String uploadPath = getServletContext().getRealPath("/uploads");
+                        java.io.File uploadDir = new java.io.File(uploadPath);
+                            // なければ作成
+                            if (!uploadDir.exists()) {
+                                uploadDir.mkdir();
+                            }
+                        // 元のファイル名を取り出して、タイムスタンプを付与
+                        String fileName = java.nio.file.Paths.get(image.getSubmittedFileName()).getFileName().toString();
+                        profileImage = System.currentTimeMillis() + "_" + fileName;
+                        // 実際にファイルをサーバーに書き込む
+                        image.write(uploadPath + java.io.File.separator + profileImage);
+                    }
+                } catch (Exception e) {
+                e.printStackTrace();
                 }
 
                 dao.updateUser(id, name, email, password, status, role, kana, gender, age, profile, profileImage);

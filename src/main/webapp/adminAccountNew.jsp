@@ -11,18 +11,15 @@
         .error-msg { color: red; font-weight: bold; }
     </style>
 </head>
+
 <body>
+    <h1>アカウント追加</h1>
+    <%-- エラーメッセージ表示エリア --%>
+    <c:if test="${not empty error}">
+        <p class="error-msg">${error}</p>
+    </c:if>
 
-<h1>アカウント追加</h1>
-
-<%-- エラーメッセージ表示エリア --%>
-<c:if test="${not empty error}">
-    <p class="error-msg">${error}</p>
-</c:if>
-
-<form action="${pageContext.request.contextPath}/admin/accountCreate" 
-      method="post" 
-      enctype="multipart/form-data">
+    <form action="${pageContext.request.contextPath}/admin/accountCreate" method="post" enctype="multipart/form-data">
 
     <%-- 共通項目：ID --%>
     <input type="hidden" name="id" value="${account.id}">
@@ -30,8 +27,8 @@
     <%-- 一般、管理者切替ラジオボタン --%>
     <div style="margin-bottom: 15px;">
         種別：
-        <label><input type="radio" name="role" value="user" ${account.role == 'admin' ? '' : 'checked'} onchange="switchFields()">一般</label>
-        <label><input type="radio" name="role" value="admin" id="roleAdmin" ${account.role == 'admin' ? 'checked' : ''} onchange="switchFields()">管理者</label>
+        <label><input type="radio" name="role" value="user" checked onchange="switchFields()">一般</label>
+        <label><input type="radio" name="role" value="admin" id="roleAdmin" onchange="switchFields()">管理者</label>
     </div>
 
     <hr>
@@ -47,12 +44,12 @@
         <br><br>
 
         メールアドレス
-        <input type="text" name="email" value="${fn:escapeXml(account.email)}"
+        <input type="text" name="email" value="${fn:escapeXml(account.email)}">
         <br><br>
 
         ステータス
-        <label><input type="radio" name="status" value="1" ${account.status == 1 ? 'checked' : ''}>アクセス許可</label>
-        <label><input type="radio" name="status" value="0" ${account.status == 0 ? 'checked' : ''}>アクセス禁止</label>
+        <label><input type="radio" name="status" value="1" checked>アクセス許可</label>
+        <label><input type="radio" name="status" value="0">アクセス禁止</label>
         <br><br>
     </div>
 
@@ -66,8 +63,8 @@
         <br><br>
 
         性別
-        <label><input type="radio" name="gender" value="male" ${account.gender == 'male' ? 'checked' : ''}>男性</label>
-        <label><input type="radio" name="gender" value="female" ${account.gender == 'female' ? 'checked' : ''}>女性</label>
+        <label><input type="radio" name="gender" value="male" checked>男性</label>
+        <label><input type="radio" name="gender" value="female" >女性</label>
         <br><br>
 
         年齢
@@ -84,8 +81,8 @@
         <br><br>
     </div>
 
-<button type="submit">登録</button>
-<br><br>
+    <button type="submit">登録</button>
+    <br><br>
 
 <a href="${pageContext.request.contextPath}/admin/accountList">アカウント一覧に戻る</a>
 

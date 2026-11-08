@@ -26,7 +26,7 @@ public class AccountDAO {
         return list;
     }
 
-    /* 管理者を登録する */
+    /* ⭐️管理者を登録する */
     public void insertAdmin(String name, String email, String password, int status) throws Exception {
         // roleに 'admin' を、statusに選択値を保存する
         String sql = "INSERT INTO users(name, email, password, role, status) VALUES (?, ?, ?, 'admin', ?)";
@@ -85,17 +85,19 @@ public class AccountDAO {
         return account;
     }
 
-    /* 指定したIDのアカウントを削除する */
+    /* ⭐️指定したIDのアカウントを削除する */
     public void delete(int id) throws Exception {
         String sql = "UPDATE users SET is_deleted = 1 WHERE id = ?";
+
         try (Connection conn = DBManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setInt(1, id);
             ps.executeUpdate();
         }
     }
 
-   /* 管理者情報を更新する */ 
+   /* ⭐️管理者情報を更新する */ 
     public void updateAdmin(int id, String name, String email,  String password, int status, String role) throws Exception {
 
         String sql = "UPDATE users SET name=?, email=?, password=?, status=?, role=? WHERE id=?";
@@ -114,7 +116,7 @@ public class AccountDAO {
         }
     }
 
-    /* 一般ユーザー情報を更新する（管理者側） */
+    /* ⭐️一般ユーザー情報を更新する（管理者側） */
     public void updateUser(int id, String name, String email,  String password, int status, String role, String kana, 
                            String gender, int age, String profile, String profileImage) throws Exception {
         
@@ -270,11 +272,13 @@ public class AccountDAO {
         return count;
     }
 
-    /* ステータスのみを更新する */
+    /* ⭐️ステータスのみを更新する */
     public void updateStatus(int id, int status) throws Exception {
         String sql = "UPDATE users SET status = ? WHERE id = ?";
+
         try (Connection conn = DBManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
+
             ps.setInt(1, status);
             ps.setInt(2, id);
             ps.executeUpdate();

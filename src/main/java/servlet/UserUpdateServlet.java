@@ -1,8 +1,6 @@
 package servlet;
 
-import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -45,8 +43,13 @@ public class UserUpdateServlet extends HttpServlet {
             String name = request.getParameter("name");
             String kana = request.getParameter("kana");
             String gender = request.getParameter("gender");
-            String ageStr = request.getParameter("age");
             String profile = request.getParameter("profile");
+            // 安全に数値に変換しておく
+            String ageStr = request.getParameter("age");
+            int age = 0;
+            if (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) {
+                age = Integer.parseInt(ageStr);
+            }
 
             // エラーメッセージ用変数
             String errorMsg = null;
@@ -122,13 +125,7 @@ public class UserUpdateServlet extends HttpServlet {
                 account.setName(name);
                 account.setKana(kana);
                 account.setGender(gender);
-                
-                if (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) {
-                    account.setAge(Integer.parseInt(ageStr));
-                } else {
-                    account.setAge(0);
-                }
-
+                account.setAge(age);
                 account.setProfile(profile);
                 
                 // 元の画像パスを維持
@@ -142,28 +139,28 @@ public class UserUpdateServlet extends HttpServlet {
                 return;
             }
 
-            // 画像ファイルが選択されている場合の保存処理
-            String imagePath = null;
-            if (image != null && image.getSize() > 0) {
-                // 保存先フォルダのパスを特定
-                String uploadPath = getServletContext().getRealPath("/uploads");
-                File uploadDir = new File(uploadPath);
-                // なければ作成
-                if (!uploadDir.exists()) {
-                    uploadDir.mkdir();
+            String profileImage = null;
+            try {
+                if (image != null && image.getSize() > 0 && image.getSubmittedFileName() != null && !image.getSubmittedFileName().isEmpty()) {
+                    
+                    // 保存先フォルダのパスを特定
+                    String uploadPath = getServletContext().getRealPath("/uploads");
+                    java.io.File uploadDir = new java.io.File(uploadPath);
+                    if (!uploadDir.exists()) {
+                        uploadDir.mkdirs();
+                    }
+                    
+                    // ファイル名を取り出してタイムスタンプを付与
+                    String fileName = java.nio.file.Paths.get(image.getSubmittedFileName()).getFileName().toString();
+                    profileImage = System.currentTimeMillis() + "_" + fileName;
+                    
+                    // 実際にファイルをサーバーに書き込む
+                    image.write(uploadPath + java.io.File.separator + profileImage);
                 }
-                // ファイル名を取り出す
-                String fileName = Paths.get(image.getSubmittedFileName()).getFileName().toString();
-                
-                // 実際にファイルをサーバーに書き込む
-                image.write(uploadPath + File.separator + fileName);
-                
-                // DBに保存するパス
-                imagePath = "uploads/" + fileName;
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-
-            int age = (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) ? Integer.parseInt(ageStr) : 0;
-
+            
             // DAOに渡すためのAccountオブジェクトを作成
             Account updateAccount = new Account();
             updateAccount.setId(loginUser.getId());
@@ -174,8 +171,8 @@ public class UserUpdateServlet extends HttpServlet {
             updateAccount.setProfile(profile);
             
             // 新しい画像がアップロードされた場合のみパスを設定
-            if (imagePath != null) {
-                updateAccount.setImagePath(imagePath);
+            if (profileImage != null) {
+                updateAccount.setImagePath(profileImage);
             } else {
                 updateAccount.setImagePath(loginUser.getImagePath());
             }
