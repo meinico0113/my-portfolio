@@ -155,9 +155,10 @@ public class AccountDAO {
         }
     }
 
-    /* 一般ユーザー情報を更新する（一般側） */
+    /* ⭐️一般ユーザー情報を更新する（一般側） */
     public boolean updateProfile(Account account, Part image) {
         String fileName = null;
+        // ファイル名を取り出す
         if (image != null && image.getSize() > 0) {
             try {
                 fileName = Paths.get(image.getSubmittedFileName()).getFileName().toString();
@@ -166,38 +167,38 @@ public class AccountDAO {
             }
         }
 
-    // 画像が変更された場合とされていない場合でSQLを分岐
-    String sql;
-    if (fileName != null && !fileName.isEmpty()) {
-        sql = "UPDATE users SET name=?, kana=?, gender=?, age=?, profile=?, profile_image=? WHERE id=?";
-    } else {
-        sql = "UPDATE users SET name=?, kana=?, gender=?, age=?, profile=? WHERE id=?";
-    }
-
-    try (Connection conn = DBManager.getConnection();
-         PreparedStatement ps = conn.prepareStatement(sql)) {
-
-        ps.setString(1, account.getName());
-        ps.setString(2, account.getKana());
-        ps.setString(3, account.getGender());
-        ps.setInt(4, account.getAge());
-        ps.setString(5, account.getProfile());
-
+        // 画像が変更された場合とされていない場合でSQLを分岐
+        String sql;
         if (fileName != null && !fileName.isEmpty()) {
-            ps.setString(6, fileName);
-            ps.setInt(7, account.getId());
+            sql = "UPDATE users SET name=?, kana=?, gender=?, age=?, profile=?, profile_image=? WHERE id=?";
         } else {
-            ps.setInt(6, account.getId());
+            sql = "UPDATE users SET name=?, kana=?, gender=?, age=?, profile=? WHERE id=?";
         }
 
-        int result = ps.executeUpdate();
-        return result > 0;
+        try (Connection conn = DBManager.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
 
-    } catch (Exception e) {
-        e.printStackTrace();
-        return false;
+            ps.setString(1, account.getName());
+            ps.setString(2, account.getKana());
+            ps.setString(3, account.getGender());
+            ps.setInt(4, account.getAge());
+            ps.setString(5, account.getProfile());
+
+            if (fileName != null && !fileName.isEmpty()) {
+                ps.setString(6, fileName);
+                ps.setInt(7, account.getId());
+            } else {
+                ps.setInt(6, account.getId());
+            }
+
+            int result = ps.executeUpdate();
+            return result > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
-}
 
     /* ResultSetからAccountオブジェクトへの変換 */
     private Account mapToAccount(ResultSet rs) throws SQLException {

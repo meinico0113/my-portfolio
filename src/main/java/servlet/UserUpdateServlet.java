@@ -115,7 +115,7 @@ public class UserUpdateServlet extends HttpServlet {
                 }
             }
 
-            // --- エラーがあった場合の入力保持処理（AccountUpdateServletスタイルに統一） ---
+            // エラーがあった場合の入力保持処理
             if (errorMsg != null) {
                 Account account = new Account();
                 account.setId(id);
@@ -128,7 +128,7 @@ public class UserUpdateServlet extends HttpServlet {
                 } else {
                     account.setAge(0);
                 }
-                
+
                 account.setProfile(profile);
                 
                 // 元の画像パスを維持
@@ -142,14 +142,17 @@ public class UserUpdateServlet extends HttpServlet {
                 return;
             }
 
-            // --- 画像ファイルが選択されている場合の保存処理 ---
+            // 画像ファイルが選択されている場合の保存処理
             String imagePath = null;
             if (image != null && image.getSize() > 0) {
+                // 保存先フォルダのパスを特定
                 String uploadPath = getServletContext().getRealPath("/uploads");
                 File uploadDir = new File(uploadPath);
+                // なければ作成
                 if (!uploadDir.exists()) {
                     uploadDir.mkdir();
                 }
+                // ファイル名を取り出す
                 String fileName = Paths.get(image.getSubmittedFileName()).getFileName().toString();
                 
                 // 実際にファイルをサーバーに書き込む
@@ -161,7 +164,7 @@ public class UserUpdateServlet extends HttpServlet {
 
             int age = (ageStr != null && ageStr.matches("^[0-9]{1,3}$")) ? Integer.parseInt(ageStr) : 0;
 
-            // --- DAOに渡すためのAccountオブジェクトを作成 ---
+            // DAOに渡すためのAccountオブジェクトを作成
             Account updateAccount = new Account();
             updateAccount.setId(loginUser.getId());
             updateAccount.setName(name);
@@ -177,7 +180,7 @@ public class UserUpdateServlet extends HttpServlet {
                 updateAccount.setImagePath(loginUser.getImagePath());
             }
 
-            // --- DBのプロフィール情報を更新 ---
+            // DBのプロフィール情報を更新
             boolean isSuccess = dao.updateProfile(updateAccount, image);
 
             if (!isSuccess) {
@@ -188,10 +191,9 @@ public class UserUpdateServlet extends HttpServlet {
                 return;
             }
 
-            // --- DBから最新のデータを取得してセッションを更新 ---
+            // DBから最新のデータを取得してセッションを更新
             Account dbAccount = dao.findById(loginUser.getId());
             session.setAttribute("account", dbAccount);
-            session.setAttribute("loginUser", dbAccount);
 
             // 更新成功時は一般画面へリダイレクト
             response.sendRedirect(request.getContextPath() + "/UserServlet");
