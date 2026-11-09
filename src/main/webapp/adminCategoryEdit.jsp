@@ -20,7 +20,7 @@
         <p class="error-msg">${error}</p>
     </c:if>
 
-    <form action="${pageContext.request.contextPath}/admin/categoryUpdate" method="post" onsubmit="return validateForm();">
+    <form action="${pageContext.request.contextPath}/admin/categoryUpdate" method="post">
         <input type="hidden" name="id" value="${category.id}">
     
         カテゴリ名 
@@ -32,24 +32,5 @@
     <p>
         <a href="${pageContext.request.contextPath}/admin/categoryList">カテゴリ一覧に戻る</a>
     </p>    
-
-    <script>
-    function validateForm() {
-        const input = document.getElementById('categoryName');
-        if (!input) return true;
-
-        const val = input.value.trim();
-
-        if (val === "") {
-            alert("カテゴリ名を入力してください。");
-            return false;
-        }
-        if (val.length > 255) {
-            alert("カテゴリ名は255文字以内で入力してください。");
-            return false;
-        }
-        return true;
-    }
-    </script>
 </body>
 </html>
