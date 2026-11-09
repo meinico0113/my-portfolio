@@ -30,7 +30,7 @@ public class AdminContactDetailServlet extends HttpServlet {
     } catch (Exception e) {
             e.printStackTrace();
 
-            // 失敗したらエラーを表示して削除済み問い合わせ一覧画面に戻す
+            // 失敗したらエラーを表示して問い合わせ一覧画面に戻す
             request.setAttribute("error", "お問い合わせ詳細画面表示に失敗しました。");
             request.getRequestDispatcher("/admin/contactList").forward(request, response);
         }

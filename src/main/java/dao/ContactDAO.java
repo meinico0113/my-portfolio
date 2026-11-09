@@ -11,7 +11,7 @@ import servlet.DBManager;
 
 public class ContactDAO {
 
-    /* すべてのお問い合わせを取得する */
+    /* ⭐️すべてのお問い合わせを取得する */
     public List<Contact> findAll() throws Exception {
         List<Contact> contactList = new ArrayList<>();
         String sql = "SELECT * FROM contacts ORDER BY created_at DESC";
@@ -27,7 +27,7 @@ public class ContactDAO {
         return contactList;
     }
 
-    /* ResultSetからContactオブジェクトにマッピングするヘルパーメソッド */
+    /* ResultSetからContactオブジェクトへの変換 */
     private Contact mapToContact(ResultSet rs) throws Exception {
         Contact contact = new Contact();
         contact.setId(rs.getInt("id"));
@@ -38,36 +38,24 @@ public class ContactDAO {
         return contact;
     }
 
-        /* IDを指定して特定のお問い合わせを1件取得する */
-        public Contact findById(int id) throws Exception {
-
+        /* ⭐️IDを指定して特定のお問い合わせを1件取得する */
+        public Contact findById(int id) {
         Contact contact = null;
-
-        Connection conn = DBManager.getConnection();
-
-        // 特定のIDで絞り込むSQL
         String sql = "SELECT * FROM contacts WHERE id = ?";
 
-        PreparedStatement ps = conn.prepareStatement(sql);
-        ps.setInt(1, id);   // ?に引数のidをセット
+        try (Connection conn = DBManager.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
-        ResultSet rs = ps.executeQuery();
-
-        // データが見つかった場合のみ、情報をオブジェクトにセット
-        if (rs.next()) {
-            contact = new Contact();
-
-            contact.setId(rs.getInt("id"));
-            contact.setCategory(rs.getString("category"));
-            contact.setContent(rs.getString("content"));
-            contact.setStatus(rs.getString("status"));
-            contact.setCreatedAt(rs.getTimestamp("created_at"));
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                // データが見つかった場合のみ、情報をオブジェクトにセット
+                if (rs.next()) {
+                    contact = mapToContact(rs);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        // 接続を閉じる
-        rs.close();
-        ps.close();
-        conn.close();
 
         return contact;
     }
