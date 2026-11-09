@@ -285,7 +285,7 @@ public class AccountDAO {
         }
     }
 
-    /* 削除済みアカウント一覧を取得する（is_deleted = 1 のもの）*/
+    /* ⭐️削除済みアカウント一覧を取得する（is_deleted = 1 のもの）*/
     public List<Account> findDeleted() throws Exception {
         List<Account> list = new ArrayList<>();
         String sql = "SELECT * FROM users WHERE is_deleted = 1 ORDER BY id";
@@ -369,20 +369,19 @@ public class AccountDAO {
         }
     }
 
-    /* 指定したIDのアカウントをDBから完全に削除するメソッド */
+    /* ⭐️指定したIDのアカウントをDBから完全に削除する */
     public void hardDelete(int id) throws Exception {
         String deleteUserSql = "DELETE FROM users WHERE id = ?";
 
         try (Connection conn = DBManager.getConnection();
             PreparedStatement ps = conn.prepareStatement(deleteUserSql)) {
 
-            // usersテーブル本体のデータを削除
             ps.setInt(1, id);
             ps.executeUpdate();
         }
     }
 
-    /* ⭐️名前が重複していないかチェックするメソッド */
+    /* ⭐️名前が重複していないかチェックする */
     public boolean checknameDuplicate(String name, int id) throws Exception {
         boolean exists = false;
         // 自分以外のIDを対象にれる

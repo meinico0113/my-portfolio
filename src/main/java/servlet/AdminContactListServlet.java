@@ -28,7 +28,7 @@ public class AdminContactListServlet extends HttpServlet {
 
             // 失敗したらエラーを表示して問い合わせ一覧画面に戻す
             request.setAttribute("error", "問い合わせ情報の取得に失敗しました。");
-            request.getRequestDispatcher("/admin/ContactList").forward(request, response);
+            request.getRequestDispatcher("/adminContactList.jsp").forward(request, response);
         }
     }
 }

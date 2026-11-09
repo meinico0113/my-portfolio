@@ -25,8 +25,10 @@ public class AccountDeletedListServlet extends HttpServlet {
             request.getRequestDispatcher("/adminAccountDeletedList.jsp").forward(request, response);
 
         } catch (Exception e) {
-
             e.printStackTrace();
+
+            request.setAttribute("error", "処理に失敗しました。");
+            request.getRequestDispatcher("/adminAccountList.jsp").forward(request, response);
         }
     }
 }
