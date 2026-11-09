@@ -55,16 +55,16 @@ public class AuthFilter implements Filter {
                                requestURI.contains("/UserDetailServlet") ||
                                path.startsWith("/uploads/");
 
-        // 2. 「管理者専用」のページやサーブレットのパス定義（例：パスに "/admin/" を含む、または特定のサーブレット）
+        // 「管理者専用」のページやサーブレットのパス定義
         boolean isAdminPage = path.startsWith("/admin/") || 
                               path.contains("Admin") || 
-                              path.equals("/AdminServlet"); // ← 実際の管理画面のパスに合わせて変更してください
+                              path.equals("/AdminServlet");
 
         // セッションからログインユーザー情報（Accountオブジェクト）を取得
 Account loginUser = (session != null) ? (Account) session.getAttribute("account") : null;
 
 if (!isPublicPage && loginUser == null) {
-    // ① 未ログインの場合
+    // 未ログインの場合
     httpResponse.sendRedirect(contextPath + "/UserRankingServlet");
     return;
 }
@@ -73,7 +73,7 @@ if (loginUser != null) {
     // Accountオブジェクトからロールを取得する（LoginServletのロジックに合わせる）
     String role = loginUser.getRole(); // "admin" などが入る
 
-    // ② 管理者（"admin"）でログインしている場合
+    // 管理者（"admin"）でログインしている場合
     if ("admin".equals(role)) {
         if (path.equals("/UserServlet") || path.equals("/userServlet")) { // 一般用のページにアクセスした場合
             httpResponse.sendRedirect(contextPath + "/AdminServlet");
@@ -81,7 +81,7 @@ if (loginUser != null) {
         }
     }
     
-    // ③ 一般ユーザー（"admin" 以外）でログインしている場合
+    // 一般ユーザー（"admin" 以外）でログインしている場合
     if (!"admin".equals(role)) { // または一般用のロール判定
         // 一般ユーザーが「管理者画面（isAdminPage）」にアクセスした場合
         if (isAdminPage) {
