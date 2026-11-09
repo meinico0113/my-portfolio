@@ -96,9 +96,9 @@ public class CategoryDAO {
         }
     }
 
-    /* ⭐️指定したIDのカテゴリを削除する */
+    /* 指定したIDのカテゴリを削除する */
     public void delete(int id) throws Exception{
-        String sql = "DELETE FROM contacts WHERE id = ?";
+        String sql = "DELETE FROM categories WHERE id = ?";
 
         try (Connection conn = DBManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
