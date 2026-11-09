@@ -20,11 +20,7 @@ public class CategoryDAO {
 
             // 取得したレコードを一つずつCategoryオブジェクトに変換してリストに追加
             while (rs.next()) {
-                Category category = new Category();
-                category.setId(rs.getInt("id"));
-                category.setName(rs.getString("name"));
-
-                list.add(category);
+                list.add(mapToCategory(rs));
             }
 
         } catch (Exception e) {
@@ -76,9 +72,9 @@ public class CategoryDAO {
 
         // 変更前の旧カテゴリ名を取得するSQL
         String selectSql = "SELECT name FROM categories WHERE id = ?";
-        // 2. categoriesテーブルのカテゴリ名を更新するSQL
+        // categoriesテーブルのカテゴリ名を更新するSQL
         String sql1 = "UPDATE categories SET name = ? WHERE id = ?";
-        // 3. contactsテーブルのカテゴリ名を一括更新するSQL
+        // contactsテーブルのカテゴリ名を一括更新するSQL
         String sql2 = "UPDATE contacts SET category = ? WHERE category = ?";
 
         try (Connection conn = DBManager.getConnection();
