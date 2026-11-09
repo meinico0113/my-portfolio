@@ -34,23 +34,19 @@ public class CategoryDAO {
         return list;
     }
 
-    /* IDを指定して特定のカテゴリを1件取得する */
+    /* ⭐️IDを指定して特定のカテゴリを1件取得する */
     public Category findById(int id) {
         Category category = null;
         String sql = "SELECT * FROM categories WHERE id = ?";
 
-        // try-with-resources構文：ConnectionとPreparedStatementを自動でcloseする
         try (Connection conn = DBManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
 
-            // ResultSetも同様に囲むか、中で処理する
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
-                    category = new Category();
-                    category.setId(rs.getInt("id"));
-                    category.setName(rs.getString("name"));
+                    category = mapToCategory(rs);
                 }
             }
         } catch (Exception e) {
@@ -147,12 +143,17 @@ public class CategoryDAO {
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
-                Category cat = new Category();
-                cat.setId(rs.getInt("id"));
-                cat.setName(rs.getString("name"));
-                list.add(cat);
+                list.add(mapToCategory(rs));
             }
         }
         return list;
+    }
+
+    /* ResultSetからCategoryオブジェクトへの変換*/
+    private Category mapToCategory(ResultSet rs) throws SQLException {
+        Category category = new Category();
+        category.setId(rs.getInt("id"));
+        category.setName(rs.getString("name") != null ? rs.getString("name") : "");
+        return category;
     }
 }

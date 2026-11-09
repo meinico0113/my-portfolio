@@ -32,7 +32,7 @@ public class AdminContactDetailServlet extends HttpServlet {
 
             // 失敗したらエラーを表示して問い合わせ一覧画面に戻す
             request.setAttribute("error", "お問い合わせ詳細画面表示に失敗しました。");
-            request.getRequestDispatcher("/admin/contactList").forward(request, response);
+            request.getRequestDispatcher("adminContactList.jsp").forward(request, response);
         }
     }
 }
