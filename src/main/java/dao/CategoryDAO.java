@@ -34,16 +34,18 @@ public class CategoryDAO {
         return list;
     }
 
-    /* ⭐️IDを指定して特定のカテゴリを1件取得する */
+    /* IDを指定して特定のカテゴリを1件取得する */
     public Category findById(int id) {
         Category category = null;
         String sql = "SELECT * FROM categories WHERE id = ?";
 
+        // try-with-resources構文：ConnectionとPreparedStatementを自動でcloseする
         try (Connection conn = DBManager.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
 
+            // ResultSetも同様に囲むか、中で処理する
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     category = mapToCategory(rs);
@@ -69,29 +71,42 @@ public class CategoryDAO {
         }
     }
 
-    /* ⭐️既存のカテゴリ名を更新する */
+    /*既存のカテゴリ名を更新する*/
     public void update(int id, String name) throws Exception {
-        String selectSql = "SELECT category FROM contacts WHERE id = ?";
-        String updateSql = "UPDATE contacts SET category = ? WHERE category = ?";
+
+        // 変更前の旧カテゴリ名を取得するSQL
+        String selectSql = "SELECT name FROM categories WHERE id = ?";
+        // 2. categoriesテーブルのカテゴリ名を更新するSQL
+        String sql1 = "UPDATE categories SET name = ? WHERE id = ?";
+        // 3. contactsテーブルのカテゴリ名を一括更新するSQL
+        String sql2 = "UPDATE contacts SET category = ? WHERE category = ?";
 
         try (Connection conn = DBManager.getConnection();
-             PreparedStatement psSelect = conn.prepareStatement(selectSql);
-             PreparedStatement psUpdate = conn.prepareStatement(updateSql)) {
+             PreparedStatement psSelect = conn.prepareStatement(selectSql)) {
 
-            // 指定されたIDのレコードから旧カテゴリ名を取得
+            // 旧カテゴリ名を取得
             psSelect.setInt(1, id);
-            String oldName = "";
             try (ResultSet rs = psSelect.executeQuery()) {
+                String oldName = "";
                 if (rs.next()) {
-                    oldName = rs.getString("category");
+                    oldName = rs.getString("name");
                 }
-            }
 
-            // 旧カテゴリ名が存在する場合のみ一括更新を実行
-            if (!oldName.isEmpty()) {
-                psUpdate.setString(1, name);
-                psUpdate.setString(2, oldName);
-                psUpdate.executeUpdate();
+                // categoriesテーブルを更新
+                try (PreparedStatement ps1 = conn.prepareStatement(sql1)) {
+                    ps1.setString(1, name);
+                    ps1.setInt(2, id);
+                    ps1.executeUpdate();
+                }
+
+                // contactsテーブルの旧カテゴリ名も新しいカテゴリ名に一括更新
+                if (!oldName.isEmpty()) {
+                    try (PreparedStatement ps2 = conn.prepareStatement(sql2)) {
+                        ps2.setString(1, name);
+                        ps2.setString(2, oldName);
+                        ps2.executeUpdate();
+                    }
+                }
             }
         }
     }
