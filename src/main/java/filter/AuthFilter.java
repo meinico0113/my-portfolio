@@ -76,7 +76,7 @@ if (loginUser != null) {
     // 管理者（"admin"）でログインしている場合
         if ("admin".equals(role)) {
             // 一般用のページ（/Userで始まるサーブレットなど）にアクセスした場合
-            if (path.startsWith("/User") || path.equals("/SettingServlet") || path.equals("/userServlet")) {
+            if (path.startsWith("/User") || path.equals("/Setting.jsp") || path.equals("/userServlet")) {
                 httpResponse.sendRedirect(contextPath + "/AdminServlet");
                 return;
             }
