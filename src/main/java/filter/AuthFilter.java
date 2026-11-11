@@ -74,12 +74,13 @@ if (loginUser != null) {
     String role = loginUser.getRole(); // "admin" などが入る
 
     // 管理者（"admin"）でログインしている場合
-    if ("admin".equals(role)) {
-        if (path.equals("/UserServlet") || path.equals("/userServlet")) { // 一般用のページにアクセスした場合
-            httpResponse.sendRedirect(contextPath + "/AdminServlet");
-            return;
+        if ("admin".equals(role)) {
+            // 一般用のページ（/Userで始まるサーブレットなど）にアクセスした場合
+            if (path.startsWith("/User") || path.equals("/userServlet")) {
+                httpResponse.sendRedirect(contextPath + "/AdminServlet");
+                return;
+            }
         }
-    }
     
     // 一般ユーザー（"admin" 以外）でログインしている場合
     if (!"admin".equals(role)) { // または一般用のロール判定
